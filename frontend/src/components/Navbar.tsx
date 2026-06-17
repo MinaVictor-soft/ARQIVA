@@ -58,7 +58,7 @@ export default function Navbar() {
           ? 'bg-white/95 backdrop-blur-md border-b border-stone-brown/12 shadow-[0_4px_32px_rgba(10,9,8,0.10)]'
           : 'bg-white border-b border-stone-brown/12 shadow-[0_1px_8px_rgba(10,9,8,0.04)]'
     }`}>
-      <div className="container-main">
+      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link
@@ -158,7 +158,7 @@ export default function Navbar() {
               {NAV_LINKS.map(({ key, to }, i) => (
                 <motion.div
                   key={key}
-                  initial={{ x: -10, opacity: 0 }}
+                  initial={{ x: i18n.dir() === 'rtl' ? 10 : -10, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: i * 0.04 }}
                 >

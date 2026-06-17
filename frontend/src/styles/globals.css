@@ -325,6 +325,46 @@
 [dir="rtl"] { text-align: right; }
 [dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 
+/* Arabic text: remove wide letter-spacing (tracking) everywhere */
+[dir="rtl"] .section-label,
+[dir="rtl"] [class*="tracking-"],
+[dir="rtl"] .text-xs,
+[dir="rtl"] .text-\[9px\],
+[dir="rtl"] .text-\[10px\] {
+  letter-spacing: 0 !important;
+}
+
+/* Directional arrows/icons flip in RTL */
+[dir="rtl"] .icon-directional,
+[dir="rtl"] svg.arrow-right,
+[dir="rtl"] svg.arrow-left {
+  transform: scaleX(-1);
+}
+
+/* Nav links alignment */
+[dir="rtl"] nav a,
+[dir="rtl"] nav button {
+  text-align: right;
+}
+
+/* Progress bar direction */
+[dir="rtl"] progress {
+  direction: rtl;
+}
+
+/* Form inputs native alignment */
+[dir="rtl"] input,
+[dir="rtl"] textarea,
+[dir="rtl"] select {
+  text-align: right;
+}
+
+/* Section labels in RTL get correct border treatment */
+[dir="rtl"] .border-l { border-left: none; border-right: 1px solid; }
+[dir="rtl"] .pl-4 { padding-left: 0; padding-right: 1rem; }
+[dir="rtl"] .ml-auto { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .mr-auto { margin-right: 0; margin-left: auto; }
+
 /* No horizontal overflow */
 body, #root { max-width: 100vw; overflow-x: hidden; }
 
