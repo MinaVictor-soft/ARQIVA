@@ -58,7 +58,7 @@ export default function Navbar() {
           ? 'bg-white/95 backdrop-blur-md border-b border-stone-brown/12 shadow-[0_4px_32px_rgba(10,9,8,0.10)]'
           : 'bg-white border-b border-stone-brown/12 shadow-[0_1px_8px_rgba(10,9,8,0.04)]'
     }`}>
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-[1600px] mx-auto px-2 sm:px-3 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link
