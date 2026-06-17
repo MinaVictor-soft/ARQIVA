@@ -1,4 +1,4 @@
-run = "npm run start"
+run = "bash setup.sh && npm run build && npm run start"
 entrypoint = "backend/src/index.ts"
 hidden = [".config", "package-lock.json", "node_modules"]
 
@@ -7,7 +7,7 @@ channel = "stable-24_05"
 
 [deployment]
 run = ["sh", "-c", "npm run start"]
-build = ["sh", "-c", "npm run install:all && npm run build"]
+build = ["sh", "-c", "bash setup.sh && npm run build"]
 deploymentTarget = "autoscale"
 
 [env]

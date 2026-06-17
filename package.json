@@ -7,7 +7,8 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "install:all": "cd frontend && npm install && cd ../backend && npm install",
+    "setup": "bash setup.sh",
+    "install:all": "bash setup.sh",
     "build": "cd frontend && npm run build && cd ../backend && npm run build",
     "start": "node backend/dist/index.js",
     "dev:backend": "cd backend && npm run dev",
