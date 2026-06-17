@@ -107,17 +107,17 @@ function PremiumStatCard({
       </span>
 
       {/* Icon */}
-      <div className="mb-3 text-arch-beige/70 group-hover:text-arch-beige transition-colors duration-300">
+      <div className="mb-3 text-arch-beige transition-colors duration-300">
         {STAT_ICONS[icon]}
       </div>
 
       {/* Animated number */}
-      <p className="font-display text-[clamp(1.5rem,2.8vw,2.4rem)] font-light leading-none text-warm-white group-hover:text-arch-beige transition-colors duration-300 tabular-nums">
+      <p className="font-display text-[clamp(2rem,2.8vw,2.4rem)] font-light leading-none text-arch-beige transition-colors duration-300 tabular-nums">
         {customDisplay ?? `${prefix}${count}${suffix}`}
       </p>
 
       {/* Label */}
-      <p className="mt-2 text-warm-white/60 group-hover:text-warm-white/80 text-[9px] md:text-[10px] tracking-[0.35em] uppercase font-medium transition-colors duration-300">
+      <p className="mt-2 text-warm-white/80 group-hover:text-warm-white text-[11px] md:text-[11px] tracking-[0.35em] uppercase font-medium transition-colors duration-300">
         {label}
       </p>
 
@@ -162,7 +162,7 @@ export default function HomePage() {
           animate={{ scale: 1 }}
           transition={{ duration: 5, ease: 'easeOut' }}
         >
-          {heroImage && <img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover opacity-40 blur-sm scale-105" />}
+          {heroImage && <img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover opacity-25 blur-sm scale-105" />}
           {/* Directional overlay — left-side gradient only where text sits */}
           <div className="absolute inset-0 bg-gradient-to-r from-primary-black/65 via-primary-black/25 to-transparent" />
           {/* Bottom fade — blends into stats bar */}
