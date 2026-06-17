@@ -163,12 +163,10 @@ export default function HomePage() {
           transition={{ duration: 5, ease: 'easeOut' }}
         >
           {heroImage && <img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover" />}
-          {/* Base scrim — balanced: image stays visible, text stays readable */}
-          <div className="absolute inset-0 bg-primary-black/30" />
-          {/* Directional overlay — stronger on text side only */}
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-black/55 via-primary-black/20 to-transparent" />
+          {/* Directional overlay — left-side gradient only where text sits */}
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-black/65 via-primary-black/25 to-transparent" />
           {/* Bottom fade — blends into stats bar */}
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary-black/80 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary-black/70 to-transparent" />
         </motion.div>
 
         {/* Main content — flex-1 fills all available space between navbar and bottom bar */}
