@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -6,31 +6,50 @@ import { useAuthStore } from '@/store/authStore';
 import ScrollToTop from '@/components/ScrollToTop';
 import Preloader from '@/components/Preloader';
 
-// Pages
-import HomePage from '@/pages/HomePage';
-import ProjectsPage from '@/pages/ProjectsPage';
-import ProjectDetailPage from '@/pages/ProjectDetailPage';
-import ServicesPage from '@/pages/ServicesPage';
-import AboutPage from '@/pages/AboutPage';
-import ContactPage from '@/pages/ContactPage';
-import AwardsPage from '@/pages/AwardsPage';
-import TestimonialsPage from '@/pages/TestimonialsPage';
-import ResumePage from '@/pages/ResumePage';
-import PackagesPage from '@/pages/PackagesPage';
-import NotFoundPage from '@/pages/NotFoundPage';
-import PrivacyPolicyPage from '@/pages/PrivacyPolicyPage';
-import TermsPage from '@/pages/TermsPage';
-
-// Admin
-import AdminLogin from '@/pages/admin/AdminLogin';
-import AdminDashboard from '@/pages/admin/AdminDashboard';
+// ── Lazy-loaded pages (code-split per route) ──────────────────────────────
+const HomePage          = lazy(() => import('@/pages/HomePage'));
+const ProjectsPage      = lazy(() => import('@/pages/ProjectsPage'));
+const ProjectDetailPage = lazy(() => import('@/pages/ProjectDetailPage'));
+const ServicesPage      = lazy(() => import('@/pages/ServicesPage'));
+const AboutPage         = lazy(() => import('@/pages/AboutPage'));
+const ContactPage       = lazy(() => import('@/pages/ContactPage'));
+const AwardsPage        = lazy(() => import('@/pages/AwardsPage'));
+const TestimonialsPage  = lazy(() => import('@/pages/TestimonialsPage'));
+const ResumePage        = lazy(() => import('@/pages/ResumePage'));
+const PackagesPage      = lazy(() => import('@/pages/PackagesPage'));
+const NotFoundPage      = lazy(() => import('@/pages/NotFoundPage'));
+const PrivacyPolicyPage = lazy(() => import('@/pages/PrivacyPolicyPage'));
+const TermsPage         = lazy(() => import('@/pages/TermsPage'));
+const AdminLogin        = lazy(() => import('@/pages/admin/AdminLogin'));
+const AdminDashboard    = lazy(() => import('@/pages/admin/AdminDashboard'));
 
 // Styles
 import '@/styles/globals.css';
 
+// ── QueryClient — aggressive caching so navigation feels instant ──────────
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { retry: 1, staleTime: 30000 } },
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,      // data stays fresh 5 min — no re-fetch on back-nav
+      gcTime: 30 * 60 * 1000,        // keep in memory 30 min after unmount
+      retry: 1,
+      refetchOnWindowFocus: false,    // don't re-fetch when switching browser tabs
+      refetchOnReconnect: false,      // don't re-fetch on network reconnect
+    },
+  },
 });
+
+// ── Skeleton page fallback shown during lazy-chunk download ──────────────
+function PageFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-warm-white">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-7 h-7 border border-arch-beige border-t-transparent rounded-full animate-spin" />
+        <span className="text-[9px] tracking-[0.4em] text-stone-brown/40 uppercase">Loading</span>
+      </div>
+    </div>
+  );
+}
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, accessToken } = useAuthStore();
@@ -49,32 +68,34 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence mode="wait" initial={false}>
       <motion.div key={location.pathname} variants={pageVariants} initial="initial" animate="animate" exit="exit">
-        <Routes location={location}>
-          {/* Public Routes */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/projects" element={<ProjectsPage />} />
-          <Route path="/projects/:slug" element={<ProjectDetailPage />} />
-          <Route path="/services" element={<ServicesPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/awards" element={<AwardsPage />} />
-          <Route path="/testimonials" element={<TestimonialsPage />} />
-          <Route path="/resume" element={<ResumePage />} />
-          <Route path="/packages" element={<PackagesPage />} />
-          <Route path="/privacy" element={<PrivacyPolicyPage />} />
-          <Route path="/terms" element={<TermsPage />} />
+        <Suspense fallback={<PageFallback />}>
+          <Routes location={location}>
+            {/* Public Routes */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/projects/:slug" element={<ProjectDetailPage />} />
+            <Route path="/services" element={<ServicesPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/awards" element={<AwardsPage />} />
+            <Route path="/testimonials" element={<TestimonialsPage />} />
+            <Route path="/resume" element={<ResumePage />} />
+            <Route path="/packages" element={<PackagesPage />} />
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
 
-          {/* Admin Routes */}
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/*" element={
-            <ProtectedRoute>
-              <AdminDashboard />
-            </ProtectedRoute>
-          } />
+            {/* Admin Routes */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/*" element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } />
 
-          {/* 404 */}
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+            {/* 404 */}
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Suspense>
       </motion.div>
     </AnimatePresence>
   );

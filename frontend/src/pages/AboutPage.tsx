@@ -11,8 +11,8 @@ import Footer from '@/components/Footer';
 export default function AboutPage() {
   const { t } = useTranslation();
 
-  const { data: settingsRes } = useQuery({ queryKey: ['settings'], queryFn: () => api.get('/settings').then(r => r.data) });
-  const { data: awardsRes } = useQuery({ queryKey: ['awards', 'featured'], queryFn: () => api.get('/awards?featured=true&limit=6').then(r => r.data) });
+  const { data: settingsRes } = useQuery({ queryKey: ['settings'], queryFn: () => api.get('/settings').then(r => r.data), staleTime: 5 * 60 * 1000 });
+  const { data: awardsRes } = useQuery({ queryKey: ['awards', 'featured'], queryFn: () => api.get('/awards?featured=true&limit=6').then(r => r.data), staleTime: 5 * 60 * 1000 });
 
   const settings: Settings = settingsRes?.data;
   const awards: Award[] = awardsRes?.data || [];

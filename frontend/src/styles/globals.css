@@ -351,12 +351,23 @@ body, #root { max-width: 100vw; overflow-x: hidden; }
   -webkit-backface-visibility: hidden;
 }
 
-/* ── Smooth image loading (lazy images fade in on load) ──────────────────── */
-img {
-  transition: opacity 0.35s ease;
+/* Promote animated hero background to its own compositor layer */
+.will-change-transform {
+  will-change: transform;
 }
-/* Lazy images fade in after load via onLoad handler (JS adds .loaded class) */
-/* Without .loaded class, lazy images are still visible via browser default */
+
+/* ── Smooth lazy-image reveal ─────────────────────────────────────────────── */
+img[loading="lazy"] {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+img[loading="lazy"].img-loaded {
+  opacity: 1;
+}
+/* Fallback: if JS never fires, still show the image */
+img[loading="lazy"]:not([src]) {
+  opacity: 0;
+}
 
 /* ── Card hover micro-interaction ────────────────────────────────────────── */
 .shadow-card-hover {
@@ -396,11 +407,21 @@ a, button {
   .img-zoom img {
     transition: none !important;
   }
+
+  /* Framer Motion: let the browser's reduced-motion hint suppress animations */
+  .will-change-transform {
+    will-change: auto;
+  }
 }
 
-/* ── Mobile: reduce transform range on small screens ─────────────────────── */
+/* ── Mobile: reduce transform range + animation cost ─────────────────────── */
 @media (max-width: 768px) {
   .img-zoom:hover img {
     transform: scale(1.02);
+  }
+
+  /* Reduce Framer Motion stagger cost on mobile by cutting transition durations */
+  :root {
+    --fm-duration-scale: 0.75;
   }
 }

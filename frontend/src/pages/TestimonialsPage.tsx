@@ -26,6 +26,7 @@ export default function TestimonialsPage() {
   const { data: testimonialsRes, isLoading } = useQuery({
     queryKey: ['testimonials-all'],
     queryFn: () => api.get('/testimonials?limit=100').then(r => r.data),
+    staleTime: 5 * 60 * 1000,
   });
 
   const testimonials = testimonialsRes?.data || [];

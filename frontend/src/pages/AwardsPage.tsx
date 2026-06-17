@@ -14,10 +14,12 @@ export default function AwardsPage() {
   const { data: awardsRes, isLoading } = useQuery({
     queryKey: ['awards-all'],
     queryFn: () => api.get('/awards?limit=100').then(r => r.data),
+    staleTime: 5 * 60 * 1000,
   });
   const { data: settingsRes } = useQuery({
     queryKey: ['settings'],
     queryFn: () => api.get('/settings').then(r => r.data),
+    staleTime: 5 * 60 * 1000,
   });
 
   const awards = awardsRes?.data || [];

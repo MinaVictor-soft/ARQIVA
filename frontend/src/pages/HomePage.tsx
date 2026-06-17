@@ -156,7 +156,12 @@ export default function HomePage() {
       {/* Hero */}
       <section className="relative min-h-screen md:h-screen flex flex-col bg-primary-black">
         {/* Background — overflow-hidden here contains the scale animation */}
-        <motion.div className="absolute inset-0 overflow-hidden" initial={{ scale: 1.06 }} animate={{ scale: 1 }} transition={{ duration: 8, ease: 'easeOut' }}>
+        <motion.div
+          className="absolute inset-0 overflow-hidden will-change-transform"
+          initial={{ scale: 1.03 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 5, ease: 'easeOut' }}
+        >
           {heroImage && <img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover" />}
           {/* Directional overlay — strong on text side, open on photo side */}
           <div className="absolute inset-0 bg-gradient-to-r from-primary-black via-primary-black/60 to-primary-black/10" />
