@@ -3,6 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import dotenv from "dotenv";
 import path from "path";
+import fs from "fs";
 import rateLimit from "express-rate-limit";
 import swaggerUi from "swagger-ui-express";
 import { testConnection } from "./db";
@@ -32,6 +33,17 @@ dotenv.config();
 
 const app = express();
 const PORT = parseInt(process.env.PORT || "3000", 10);
+
+// Health check — must be FIRST, before all middleware, so Replit probes always get 200
+app.get("/health", (_req, res) => {
+  res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+});
+app.get("/", (_req, res, next) => {
+  // In production, serve frontend; otherwise let the SPA handler below deal with it
+  const indexPath = path.join(__dirname, "../../frontend/dist/index.html");
+  if (fs.existsSync(indexPath)) return next(); // let static middleware handle it
+  res.status(200).json({ status: "ok", service: "ARQIVA API" }); // fallback if not built
+});
 
 // Middleware
 app.use(helmet());
@@ -75,11 +87,6 @@ const limiter = rateLimit({
 
 app.use("/api/", limiter);
 
-// Health check
-app.get("/health", (req, res) => {
-  res.json({ status: "ok", timestamp: new Date().toISOString() });
-});
-
 // Swagger API Docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
   customCssUrl: "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.18.2/swagger-ui.min.css",
@@ -112,7 +119,12 @@ if (process.env.NODE_ENV === "production") {
   app.get("*", (req: Request, res: Response) => {
     // Only serve index.html for non-API routes
     if (!req.path.startsWith("/api") && !req.path.startsWith("/api-docs") && req.path !== "/health") {
-      res.sendFile(path.join(frontendDist, "index.html"));
+      const indexPath = path.join(frontendDist, "index.html");
+      res.sendFile(indexPath, (err) => {
+        if (err) {
+          res.status(200).json({ status: "ok", service: "ARQIVA API", note: "frontend not built" });
+        }
+      });
     }
   });
 }
