@@ -90,7 +90,7 @@ function PremiumStatCard({
   return (
     <motion.div
       ref={ref}
-      className="group relative flex flex-col justify-between p-2 md:p-5 cursor-default select-none overflow-hidden"
+      className="group relative flex flex-col justify-end md:justify-between p-2 md:p-5 cursor-default select-none overflow-hidden"
       initial={{ opacity: 0, y: 22 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.6, ease: EASE }}
@@ -106,18 +106,18 @@ function PremiumStatCard({
         <span className="absolute bottom-0 right-0 w-px h-6 bg-arch-beige/50 group-hover:bg-arch-beige/80 group-hover:h-9 transition-all duration-300" />
       </span>
 
-      {/* Icon */}
-      <div className="mb-1 md:mb-3 text-arch-beige transition-colors duration-300">
+      {/* Icon — hidden on mobile to save space */}
+      <div className="hidden md:block mb-3 text-arch-beige transition-colors duration-300">
         {STAT_ICONS[icon]}
       </div>
 
       {/* Animated number */}
-      <p className="font-display text-[clamp(1.4rem,2.8vw,2.4rem)] font-light leading-none text-arch-beige transition-colors duration-300 tabular-nums">
+      <p className="font-display text-[1.1rem] md:text-[clamp(1.4rem,2.8vw,2.4rem)] font-light leading-none text-arch-beige transition-colors duration-300 tabular-nums">
         {customDisplay ?? `${prefix}${count}${suffix}`}
       </p>
 
       {/* Label */}
-      <p className="mt-1 md:mt-2 text-warm-white/80 group-hover:text-warm-white text-[8px] md:text-[11px] tracking-[0.25em] md:tracking-[0.35em] uppercase font-medium transition-colors duration-300">
+      <p className="mt-0.5 md:mt-2 text-warm-white/75 group-hover:text-warm-white text-[6.5px] md:text-[11px] tracking-[0.06em] md:tracking-[0.35em] uppercase font-medium leading-tight transition-colors duration-300">
         {label}
       </p>
 
@@ -153,9 +153,10 @@ export default function HomePage() {
     <div className="min-h-screen bg-primary-black text-primary-black">
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative h-[100dvh] md:h-screen flex flex-col bg-primary-black">
-        {/* Background — overflow-hidden here contains the scale animation */}
+      {/* ══ HERO ═══════════════════════════════════════════════════════════ */}
+      <section className="relative h-[100dvh] flex flex-col bg-primary-black overflow-hidden">
+
+        {/* Background image */}
         <motion.div
           className="absolute inset-0 overflow-hidden will-change-transform"
           initial={{ scale: 1.03 }}
@@ -163,80 +164,82 @@ export default function HomePage() {
           transition={{ duration: 5, ease: 'easeOut' }}
         >
           <motion.img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover scale-105" initial={{ opacity: 0 }} animate={{ opacity: 0.7 }} transition={{ duration: 3, ease: 'easeOut' }} />
-          {/* Strong base scrim so text is always readable */}
           <div className="absolute inset-0 bg-primary-black/60" />
-          {/* Heavy left gradient — darkens the entire text column */}
           <div className="absolute inset-0 bg-gradient-to-r from-primary-black/85 via-primary-black/50 to-primary-black/10" />
-          {/* Bottom fade — blends into stats bar */}
           <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary-black/90 to-transparent" />
         </motion.div>
 
-        {/* Main content — flex-1 fills all available space between navbar and bottom bar */}
-        <div className="relative z-10 flex-1 flex items-end md:items-center pt-14 md:pt-20 pb-3 md:pb-1">
-          <div className="container-main">
-            <div className="max-w-3xl">
-              <motion.p {...fadeUp} transition={{ duration: 0.5, delay: 0.15 }}
-                className="text-arch-beige text-[10px] md:text-xs tracking-[0.4em] uppercase font-semibold mb-1 md:mb-5 hero-text-shadow">
-                {settings?.heroLabel || t('home.hero_label')}
-              </motion.p>
-              <h1 className="font-display text-[clamp(1.4rem,5.5vw,6rem)] font-light leading-[1.02] text-white mb-1.5 md:mb-6 hero-text-shadow">
+        {/* ── Content + Stats column ── */}
+        <div className="relative z-10 flex-1 flex flex-col pt-14 md:pt-20">
+
+          {/* Text content — vertically centered in the available space */}
+          <div className="flex-1 flex flex-col justify-center container-main py-4 md:py-0">
+            <div className="max-w-3xl w-full">
+
+              {/* Label with decorative accent line */}
+              <motion.div
+                className="flex items-center gap-3 mb-2.5 md:mb-5"
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.15, ease: EASE }}
+              >
+                <span className="block h-px w-5 bg-arch-beige/70 shrink-0" />
+                <p className="text-arch-beige text-[9px] md:text-xs tracking-[0.45em] uppercase font-semibold hero-text-shadow">
+                  {settings?.heroLabel || t('home.hero_label')}
+                </p>
+              </motion.div>
+
+              {/* Main headline */}
+              <h1 className="font-display text-[clamp(1.75rem,5.5vw,6rem)] font-light leading-[1.04] text-white mb-2 md:mb-6 hero-text-shadow">
                 <span className="block"><WordReveal text={settings?.heroTitle || t('home.hero_title_1')} delay={0.25} /></span>
                 <em className="not-italic text-arch-beige block"><WordReveal text={settings?.heroAccent || t('home.hero_title_2')} delay={0.5} /></em>
               </h1>
-              <motion.p {...fadeUp} transition={{ duration: 0.6, delay: 0.45 }}
-                className="text-white/90 text-xs md:text-lg leading-relaxed max-w-xl mb-3 md:mb-8 font-light hero-text-shadow line-clamp-2 md:line-clamp-none">
+
+              {/* Description */}
+              <motion.p
+                {...fadeUp}
+                transition={{ duration: 0.6, delay: 0.45 }}
+                className="text-white/85 text-[11px] md:text-lg leading-relaxed max-w-xl mb-4 md:mb-8 font-light hero-text-shadow line-clamp-2 md:line-clamp-none"
+              >
                 {settings?.heroSubtitle || settings?.description || 'We create architectural experiences that transcend the ordinary — from luxury residences to landmark commercial projects across the globe.'}
               </motion.p>
-              <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.55 }} className="flex flex-wrap items-center gap-2.5 md:gap-4">
-                <Link to={settings?.heroCta1Url || '/projects'} className="px-5 md:px-8 py-2.5 md:py-3.5 bg-luxury-burgundy text-warm-white text-[10px] md:text-xs tracking-widest uppercase font-medium hover:bg-warm-white hover:text-primary-black transition-colors duration-200">
+
+              {/* CTA buttons — stacked on mobile, side-by-side on sm+ */}
+              <motion.div
+                {...fadeUp}
+                transition={{ duration: 0.5, delay: 0.55 }}
+                className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:gap-4"
+              >
+                <Link
+                  to={settings?.heroCta1Url || '/projects'}
+                  className="flex-1 sm:flex-none text-center px-5 md:px-8 py-2.5 md:py-3.5 bg-luxury-burgundy text-warm-white text-[9px] md:text-xs tracking-widest uppercase font-medium hover:bg-warm-white hover:text-primary-black transition-colors duration-200"
+                >
                   {settings?.heroCta1Text || t('home.hero_cta_primary')}
                 </Link>
-                <Link to={settings?.heroCta2Url || '/services'} className="flex items-center gap-2 text-warm-white/80 hover:text-warm-white text-[10px] md:text-xs tracking-widest uppercase transition-colors border border-warm-white/30 px-4 md:px-6 py-2.5 md:py-3.5 hover:border-warm-white/70">
+                <Link
+                  to={settings?.heroCta2Url || '/services'}
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 text-warm-white/80 hover:text-warm-white text-[9px] md:text-xs tracking-widest uppercase transition-colors border border-warm-white/30 px-4 md:px-6 py-2.5 md:py-3.5 hover:border-warm-white/70"
+                >
                   {settings?.heroCta2Text || t('home.hero_cta_secondary')}
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </Link>
               </motion.div>
             </div>
           </div>
-        </div>
 
-        {/* ── Premium Statistics Strip ──────────────────────────────────────── */}
-        <div className="relative z-10 w-full">
-          {/* Thin separator with gradient fade */}
-          <div className="container-main">
-            <div className="h-px bg-gradient-to-r from-transparent via-warm-white/20 to-transparent" />
+          {/* ── Stats strip — always at bottom, always 4 columns ── */}
+          <div className="w-full shrink-0">
+            <div className="container-main">
+              <div className="h-px bg-gradient-to-r from-transparent via-warm-white/20 to-transparent" />
+            </div>
+            <div className="container-main grid grid-cols-4 gap-0 divide-x divide-warm-white/10 py-1 md:py-3">
+              <PremiumStatCard icon="building" value={settings?.statProjects ?? 47} suffix="+" label={t('home.stat_projects')} delay={0.85} />
+              <PremiumStatCard icon="globe" value={settings?.statCountries ?? 6} suffix="+" label={t('home.stat_countries')} delay={0.95} />
+              <PremiumStatCard icon="diamond" value={0} customDisplay={settings?.statValue || '$2.4B+'} label={t('home.stat_value')} delay={1.05} />
+              <PremiumStatCard icon="compass" value={15} suffix="+" label="Years Experience" delay={1.15} />
+            </div>
           </div>
-          {/* 4-card grid */}
-          <div className="container-main grid grid-cols-2 md:grid-cols-4 gap-0 divide-x divide-y md:divide-y-0 divide-warm-white/10 py-1 md:py-3">
-            <PremiumStatCard
-              icon="building"
-              value={settings?.statProjects ?? 47}
-              suffix="+"
-              label={t('home.stat_projects')}
-              delay={0.85}
-            />
-            <PremiumStatCard
-              icon="globe"
-              value={settings?.statCountries ?? 6}
-              suffix="+"
-              label={t('home.stat_countries')}
-              delay={0.95}
-            />
-            <PremiumStatCard
-              icon="diamond"
-              value={0}
-              customDisplay={settings?.statValue || '$2.4B+'}
-              label={t('home.stat_value')}
-              delay={1.05}
-            />
-            <PremiumStatCard
-              icon="compass"
-              value={15}
-              suffix="+"
-              label="Years Experience"
-              delay={1.15}
-            />
-          </div>
+
         </div>
       </section>
 
