@@ -172,7 +172,7 @@ export default function HomePage() {
         </motion.div>
 
         {/* Main content — flex-1 fills all available space between navbar and bottom bar */}
-        <div className="relative z-10 flex-1 flex items-center pt-16 md:pt-20 pb-2 md:pb-6">
+        <div className="relative z-10 flex-1 flex items-end md:items-center pt-4 md:pt-20 pb-4 md:pb-6">
           <div className="container-main">
             <div className="max-w-3xl">
               <motion.p {...fadeUp} transition={{ duration: 0.5, delay: 0.15 }}
