@@ -162,7 +162,7 @@ export default function HomePage() {
           animate={{ scale: 1 }}
           transition={{ duration: 5, ease: 'easeOut' }}
         >
-          {heroImage && <img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover opacity-75 blur-sm scale-105" />}
+          {heroImage && <img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover opacity-75 scale-105" />}
           {/* Directional overlay — left-side gradient only where text sits */}
           <div className="absolute inset-0 bg-gradient-to-r from-primary-black/65 via-primary-black/25 to-transparent" />
           {/* Bottom fade — blends into stats bar */}
