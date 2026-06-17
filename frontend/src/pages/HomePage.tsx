@@ -10,7 +10,7 @@ import Footer from '@/components/Footer';
 
 const fadeUp = { initial: { opacity: 0, y: 24 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.6 } };
 const EASE = [0.22, 1, 0.36, 1] as const;
-const HERO_FALLBACK = '/hero-bg.jpg';
+const HERO_FALLBACK = 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=1600&q=80&auto=format&fit=crop';
 
 function WordReveal({ text, delay = 0 }: { text: string; delay?: number }) {
   return (
@@ -90,7 +90,7 @@ function PremiumStatCard({
   return (
     <motion.div
       ref={ref}
-      className="group relative flex flex-col justify-between p-2 md:p-5 cursor-default select-none overflow-hidden"
+      className="group relative flex flex-col justify-between p-3 md:p-5 cursor-default select-none overflow-hidden"
       initial={{ opacity: 0, y: 22 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.6, ease: EASE }}
@@ -106,18 +106,18 @@ function PremiumStatCard({
         <span className="absolute bottom-0 right-0 w-px h-6 bg-arch-beige/50 group-hover:bg-arch-beige/80 group-hover:h-9 transition-all duration-300" />
       </span>
 
-      {/* Icon — hidden on mobile to save space */}
-      <div className="hidden md:block mb-3 text-arch-beige transition-colors duration-300">
+      {/* Icon */}
+      <div className="mb-3 text-arch-beige transition-colors duration-300">
         {STAT_ICONS[icon]}
       </div>
 
       {/* Animated number */}
-      <p className="font-display text-[clamp(1.35rem,4vw,2.4rem)] md:text-[clamp(2rem,2.8vw,2.4rem)] font-light leading-none text-arch-beige transition-colors duration-300 tabular-nums">
+      <p className="font-display text-[clamp(2rem,2.8vw,2.4rem)] font-light leading-none text-arch-beige transition-colors duration-300 tabular-nums">
         {customDisplay ?? `${prefix}${count}${suffix}`}
       </p>
 
       {/* Label */}
-      <p className="mt-1 md:mt-2 text-warm-white/80 group-hover:text-warm-white text-[8px] md:text-[11px] tracking-[0.2em] md:tracking-[0.35em] uppercase font-medium transition-colors duration-300 leading-tight">
+      <p className="mt-2 text-warm-white/80 group-hover:text-warm-white text-[11px] md:text-[11px] tracking-[0.35em] uppercase font-medium transition-colors duration-300">
         {label}
       </p>
 
@@ -154,7 +154,7 @@ export default function HomePage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative h-[100svh] md:h-screen flex flex-col bg-primary-black overflow-hidden">
+      <section className="relative min-h-screen md:h-screen flex flex-col bg-primary-black">
         {/* Background — overflow-hidden here contains the scale animation */}
         <motion.div
           className="absolute inset-0 overflow-hidden will-change-transform"
@@ -162,52 +162,42 @@ export default function HomePage() {
           animate={{ scale: 1 }}
           transition={{ duration: 5, ease: 'easeOut' }}
         >
-          <motion.img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover scale-105" style={{ filter: 'brightness(1.25)' }} initial={{ opacity: 0 }} animate={{ opacity: 0.85 }} transition={{ duration: 3, ease: 'easeOut' }} />
-          {/* Strong base scrim so text is always readable */}
-          <div className="absolute inset-0 bg-primary-black/60" />
-          {/* Heavy left gradient — darkens the entire text column */}
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-black/85 via-primary-black/50 to-primary-black/10" />
+          <img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover opacity-90 scale-105" />
+          {/* Dark scrim so text is always readable */}
+          <div className="absolute inset-0 bg-primary-black/50" />
+          {/* Directional left gradient for extra contrast behind text */}
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-black/70 via-primary-black/30 to-transparent" />
           {/* Bottom fade — blends into stats bar */}
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary-black/90 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary-black/80 to-transparent" />
         </motion.div>
 
         {/* Main content — flex-1 fills all available space between navbar and bottom bar */}
-        {/* Main content — justify-between distributes top block and bottom block across full height */}
-        <div className="relative z-10 flex-1 flex flex-col justify-between pt-16 md:pt-0 md:justify-center md:items-start pb-3 md:pb-6">
-
-          {/* TOP — label + title (sits just below navbar on mobile) */}
-          <div className="container-main pt-4 md:pt-20">
+        <div className="relative z-10 flex-1 flex items-center pt-20 pb-3 md:pb-6">
+          <div className="container-main">
             <div className="max-w-3xl">
               <motion.p {...fadeUp} transition={{ duration: 0.5, delay: 0.15 }}
-                className="text-arch-beige text-xs tracking-[0.5em] uppercase font-semibold mb-2 md:mb-5 hero-text-shadow">
+                className="text-arch-beige text-xs tracking-[0.5em] uppercase font-semibold mb-3 md:mb-5 hero-text-shadow">
                 {settings?.heroLabel || t('home.hero_label')}
               </motion.p>
-              <h1 className="font-display text-[clamp(1.7rem,5.5vw,6rem)] font-light leading-[1.02] text-white hero-text-shadow">
+              <h1 className="font-display text-[clamp(1.9rem,5.5vw,6rem)] font-light leading-[1.02] text-white mb-3 md:mb-6 hero-text-shadow">
                 <span className="block"><WordReveal text={settings?.heroTitle || t('home.hero_title_1')} delay={0.25} /></span>
                 <em className="not-italic text-arch-beige block"><WordReveal text={settings?.heroAccent || t('home.hero_title_2')} delay={0.5} /></em>
               </h1>
-            </div>
-          </div>
-
-          {/* BOTTOM — subtitle + buttons (sits just above stats strip on mobile) */}
-          <div className="container-main pb-2 md:pb-0 md:mt-6">
-            <div className="max-w-3xl">
               <motion.p {...fadeUp} transition={{ duration: 0.6, delay: 0.45 }}
-                className="text-white/90 text-xs md:text-lg leading-relaxed max-w-xl mb-3 md:mb-8 font-light hero-text-shadow line-clamp-2 md:line-clamp-none">
+                className="text-white/90 text-sm md:text-lg leading-relaxed max-w-xl mb-5 md:mb-8 font-light hero-text-shadow">
                 {settings?.heroSubtitle || settings?.description || 'We create architectural experiences that transcend the ordinary — from luxury residences to landmark commercial projects across the globe.'}
               </motion.p>
-              <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.55 }} className="flex flex-wrap items-center gap-3 md:gap-4">
-                <Link to={settings?.heroCta1Url || '/projects'} className="px-6 md:px-8 py-3 md:py-3.5 bg-luxury-burgundy text-warm-white text-xs tracking-widest uppercase font-medium hover:bg-warm-white hover:text-primary-black transition-colors duration-200">
+              <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.55 }} className="flex flex-wrap items-center gap-4">
+                <Link to={settings?.heroCta1Url || '/projects'} className="px-8 py-3.5 bg-luxury-burgundy text-warm-white text-xs tracking-widest uppercase font-medium hover:bg-warm-white hover:text-primary-black transition-colors duration-200">
                   {settings?.heroCta1Text || t('home.hero_cta_primary')}
                 </Link>
-                <Link to={settings?.heroCta2Url || '/services'} className="flex items-center gap-2 text-warm-white/80 hover:text-warm-white text-xs tracking-widest uppercase transition-colors border border-warm-white/30 px-5 md:px-6 py-3 md:py-3.5 hover:border-warm-white/70">
+                <Link to={settings?.heroCta2Url || '/services'} className="flex items-center gap-2 text-warm-white/80 hover:text-warm-white text-xs tracking-widest uppercase transition-colors border border-warm-white/30 px-6 py-3.5 hover:border-warm-white/70">
                   {settings?.heroCta2Text || t('home.hero_cta_secondary')}
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </Link>
               </motion.div>
             </div>
           </div>
-
         </div>
 
         {/* ── Premium Statistics Strip ──────────────────────────────────────── */}
@@ -217,7 +207,7 @@ export default function HomePage() {
             <div className="h-px bg-gradient-to-r from-transparent via-warm-white/20 to-transparent" />
           </div>
           {/* 4-card grid */}
-          <div className="container-main grid grid-cols-4 gap-0 divide-x divide-warm-white/10 py-1.5 md:py-3">
+          <div className="container-main grid grid-cols-2 md:grid-cols-4 gap-0 divide-x divide-y md:divide-y-0 divide-warm-white/10 py-2 md:py-3">
             <PremiumStatCard
               icon="building"
               value={settings?.statProjects ?? 47}
