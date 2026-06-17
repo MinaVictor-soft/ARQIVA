@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAuthStore } from '@/store/authStore';
 import ScrollToTop from '@/components/ScrollToTop';
+import Preloader from '@/components/Preloader';
 
 // Pages
 import HomePage from '@/pages/HomePage';
@@ -81,13 +82,24 @@ function AnimatedRoutes() {
 
 function App() {
   const initFromStorage = useAuthStore((state) => state.initFromStorage);
+  // Show preloader only once per session (not on admin pages or back-navigation)
+  const isAdmin = typeof window !== 'undefined' && window.location.pathname.startsWith('/admin');
+  const [preloaderDone, setPreloaderDone] = useState(
+    isAdmin || sessionStorage.getItem('arqiva_preloaded') === '1'
+  );
 
   useEffect(() => {
     initFromStorage();
   }, [initFromStorage]);
 
+  const handlePreloaderDone = () => {
+    sessionStorage.setItem('arqiva_preloaded', '1');
+    setPreloaderDone(true);
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
+      {!preloaderDone && <Preloader onDone={handlePreloaderDone} />}
       <Router>
         <ScrollToTop />
         <AnimatedRoutes />
