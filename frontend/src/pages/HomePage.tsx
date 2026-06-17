@@ -162,13 +162,13 @@ export default function HomePage() {
           animate={{ scale: 1 }}
           transition={{ duration: 5, ease: 'easeOut' }}
         >
-          <motion.img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover scale-105" initial={{ opacity: 0 }} animate={{ opacity: 0.9 }} transition={{ duration: 3, ease: 'easeOut' }} />
-          {/* Dark scrim so text is always readable */}
-          <div className="absolute inset-0 bg-primary-black/50" />
-          {/* Directional left gradient for extra contrast behind text */}
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-black/70 via-primary-black/30 to-transparent" />
+          <motion.img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover scale-105" initial={{ opacity: 0 }} animate={{ opacity: 0.7 }} transition={{ duration: 3, ease: 'easeOut' }} />
+          {/* Strong base scrim so text is always readable */}
+          <div className="absolute inset-0 bg-primary-black/60" />
+          {/* Heavy left gradient — darkens the entire text column */}
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-black/85 via-primary-black/50 to-primary-black/10" />
           {/* Bottom fade — blends into stats bar */}
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary-black/80 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary-black/90 to-transparent" />
         </motion.div>
 
         {/* Main content — flex-1 fills all available space between navbar and bottom bar */}
