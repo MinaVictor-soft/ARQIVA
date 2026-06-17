@@ -162,7 +162,7 @@ export default function HomePage() {
           animate={{ scale: 1 }}
           transition={{ duration: 5, ease: 'easeOut' }}
         >
-          <motion.img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover scale-105" initial={{ opacity: 0 }} animate={{ opacity: 0.7 }} transition={{ duration: 3, ease: 'easeOut' }} />
+          <motion.img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover scale-105" style={{ filter: 'brightness(1.25)' }} initial={{ opacity: 0 }} animate={{ opacity: 0.85 }} transition={{ duration: 3, ease: 'easeOut' }} />
           {/* Strong base scrim so text is always readable */}
           <div className="absolute inset-0 bg-primary-black/60" />
           {/* Heavy left gradient — darkens the entire text column */}
