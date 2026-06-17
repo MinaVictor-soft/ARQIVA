@@ -21,12 +21,19 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false,
+    target: 'esnext',
+    reportCompressedSize: false,
+    chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
         manualChunks: {
-          'vendor': ['react', 'react-dom', 'react-router-dom'],
+          'react-core': ['react', 'react-dom'],
+          'react-router': ['react-router-dom'],
           'query': ['@tanstack/react-query'],
+          'motion': ['framer-motion'],
+          'i18n': ['i18next', 'react-i18next', 'i18next-browser-languagedetector'],
           'form': ['react-hook-form', '@hookform/resolvers', 'zod'],
+          'icons': ['lucide-react'],
         },
       },
     },
