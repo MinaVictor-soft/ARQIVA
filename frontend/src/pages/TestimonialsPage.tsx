@@ -113,14 +113,14 @@ function FeaturedSlider({ items }: { items: any[] }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -18 }}
             transition={{ duration: 0.48, ease: EASE }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20 items-end"
+            className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20 min-h-[220px] lg:min-h-[240px] items-start"
           >
             {/* Large quote */}
             <div className="lg:col-span-8">
               <svg width="36" height="28" viewBox="0 0 28 22" className="text-stone-brown/20 mb-8" aria-hidden="true">
                 <path d="M0 22V13.6C0 9.87 1.04 6.8 3.12 4.38 5.2 1.96 8.27.49 12.33 0L13.44 2.31C11.1 2.91 9.29 3.97 8 5.49 6.71 7.01 6.07 8.76 6.07 10.74H11.2V22H0zm15.87 0V13.6c0-3.73 1.04-6.8 3.12-9.22C21.07 1.96 24.14.49 28.2 0l1.11 2.31c-2.34.6-4.15 1.66-5.44 3.18-1.29 1.52-1.93 3.27-1.93 5.25h5.13V22h-11.2z" fill="currentColor"/>
               </svg>
-              <p className="font-display text-2xl md:text-3xl lg:text-[2.1rem] font-light leading-relaxed text-primary-black/85 italic">
+              <p className="font-display text-2xl md:text-3xl lg:text-[2.1rem] font-light leading-relaxed text-primary-black/85 italic line-clamp-5">
                 &ldquo;{cur.testimonial}&rdquo;
               </p>
             </div>

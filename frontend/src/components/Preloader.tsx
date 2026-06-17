@@ -71,27 +71,47 @@ export default function Preloader({ onDone }: PreloaderProps) {
       {visible && (
         <motion.div
           key="preloader"
-          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0A0908]"
-          initial={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } }}
+          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#FAF8F5]"
+          initial={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8, transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] } }}
         >
+          {/* Architectural corner brackets */}
+          {[['top-6 left-6', 'border-t border-l'], ['top-6 right-6', 'border-t border-r'], ['bottom-6 left-6', 'border-b border-l'], ['bottom-6 right-6', 'border-b border-r']].map(([pos, border]) => (
+            <span key={pos} className={`absolute ${pos} w-7 h-7 ${border} border-arch-beige/50`} />
+          ))}
+
+          {/* Top divider line */}
+          <motion.div
+            className="w-px h-8 bg-stone-brown/20 mb-8"
+            initial={{ scaleY: 0 }}
+            animate={{ scaleY: 1 }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
+          />
+
           {/* Logo mark */}
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col items-center gap-3"
+            initial={{ opacity: 0, scale: 0.94 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col items-center gap-4"
           >
-            {/* Website logo — inverted to white on dark background */}
-            <ArqivaLogo
-              size="lg"
-              className="[filter:brightness(0)_invert(1)]"
-            />
+            <ArqivaLogo size="lg" />
+            <p className="text-[9px] tracking-[0.45em] uppercase text-stone-brown/50 mt-1">
+              Architecture &amp; Design
+            </p>
           </motion.div>
+
+          {/* Bottom divider line */}
+          <motion.div
+            className="w-px h-8 bg-stone-brown/20 mt-8"
+            initial={{ scaleY: 0 }}
+            animate={{ scaleY: 1 }}
+            transition={{ duration: 0.4, delay: 0.3, ease: 'easeOut' }}
+          />
 
           {/* Progress bar */}
           <motion.div
-            className="absolute bottom-16 left-1/2 -translate-x-1/2 w-32 h-px bg-warm-white/10 overflow-hidden"
+            className="absolute bottom-16 left-1/2 -translate-x-1/2 w-32 h-px bg-stone-brown/12 overflow-hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
