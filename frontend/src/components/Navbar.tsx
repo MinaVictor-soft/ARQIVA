@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { applyDirection } from '@/i18n';
@@ -21,14 +21,13 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Transparent only over home-page hero
   const isHeroPage = location.pathname === '/';
 
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 60);
-    fn(); // initialise
+    fn();
     window.addEventListener('scroll', fn, { passive: true });
     return () => window.removeEventListener('scroll', fn);
   }, []);
@@ -41,14 +40,9 @@ export default function Navbar() {
 
   const isTransparent = isHeroPage && !scrolled && !mobileOpen;
 
-  const linkCls = ({ isActive }: { isActive: boolean }) =>
-    `text-xs tracking-[0.2em] uppercase font-medium transition-colors duration-300 ${
-      isActive
-        ? isTransparent ? 'text-arch-beige' : 'text-luxury-burgundy'
-        : isTransparent
-          ? 'text-warm-white/85 hover:text-arch-beige'
-          : 'text-primary-black hover:text-luxury-burgundy'
-    }`;
+  /** True when the given path is the current page */
+  const isActive = (to: string) =>
+    location.pathname === to || (to !== '/' && location.pathname.startsWith(to));
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
@@ -60,6 +54,7 @@ export default function Navbar() {
     }`}>
       <div className="w-full max-w-[1600px] mx-auto px-1 sm:px-2 lg:px-8">
         <div className="flex items-center justify-between h-16">
+
           {/* Logo */}
           <Link
             to="/"
@@ -74,14 +69,45 @@ export default function Navbar() {
             />
           </Link>
 
-          {/* Desktop nav */}
+          {/* Desktop nav — animated underline via layoutId */}
           <nav className="hidden lg:flex items-center gap-8">
-            {NAV_LINKS.map(({ key, to }) => (
-              <NavLink key={key} to={to} className={linkCls}>{t(`nav.${key}`)}</NavLink>
-            ))}
+            {NAV_LINKS.map(({ key, to }) => {
+              const active = isActive(to);
+              return (
+                <Link
+                  key={key}
+                  to={to}
+                  className={`relative py-2 text-xs tracking-[0.2em] uppercase transition-colors duration-300 group ${
+                    active
+                      ? `font-semibold ${isTransparent ? 'text-warm-white' : 'text-primary-black'}`
+                      : `font-medium ${isTransparent ? 'text-warm-white/75 hover:text-warm-white' : 'text-stone-brown/70 hover:text-primary-black'}`
+                  }`}
+                >
+                  {t(`nav.${key}`)}
+
+                  {/* Animated active underline */}
+                  {active && (
+                    <motion.span
+                      layoutId="nav-underline"
+                      className={`absolute bottom-0 left-0 right-0 h-px ${
+                        isTransparent ? 'bg-arch-beige' : 'bg-luxury-burgundy'
+                      }`}
+                      transition={{ type: 'spring', stiffness: 500, damping: 40 }}
+                    />
+                  )}
+
+                  {/* Hover underline for inactive links */}
+                  {!active && (
+                    <span className={`absolute bottom-0 left-0 right-0 h-px origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out ${
+                      isTransparent ? 'bg-warm-white/35' : 'bg-stone-brown/25'
+                    }`} />
+                  )}
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* Desktop right */}
+          {/* Desktop right controls */}
           <div className="hidden lg:flex items-center gap-5">
             <button
               onClick={toggleLang}
@@ -93,21 +119,26 @@ export default function Navbar() {
               }`}
             >
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
               </svg>
               {i18n.language === 'ar' ? 'EN' : 'عربي'}
             </button>
             <ThemeSwitcher />
-            <NavLink
+            <Link
               to="/contact"
               className={`text-xs tracking-widest uppercase font-medium px-6 py-2.5 transition-all duration-300 ${
-                isTransparent
-                  ? 'border border-warm-white/60 text-warm-white hover:bg-warm-white hover:text-primary-black'
-                  : 'bg-luxury-burgundy text-warm-white hover:bg-primary-black'
+                isActive('/contact')
+                  ? isTransparent
+                    ? 'bg-warm-white text-primary-black'
+                    : 'bg-primary-black text-warm-white'
+                  : isTransparent
+                    ? 'border border-warm-white/60 text-warm-white hover:bg-warm-white hover:text-primary-black'
+                    : 'bg-luxury-burgundy text-warm-white hover:bg-primary-black'
               }`}
             >
               {t('nav.contact')}
-            </NavLink>
+            </Link>
           </div>
 
           {/* Mobile controls */}
@@ -143,7 +174,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile accordion */}
+      {/* Mobile accordion menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -155,27 +186,37 @@ export default function Navbar() {
             className="lg:hidden overflow-hidden bg-[#FAF8F5] border-t border-stone-brown/15"
           >
             <nav className="container-main py-6 flex flex-col">
-              {NAV_LINKS.map(({ key, to }, i) => (
-                <motion.div
-                  key={key}
-                  initial={{ x: i18n.dir() === 'rtl' ? 10 : -10, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: i * 0.04 }}
-                >
-                  <NavLink
-                    to={to}
-                    className={({ isActive }) =>
-                      `block py-4 text-sm tracking-widest uppercase font-medium border-b border-stone-brown/10 transition-colors ${
-                        isActive ? 'text-luxury-burgundy' : 'text-primary-black hover:text-luxury-burgundy'
-                      }`
-                    }
+              {NAV_LINKS.map(({ key, to }, i) => {
+                const active = isActive(to);
+                return (
+                  <motion.div
+                    key={key}
+                    initial={{ x: i18n.dir() === 'rtl' ? 10 : -10, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: i * 0.04 }}
                   >
-                    {t(`nav.${key}`)}
-                  </NavLink>
-                </motion.div>
-              ))}
+                    <Link
+                      to={to}
+                      className={`flex items-center justify-between py-4 text-sm tracking-widest uppercase font-medium border-b border-stone-brown/10 transition-colors ${
+                        active
+                          ? 'text-luxury-burgundy font-semibold'
+                          : 'text-primary-black hover:text-luxury-burgundy'
+                      }`}
+                    >
+                      <span>{t(`nav.${key}`)}</span>
+                      {active && (
+                        <motion.span
+                          layoutId="mobile-nav-indicator"
+                          className="block w-5 h-px bg-luxury-burgundy"
+                          transition={{ type: 'spring', stiffness: 500, damping: 40 }}
+                        />
+                      )}
+                    </Link>
+                  </motion.div>
+                );
+              })}
               <motion.div
-                initial={{ x: -10, opacity: 0 }}
+                initial={{ x: i18n.dir() === 'rtl' ? 10 : -10, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: NAV_LINKS.length * 0.04 }}
                 className="pt-5"
