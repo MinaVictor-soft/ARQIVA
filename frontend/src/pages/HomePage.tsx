@@ -90,7 +90,7 @@ function PremiumStatCard({
   return (
     <motion.div
       ref={ref}
-      className="group relative flex flex-col justify-between p-4 md:p-5 cursor-default select-none overflow-hidden"
+      className="group relative flex flex-col justify-between p-3 md:p-5 cursor-default select-none overflow-hidden"
       initial={{ opacity: 0, y: 22 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.6, ease: EASE }}
@@ -162,7 +162,7 @@ export default function HomePage() {
           animate={{ scale: 1 }}
           transition={{ duration: 5, ease: 'easeOut' }}
         >
-          {heroImage && <img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover opacity-25 blur-sm scale-105" />}
+          {heroImage && <img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover opacity-50 blur-sm scale-105" />}
           {/* Directional overlay — left-side gradient only where text sits */}
           <div className="absolute inset-0 bg-gradient-to-r from-primary-black/65 via-primary-black/25 to-transparent" />
           {/* Bottom fade — blends into stats bar */}
@@ -170,19 +170,19 @@ export default function HomePage() {
         </motion.div>
 
         {/* Main content — flex-1 fills all available space between navbar and bottom bar */}
-        <div className="relative z-10 flex-1 flex items-center pt-20 pb-6">
+        <div className="relative z-10 flex-1 flex items-center pt-20 pb-3 md:pb-6">
           <div className="container-main">
             <div className="max-w-3xl">
               <motion.p {...fadeUp} transition={{ duration: 0.5, delay: 0.15 }}
-                className="text-arch-beige text-xs tracking-[0.5em] uppercase font-medium mb-5 hero-text-shadow">
+                className="text-arch-beige text-xs tracking-[0.5em] uppercase font-medium mb-3 md:mb-5 hero-text-shadow">
                 {settings?.heroLabel || t('home.hero_label')}
               </motion.p>
-              <h1 className="font-display text-[clamp(2.4rem,5.5vw,6rem)] font-light leading-[1.02] text-warm-white mb-6 hero-text-shadow">
+              <h1 className="font-display text-[clamp(1.9rem,5.5vw,6rem)] font-light leading-[1.02] text-warm-white mb-3 md:mb-6 hero-text-shadow">
                 <span className="block"><WordReveal text={settings?.heroTitle || t('home.hero_title_1')} delay={0.25} /></span>
                 <em className="not-italic text-arch-beige block"><WordReveal text={settings?.heroAccent || t('home.hero_title_2')} delay={0.5} /></em>
               </h1>
               <motion.p {...fadeUp} transition={{ duration: 0.6, delay: 0.45 }}
-                className="text-warm-white/80 text-base md:text-lg leading-relaxed max-w-xl mb-8 font-light hero-text-shadow">
+                className="text-warm-white/80 text-sm md:text-lg leading-relaxed max-w-xl mb-5 md:mb-8 font-light hero-text-shadow">
                 {settings?.heroSubtitle || settings?.description || 'We create architectural experiences that transcend the ordinary — from luxury residences to landmark commercial projects across the globe.'}
               </motion.p>
               <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.55 }} className="flex flex-wrap items-center gap-4">
