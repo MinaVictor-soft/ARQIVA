@@ -26,7 +26,7 @@ export default function ThemeSwitcher({ compact = false, transparent = false }: 
               : 'border border-stone-brown/30 px-3 py-1.5 hover:border-luxury-burgundy'
         }`}
       >
-        <span className={`w-3 h-3 rounded-full inline-block ${current.dot}`} />
+        <span className={`w-3 h-3 rounded-full inline-block ${current.dot} ${compact ? 'ring-1 ring-warm-white/60 ring-offset-1 ring-offset-transparent' : ''}`} />
         {!compact && <span className={`text-xs tracking-widest uppercase ${
           transparent ? 'text-warm-white/80 hover:text-arch-beige' : 'text-stone-brown hover:text-luxury-burgundy'
         }`}>Theme</span>}
