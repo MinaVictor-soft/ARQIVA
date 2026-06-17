@@ -156,7 +156,12 @@ export default function HomePage() {
       {/* Hero */}
       <section className="relative min-h-screen md:h-screen flex flex-col bg-primary-black">
         {/* Background — overflow-hidden here contains the scale animation */}
-        <motion.div className="absolute inset-0 overflow-hidden" initial={{ scale: 1.06 }} animate={{ scale: 1 }} transition={{ duration: 8, ease: 'easeOut' }}>
+        <motion.div
+          className="absolute inset-0 overflow-hidden will-change-transform"
+          initial={{ scale: 1.03 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 5, ease: 'easeOut' }}
+        >
           {heroImage && <img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover" />}
           {/* Directional overlay — strong on text side, open on photo side */}
           <div className="absolute inset-0 bg-gradient-to-r from-primary-black via-primary-black/60 to-primary-black/10" />
@@ -395,9 +400,11 @@ export default function HomePage() {
                     <svg width="32" height="26" viewBox="0 0 28 22" fill="none" className="text-arch-beige/40 mb-6" aria-hidden>
                       <path d="M0 22V13.6C0 9.87 1.04 6.8 3.12 4.38 5.2 1.96 8.27.493 12.33 0L13.44 2.31C11.1 2.91 9.29 3.97 8 5.49 6.71 7.01 6.07 8.76 6.07 10.74H11.2V22H0zm15.87 0V13.6c0-3.73 1.04-6.8 3.12-9.22C21.07 1.96 24.14.493 28.2 0l1.11 2.31c-2.34.6-4.15 1.66-5.44 3.18-1.29 1.52-1.93 3.27-1.93 5.25h5.13V22h-11.2z" fill="currentColor"/>
                     </svg>
-                    <p className="font-display text-xl md:text-2xl font-light text-primary-black leading-relaxed italic mb-0">
-                      &ldquo;{testimonials[tIdx]?.testimonial}&rdquo;
-                    </p>
+                    <div className="min-h-[9rem] flex items-start">
+                      <p className="font-display text-xl md:text-2xl font-light text-primary-black leading-relaxed italic line-clamp-5">
+                        &ldquo;{testimonials[tIdx]?.testimonial}&rdquo;
+                      </p>
+                    </div>
                   </div>
                   <div className="md:col-span-4">
                     <div className="flex gap-0.5 mb-4">
