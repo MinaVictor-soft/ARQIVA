@@ -24,7 +24,9 @@ setup_pkg() {
     echo "  Linked ${dir}/node_modules → ${tmpnm}"
   fi
 
-  # Install into /tmp via the symlink
+  # Install dependencies
+  # Always include devDeps so build tools (tsc, prisma, vite) are available
+  # devDeps that are blocked by security policy (vitest) have been removed
   cd "$dir"
   npm install --cache "$NPM_CACHE" --prefer-offline 2>&1
   cd - > /dev/null
