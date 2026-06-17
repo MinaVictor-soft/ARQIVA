@@ -34,12 +34,18 @@ export default function Preloader({ onDone }: PreloaderProps) {
     // hard timeout — always bail out
     const maxTimer = setTimeout(finish, MAX_MS);
 
-    // fetch settings to get the real hero image URL
+    // fetch settings to get the real hero image URL (skip external fallback)
     fetch('/api/settings')
       .then((r) => r.json())
       .then((res) => {
-        const heroUrl: string =
-          res?.data?.heroImage || HERO_FALLBACK;
+        const heroUrl: string | undefined = res?.data?.heroImage;
+
+        // If no hero image configured, just use the timer
+        if (!heroUrl) {
+          clearTimeout(maxTimer);
+          proceed();
+          return;
+        }
 
         const img = new Image();
         img.onload = () => {
