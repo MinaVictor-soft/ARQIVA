@@ -51,7 +51,7 @@ function HeroStatCounter({ value, suffix, prefix, label }: { value: number; suff
 
 export default function HomePage() {
   const { t } = useTranslation();
-  const { data: settingsRes } = useQuery({ queryKey: ['settings'], queryFn: () => api.get('/settings').then(r => r.data) });
+  const { data: settingsRes, isLoading: settingsLoading } = useQuery({ queryKey: ['settings'], queryFn: () => api.get('/settings').then(r => r.data), staleTime: 5 * 60 * 1000 });
   const { data: projectsRes, isLoading: projectsLoading } = useQuery({ queryKey: ['projects', 'featured'], queryFn: () => api.get('/projects?featured=true&limit=6').then(r => r.data) });
   const { data: servicesRes } = useQuery({ queryKey: ['services'], queryFn: () => api.get('/services').then(r => r.data) });
   const { data: testimonialsRes } = useQuery({ queryKey: ['testimonials', 'featured'], queryFn: () => api.get('/testimonials?featured=true').then(r => r.data) });
@@ -69,19 +69,21 @@ export default function HomePage() {
     return () => clearInterval(timer);
   }, [tCount]);
 
-  const heroImage = settings?.heroImage || projects[0]?.coverImage || HERO_FALLBACK;
+  const heroImage = settingsLoading ? null : (settings?.heroImage || projects[0]?.coverImage || HERO_FALLBACK);
 
   return (
-    <div className="min-h-screen bg-warm-white text-primary-black">
+    <div className="min-h-screen bg-primary-black text-primary-black">
       <Navbar />
 
       {/* Hero */}
       <section className="relative h-screen min-h-[600px] flex flex-col bg-primary-black">
         {/* Background — overflow-hidden here contains the scale animation */}
         <motion.div className="absolute inset-0 overflow-hidden" initial={{ scale: 1.06 }} animate={{ scale: 1 }} transition={{ duration: 8, ease: 'easeOut' }}>
-          <img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover" />
+          {heroImage && <img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover" />}
           {/* Directional overlay — strong on text side, open on photo side */}
           <div className="absolute inset-0 bg-gradient-to-r from-primary-black via-primary-black/60 to-primary-black/10" />
+          {/* Bottom fade — masks image edge and blends into stats bar */}
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary-black to-transparent" />
         </motion.div>
 
         {/* Main content — flex-1 fills all available space between navbar and bottom bar */}
@@ -131,9 +133,9 @@ export default function HomePage() {
           </motion.div>
         </motion.div>
 
-        {/* Stats bar — anchored at the very bottom, in normal flow */}
-        <div className="relative z-10 border-t border-warm-white/15 bg-primary-black/60 backdrop-blur-sm">
-          <div className="container-main py-5 md:py-7">
+        {/* Stats bar */}
+        <div className="absolute bottom-0 left-0 right-0 backdrop-blur-xl bg-gradient-to-t from-black/60 via-black/20 to-transparent pt-16">
+          <div className="container-main py-7">
             <div className="flex items-center justify-between w-full divide-x divide-warm-white/15">
               <HeroStatCounter value={settings?.statProjects ?? 60} suffix="+" label={t('home.stat_projects')} />
               <HeroStatCounter value={settings?.statCountries ?? 20} suffix="+" label={t('home.stat_countries')} />
