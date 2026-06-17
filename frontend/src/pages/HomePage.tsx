@@ -27,25 +27,103 @@ function WordReveal({ text, delay = 0 }: { text: string; delay?: number }) {
   );
 }
 
-function HeroStatCounter({ value, suffix, prefix, label }: { value: number; suffix?: string; prefix?: string; label: string }) {
+// ── Premium Stat Card ────────────────────────────────────────────────────────
+const STAT_ICONS = {
+  building: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 21h18M6 21V7l6-4 6 4v14M10 21v-6h4v6"/>
+    </svg>
+  ),
+  globe: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M2 12h20M12 2c-3 5-3 15 0 20M12 2c3 5 3 15 0 20"/>
+    </svg>
+  ),
+  diamond: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 3h12l4 6-10 13L2 9z"/>
+      <path d="M2 9h20M12 22L6 9h12"/>
+    </svg>
+  ),
+  compass: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+    </svg>
+  ),
+  award: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="8" r="6"/>
+      <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+    </svg>
+  ),
+};
+
+function PremiumStatCard({
+  icon, value, prefix = '', suffix = '', customDisplay, label, delay,
+}: {
+  icon: keyof typeof STAT_ICONS;
+  value: number;
+  prefix?: string;
+  suffix?: string;
+  customDisplay?: string;
+  label: string;
+  delay: number;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true });
   const [count, setCount] = useState(0);
+
   useEffect(() => {
-    if (!inView) return;
-    const dur = 1800; const start = performance.now();
+    if (!inView || customDisplay) return;
+    const dur = 2200;
+    const start = performance.now();
     const tick = (now: number) => {
       const t = Math.min((now - start) / dur, 1);
       setCount(Math.round(value * (1 - Math.pow(1 - t, 3))));
       if (t < 1) requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
-  }, [inView, value]);
+  }, [inView, value, customDisplay]);
+
   return (
-    <div ref={ref} className="flex-1 px-6 md:px-10 first:pl-0 last:pr-0">
-      <p className="font-display text-2xl md:text-3xl font-light text-warm-white">{prefix}{count}{suffix}</p>
-      <p className="text-warm-white/50 text-xs tracking-widest uppercase mt-1">{label}</p>
-    </div>
+    <motion.div
+      ref={ref}
+      className="group relative flex flex-col justify-between p-4 md:p-5 cursor-default select-none overflow-hidden"
+      initial={{ opacity: 0, y: 22 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.6, ease: EASE }}
+    >
+      {/* Architectural corner bracket — top-left */}
+      <span className="absolute top-0 left-0 block pointer-events-none">
+        <span className="absolute top-0 left-0 h-px w-5 bg-arch-beige/30 group-hover:bg-arch-beige/80 group-hover:w-8 transition-all duration-300" />
+        <span className="absolute top-0 left-0 w-px h-5 bg-arch-beige/30 group-hover:bg-arch-beige/80 group-hover:h-8 transition-all duration-300" />
+      </span>
+      {/* Architectural corner bracket — bottom-right */}
+      <span className="absolute bottom-0 right-0 block pointer-events-none">
+        <span className="absolute bottom-0 right-0 h-px w-5 bg-warm-white/10 group-hover:bg-arch-beige/40 group-hover:w-8 transition-all duration-300" />
+        <span className="absolute bottom-0 right-0 w-px h-5 bg-warm-white/10 group-hover:bg-arch-beige/40 group-hover:h-8 transition-all duration-300" />
+      </span>
+
+      {/* Icon */}
+      <div className="mb-3 text-arch-beige/50 group-hover:text-arch-beige transition-colors duration-300">
+        {STAT_ICONS[icon]}
+      </div>
+
+      {/* Animated number */}
+      <p className="font-display text-[clamp(1.5rem,2.8vw,2.4rem)] font-light leading-none text-warm-white group-hover:text-arch-beige transition-colors duration-300 tabular-nums">
+        {customDisplay ?? `${prefix}${count}${suffix}`}
+      </p>
+
+      {/* Label */}
+      <p className="mt-2 text-warm-white/40 group-hover:text-warm-white/60 text-[9px] md:text-[10px] tracking-[0.35em] uppercase font-medium transition-colors duration-300">
+        {label}
+      </p>
+
+      {/* Bottom glow line on hover */}
+      <span className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-arch-beige/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+    </motion.div>
   );
 }
 
@@ -76,7 +154,7 @@ export default function HomePage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative h-screen min-h-[600px] flex flex-col bg-primary-black">
+      <section className="relative min-h-screen md:h-screen flex flex-col bg-primary-black">
         {/* Background — overflow-hidden here contains the scale animation */}
         <motion.div className="absolute inset-0 overflow-hidden" initial={{ scale: 1.06 }} animate={{ scale: 1 }} transition={{ duration: 8, ease: 'easeOut' }}>
           {heroImage && <img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover" />}
@@ -115,37 +193,49 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Scroll indicator — sits above the stats bar, naturally in flow */}
-        <motion.div
-          className="relative z-10 hidden md:flex flex-col items-center gap-1.5 pb-3 pointer-events-none"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2.2, duration: 0.8 }}
-        >
-          <span className="text-[9px] tracking-[0.35em] uppercase text-warm-white/40">Scroll</span>
-          <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut', repeatDelay: 0.4 }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" className="text-warm-white/40">
-              <path d="m6 9 6 6 6-6"/>
-            </svg>
-          </motion.div>
-        </motion.div>
-
-        {/* Stats bar */}
-        <div className="absolute bottom-0 left-0 right-0 backdrop-blur-xl bg-gradient-to-t from-black/60 via-black/20 to-transparent pt-16">
-          <div className="container-main py-7">
-            <div className="flex items-center justify-between w-full divide-x divide-warm-white/15">
-              <HeroStatCounter value={settings?.statProjects ?? 60} suffix="+" label={t('home.stat_projects')} />
-              <HeroStatCounter value={settings?.statCountries ?? 20} suffix="+" label={t('home.stat_countries')} />
-              {settings?.statValue
-                ? <div className="flex-1 px-6 md:px-10 last:pr-0">
-                    <p className="font-display text-2xl md:text-3xl font-light text-warm-white">{settings.statValue}</p>
-                    <p className="text-warm-white/50 text-xs tracking-widest uppercase mt-1">{t('home.stat_value')}</p>
-                  </div>
-                : <HeroStatCounter value={2} prefix="$" suffix="B+" label={t('home.stat_value')} />}
-            </div>
+        {/* ── Premium Statistics Strip ──────────────────────────────────────── */}
+        <div className="relative z-10 w-full">
+          {/* Thin separator with gradient fade */}
+          <div className="container-main">
+            <div className="h-px bg-gradient-to-r from-transparent via-warm-white/20 to-transparent" />
+          </div>
+          {/* 5-card grid */}
+          <div className="container-main grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-0 divide-x divide-y md:divide-y-0 divide-warm-white/10 py-2 md:py-3">
+            <PremiumStatCard
+              icon="building"
+              value={settings?.statProjects ?? 47}
+              suffix="+"
+              label={t('home.stat_projects')}
+              delay={0.85}
+            />
+            <PremiumStatCard
+              icon="globe"
+              value={settings?.statCountries ?? 6}
+              suffix="+"
+              label={t('home.stat_countries')}
+              delay={0.95}
+            />
+            <PremiumStatCard
+              icon="diamond"
+              value={0}
+              customDisplay={settings?.statValue || '$2.4B+'}
+              label={t('home.stat_value')}
+              delay={1.05}
+            />
+            <PremiumStatCard
+              icon="compass"
+              value={15}
+              suffix="+"
+              label="Years Experience"
+              delay={1.15}
+            />
+            <PremiumStatCard
+              icon="award"
+              value={20}
+              suffix="+"
+              label="Awards Won"
+              delay={1.25}
+            />
           </div>
         </div>
       </section>
