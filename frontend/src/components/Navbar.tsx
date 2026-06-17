@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { applyDirection } from '@/i18n';
 import ArqivaLogo from './ArqivaLogo';
 import ThemeSwitcher from './ThemeSwitcher';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const NAV_LINKS = [
   { key: 'projects', to: '/projects' },
@@ -33,12 +34,6 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', fn);
   }, []);
 
-  const toggleLang = () => {
-    const next = i18n.language === 'ar' ? 'en' : 'ar';
-    i18n.changeLanguage(next);
-    applyDirection(next);
-  };
-
   const isTransparent = isHeroPage && !scrolled && !mobileOpen;
 
   /** True when the given path is the current page */
@@ -50,7 +45,7 @@ export default function Navbar() {
       isTransparent
         ? 'bg-transparent border-b border-transparent'
         : scrolled
-          ? 'bg-white/95 backdrop-blur-md border-b border-stone-brown/12 shadow-[0_4px_32px_rgba(10,9,8,0.10)]'
+          ? 'navbar-scrolled bg-white/95 backdrop-blur-md border-b border-stone-brown/12 shadow-[0_4px_32px_rgba(10,9,8,0.10)]'
           : 'bg-white border-b border-stone-brown/12 shadow-[0_1px_8px_rgba(10,9,8,0.04)]'
     }`}>
       <div className="w-full max-w-[1600px] mx-auto px-1 sm:px-2 lg:px-8">
@@ -110,21 +105,7 @@ export default function Navbar() {
 
           {/* Desktop right controls */}
           <div className="hidden lg:flex items-center gap-5">
-            <button
-              onClick={toggleLang}
-              aria-label="Switch language"
-              className={`text-xs tracking-widest uppercase font-medium transition-all duration-300 border px-3 py-1.5 flex items-center gap-1.5 ${
-                isTransparent
-                  ? 'text-warm-white/85 border-warm-white/40 hover:text-arch-beige hover:border-arch-beige'
-                  : 'text-primary-black border-stone-brown/40 hover:text-luxury-burgundy hover:border-luxury-burgundy'
-              }`}
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-              </svg>
-              {i18n.language === 'ar' ? 'EN' : 'عربي'}
-            </button>
+            <LanguageSwitcher variant={isTransparent ? 'transparent' : 'solid'} />
             <ThemeSwitcher />
             <Link
               to="/contact"
@@ -145,17 +126,7 @@ export default function Navbar() {
           {/* Mobile controls */}
           <div className="flex lg:hidden items-center gap-3">
             <ThemeSwitcher />
-            <button
-              onClick={toggleLang}
-              aria-label="Switch language"
-              className={`text-xs tracking-widest uppercase font-medium border px-2.5 py-1 transition-colors ${
-                isTransparent
-                  ? 'text-warm-white/85 border-warm-white/40 hover:text-arch-beige'
-                  : 'text-primary-black border-stone-brown/40 hover:text-luxury-burgundy'
-              }`}
-            >
-              {i18n.language === 'ar' ? 'EN' : 'عربي'}
-            </button>
+            <LanguageSwitcher variant={isTransparent ? 'transparent' : 'solid'} />
             <button
               onClick={() => setMobileOpen(o => !o)}
               className="flex flex-col gap-1.5 p-1"
@@ -185,7 +156,7 @@ export default function Navbar() {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.28, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="lg:hidden overflow-hidden bg-[#FAF8F5] border-t border-stone-brown/15"
+            className="lg:hidden overflow-hidden mobile-nav-bg bg-[#FAF8F5] border-t border-stone-brown/15"
           >
             <nav className="container-main py-6 flex flex-col">
               {NAV_LINKS.map(({ key, to }, i) => {

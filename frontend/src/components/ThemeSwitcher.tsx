@@ -27,7 +27,7 @@ export default function ThemeSwitcher({ compact = false }: { compact?: boolean }
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-full mt-2 bg-white border border-stone-brown/15 shadow-lg z-50 min-w-[180px] py-1">
+          <div className="absolute right-0 top-full mt-2 bg-white border border-stone-brown/15 shadow-lg z-50 min-w-[180px] py-1 dark-dropdown">
             {themes.map((t) => (
               <button
                 key={t.id}
