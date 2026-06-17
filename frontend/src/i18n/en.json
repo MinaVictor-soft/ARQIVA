@@ -1,0 +1,130 @@
+{
+  "nav": {
+    "projects": "Projects",
+    "services": "Services",
+    "about": "About",
+    "awards": "Awards",
+    "resume": "Resume",
+    "packages": "Packages",
+    "contact": "Contact"
+  },
+  "home": {
+    "hero_label": "Architecture & Interior Design",
+    "hero_title_1": "Designing Spaces",
+    "hero_title_2": "That Inspire",
+    "hero_cta_primary": "View Projects",
+    "hero_cta_secondary": "Our Services",
+    "featured_label": "Selected Work",
+    "featured_title": "Recent Projects",
+    "services_label": "What We Do",
+    "services_title": "Our Services",
+    "testimonials_label": "Client Words",
+    "testimonials_title": "What Clients Say",
+    "cta_title": "Ready to Begin?",
+    "cta_body": "Tell us about your project and let's create something extraordinary.",
+    "cta_btn": "Start a Conversation",
+    "stat_projects": "Projects Delivered",
+    "stat_countries": "Countries",
+    "stat_value": "Built Value"
+  },
+  "projects": {
+    "title": "Our Projects",
+    "label": "Portfolio",
+    "all": "All",
+    "search_placeholder": "Search projects…",
+    "no_results": "No projects found",
+    "view_project": "View Project",
+    "views": "views",
+    "likes": "likes",
+    "shares": "shares"
+  },
+  "project_detail": {
+    "overview": "Project Overview",
+    "concept": "Design Concept",
+    "challenges": "Challenges",
+    "solutions": "Solutions",
+    "gallery": "Gallery",
+    "feedback": "Client Feedback",
+    "feedback_title": "Leave Feedback",
+    "feedback_name": "Your Name",
+    "feedback_email": "Email Address",
+    "feedback_rating": "Rating",
+    "feedback_comment": "Your Comment",
+    "feedback_submit": "Submit Feedback",
+    "feedback_success": "Thank you for your feedback!",
+    "like": "Like",
+    "liked": "Liked",
+    "share": "Share",
+    "copy_link": "Copy Link",
+    "link_copied": "Link copied!"
+  },
+  "services": {
+    "title": "Our Services",
+    "label": "What We Offer",
+    "cta": "Discuss Your Project"
+  },
+  "about": {
+    "title": "About ARQIVA",
+    "label": "Studio",
+    "mission": "Mission",
+    "vision": "Vision",
+    "values": "Values",
+    "philosophy": "Design Philosophy"
+  },
+  "contact": {
+    "title": "Start a Conversation",
+    "label": "Get in Touch",
+    "name": "Full Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "subject": "Subject",
+    "message": "Message",
+    "send": "Send Message",
+    "sending": "Sending…",
+    "success": "Message sent! We'll be in touch soon.",
+    "error": "Failed to send. Please try again."
+  },
+  "packages": {
+    "title": "Our Packages",
+    "label": "Pricing",
+    "featured": "Most Popular",
+    "get_started": "Get Started",
+    "contact_us": "Contact Us"
+  },
+  "awards": {
+    "title": "Awards & Recognition",
+    "label": "Achievements"
+  },
+  "testimonials": {
+    "title": "Client Testimonials",
+    "label": "What Clients Say"
+  },
+  "resume": {
+    "title": "Resume",
+    "label": "Professional Profile",
+    "download": "Download CV",
+    "experience": "Experience",
+    "education": "Education",
+    "skills": "Skills",
+    "certifications": "Certifications"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+  "common": {
+    "loading": "Loading…",
+    "error": "Something went wrong",
+    "back": "Back",
+    "view_all": "View All",
+    "read_more": "Read More",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "confirm": "Confirm"
+  }
+}

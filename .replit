@@ -1,0 +1,22 @@
+run = "npm run start"
+entrypoint = "backend/src/index.ts"
+hidden = [".config", "package-lock.json", "node_modules"]
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+run = ["sh", "-c", "npm run start"]
+build = ["sh", "-c", "npm run install:all && npm run build"]
+deploymentTarget = "autoscale"
+
+[env]
+NODE_ENV = "production"
+
+[[ports]]
+localPort = 3000
+externalPort = 80
+
+[[ports]]
+localPort = 5000
+externalPort = 3000

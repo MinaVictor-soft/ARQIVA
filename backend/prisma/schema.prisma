@@ -1,0 +1,497 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Users & Auth
+model User {
+  id        Int     @id @default(autoincrement())
+  email     String  @unique
+  password  String
+  firstName String?
+  lastName  String?
+  role      String  @default("user")
+  isActive  Boolean @default(true)
+  lastLogin DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  activityLogs ActivityLog[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model Permission {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
+  createdAt   DateTime @default(now())
+}
+
+model Role {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
+  createdAt   DateTime @default(now())
+}
+
+// Settings
+model Settings {
+  id                   Int     @id @default(autoincrement())
+  companyName          String
+  tagline              String?
+  logo                 String?
+  darkLogo             String?
+  favicon              String?
+  // Hero
+  heroImage            String?
+  heroTitle            String?
+  heroTitleAr          String?
+  heroAccent           String?
+  heroAccentAr         String?
+  heroLabel            String?
+  heroSubtitle         String?
+  heroSubtitleAr       String?
+  heroCta1Text         String?
+  heroCta1Url          String?
+  heroCta2Text         String?
+  heroCta2Url          String?
+  // Stats
+  statProjects         Int?
+  statCountries        Int?
+  statValue            String?
+  // Company
+  profileImage         String?
+  description          String?
+  descriptionAr        String?
+  mission              String?
+  missionAr            String?
+  vision               String?
+  visionAr             String?
+  values               String?
+  valuesAr             String?
+  designPhilosophy     String?
+  designPhilosophyAr   String?
+  // Contact
+  phone                String?
+  whatsapp             String?
+  email                String?
+  address              String?
+  addressAr            String?
+  location             String?
+  googleMapUrl         String?
+  workingHours         String?
+  // Social
+  linkedIn             String?
+  instagram            String?
+  facebook             String?
+  twitter              String?
+  tiktok               String?
+  behance              String?
+  pinterest            String?
+  youtube              String?
+  // SEO
+  seoTitle             String?
+  seoDescription       String?
+  seoKeywords          String?
+  ogImage              String?
+  // Footer
+  footerText           String?
+  footerTextAr         String?
+  copyrightText        String?
+  // Assets
+  resumePdf            String?
+  updatedAt            DateTime @updatedAt
+}
+
+model SocialLink {
+  id        Int     @id @default(autoincrement())
+  platform  String
+  url       String
+  icon      String?
+  order     Int     @default(0)
+  createdAt DateTime @default(now())
+}
+
+// Projects
+model ProjectCategory {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  nameAr      String?
+  slug        String  @unique
+  description String?
+  icon        String?
+  order       Int     @default(0)
+  createdAt   DateTime @default(now())
+
+  projects Project[]
+}
+
+model Project {
+  id              Int     @id @default(autoincrement())
+  title           String
+  titleAr         String?
+  slug            String  @unique
+  description     String?
+  descriptionAr   String?
+  projectStory    String?
+  designConcept   String?
+  challenges      String?
+  solutions       String?
+  clientName      String?
+  clientCompany   String?
+  categoryId      Int?
+  country         String?
+  city            String?
+  location        String?
+  projectArea     String?
+  status          String  @default("completed")
+  budget          String?
+  duration        String?
+  year            Int?
+  featured        Boolean @default(false)
+  coverImage      String?
+  views           Int     @default(0)
+  likes           Int     @default(0)
+  shares          Int     @default(0)
+  published       Boolean @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  category       ProjectCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  images         ProjectImage[]
+  videos         ProjectVideo[]
+  files          ProjectFile[]
+  tools          ProjectTool[]
+  testimonials   Testimonial[]
+  comments       Comment[]
+  serviceExamples ServiceExample[]
+  feedback       ProjectFeedback[]
+
+  @@index([categoryId])
+  @@index([featured])
+  @@index([published])
+}
+
+model ProjectImage {
+  id          Int     @id @default(autoincrement())
+  projectId   Int
+  imageUrl    String
+  caption     String?
+  altText     String?
+  galleryName String? @default("main")
+  order       Int     @default(0)
+  createdAt   DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
+
+model ProjectVideo {
+  id        Int     @id @default(autoincrement())
+  projectId Int
+  videoUrl  String
+  title     String?
+  order     Int     @default(0)
+  createdAt DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
+
+model ProjectFile {
+  id        Int     @id @default(autoincrement())
+  projectId Int
+  fileUrl   String
+  fileName  String
+  fileType  String?
+  createdAt DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
+
+model ProjectTool {
+  id        Int     @id @default(autoincrement())
+  projectId Int
+  toolName  String
+  createdAt DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
+
+// Services
+model Service {
+  id            Int     @id @default(autoincrement())
+  name          String  @unique
+  nameAr        String?
+  slug          String  @unique
+  description   String?
+  descriptionAr String?
+  benefits      String?
+  process       String?
+  icon        String?
+  order       Int     @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  examples ServiceExample[]
+}
+
+model ServiceExample {
+  id        Int     @id @default(autoincrement())
+  serviceId Int
+  projectId Int?
+  title     String
+  createdAt DateTime @default(now())
+
+  service Service   @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  project Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@index([serviceId])
+  @@index([projectId])
+}
+
+// Awards
+model Award {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String?
+  issuer      String?
+  year        Int
+  category    String?
+  image       String?
+  featured    Boolean @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([year])
+  @@index([featured])
+}
+
+// Testimonials
+model Testimonial {
+  id              Int     @id @default(autoincrement())
+  projectId       Int?
+  clientName      String
+  clientPosition  String?
+  companyName     String?
+  rating          Int     @default(5)
+  testimonial     String
+  testimonialAr   String?
+  clientImage   String?
+  featured      Boolean @default(false)
+  createdAt     DateTime @default(now())
+
+  project Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@index([projectId])
+  @@index([featured])
+}
+
+// Comments
+model Comment {
+  id        Int     @id @default(autoincrement())
+  projectId Int
+  authorName String
+  authorEmail String
+  content   String
+  approved  Boolean @default(false)
+  createdAt DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([approved])
+}
+
+// Messages (Contact Form)
+model Message {
+  id        Int     @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String
+  read      Boolean @default(false)
+  replied   Boolean @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([read])
+}
+
+// Analytics
+model Analytics {
+  id        Int     @id @default(autoincrement())
+  eventType String
+  projectId Int?
+  pageUrl   String?
+  userAgent String?
+  ipAddress String?
+  referrer  String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([eventType])
+  @@index([projectId])
+  @@index([createdAt])
+}
+
+// Education
+model Education {
+  id          Int     @id @default(autoincrement())
+  degree      String
+  field       String
+  institution String
+  startYear   Int
+  endYear     Int?
+  description String?
+  order       Int     @default(0)
+  createdAt   DateTime @default(now())
+}
+
+// Experience
+model Experience {
+  id            Int     @id @default(autoincrement())
+  position      String
+  company       String
+  startDate     DateTime
+  endDate       DateTime?
+  isCurrentRole Boolean @default(false)
+  description   String?
+  achievements  String?
+  order         Int     @default(0)
+  createdAt     DateTime @default(now())
+}
+
+// Certifications
+model Certification {
+  id            Int     @id @default(autoincrement())
+  name          String
+  issuer        String
+  issuedDate    DateTime
+  expiryDate    DateTime?
+  credentialUrl String?
+  order         Int     @default(0)
+  createdAt     DateTime @default(now())
+}
+
+// Skills
+model Skill {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  category    String
+  proficiency String  @default("intermediate")
+  order       Int     @default(0)
+  createdAt   DateTime @default(now())
+}
+
+// Resume
+model ResumeFile {
+  id        Int     @id @default(autoincrement())
+  fileName  String
+  fileUrl   String
+  version   String?
+  isPrimary Boolean @default(false)
+  createdAt DateTime @default(now())
+}
+
+// Contact Requests
+model ContactRequest {
+  id              Int     @id @default(autoincrement())
+  name            String
+  email           String
+  phone           String?
+  serviceInterest String?
+  message         String?
+  budget          String?
+  timeline        String?
+  status          String  @default("new")
+  createdAt       DateTime @default(now())
+
+  @@index([status])
+}
+
+// Activity Logs
+model ActivityLog {
+  id         Int     @id @default(autoincrement())
+  userId     Int?
+  action     String
+  entityType String?
+  entityId   Int?
+  changes    Json?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([action])
+}
+
+// SEO Pages
+model SeoPage {
+  id            Int     @id @default(autoincrement())
+  pageUrl       String  @unique
+  title         String
+  description   String?
+  keywords      String?
+  ogImage       String?
+  ogTitle       String?
+  ogDescription String?
+  twitterCard   String?
+  canonicalUrl  String?
+  updatedAt     DateTime @updatedAt
+}
+
+// Project Feedback
+model ProjectFeedback {
+  id        Int     @id @default(autoincrement())
+  projectId Int
+  name      String
+  email     String
+  rating    Int     @default(5)
+  comment   String
+  status    String  @default("pending") // pending | approved | rejected
+  createdAt DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([status])
+}
+
+// Packages
+model Package {
+  id               Int     @id @default(autoincrement())
+  title            String
+  titleAr          String?
+  description      String?
+  descriptionAr    String?
+  price            Float?
+  currency         String  @default("USD")
+  duration         String?
+  features         Json    @default("[]")
+  includedServices Json    @default("[]")
+  featured         Boolean @default(false)
+  published        Boolean @default(true)
+  order            Int     @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([published])
+  @@index([featured])
+}

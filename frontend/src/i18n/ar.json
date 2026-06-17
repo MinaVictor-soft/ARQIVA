@@ -1,0 +1,130 @@
+{
+  "nav": {
+    "projects": "المشاريع",
+    "services": "الخدمات",
+    "about": "من نحن",
+    "awards": "الجوائز",
+    "resume": "السيرة الذاتية",
+    "packages": "الباقات",
+    "contact": "تواصل معنا"
+  },
+  "home": {
+    "hero_label": "تصميم معماري وداخلي",
+    "hero_title_1": "نصمم فضاءات",
+    "hero_title_2": "تُلهم وتبقى",
+    "hero_cta_primary": "استعرض المشاريع",
+    "hero_cta_secondary": "خدماتنا",
+    "featured_label": "أعمال مختارة",
+    "featured_title": "أحدث المشاريع",
+    "services_label": "ما نقدمه",
+    "services_title": "خدماتنا",
+    "testimonials_label": "آراء العملاء",
+    "testimonials_title": "ماذا يقول عملاؤنا",
+    "cta_title": "هل أنت مستعد للبدء؟",
+    "cta_body": "أخبرنا عن مشروعك ولنخلق شيئاً استثنائياً معاً.",
+    "cta_btn": "ابدأ محادثة",
+    "stat_projects": "مشروع منجز",
+    "stat_countries": "دولة",
+    "stat_value": "قيمة مبنية"
+  },
+  "projects": {
+    "title": "مشاريعنا",
+    "label": "معرض الأعمال",
+    "all": "الكل",
+    "search_placeholder": "ابحث عن مشاريع…",
+    "no_results": "لم يتم العثور على مشاريع",
+    "view_project": "عرض المشروع",
+    "views": "مشاهدة",
+    "likes": "إعجاب",
+    "shares": "مشاركة"
+  },
+  "project_detail": {
+    "overview": "نظرة عامة على المشروع",
+    "concept": "المفهوم التصميمي",
+    "challenges": "التحديات",
+    "solutions": "الحلول",
+    "gallery": "معرض الصور",
+    "feedback": "آراء العملاء",
+    "feedback_title": "أضف رأيك",
+    "feedback_name": "اسمك",
+    "feedback_email": "البريد الإلكتروني",
+    "feedback_rating": "التقييم",
+    "feedback_comment": "تعليقك",
+    "feedback_submit": "إرسال الرأي",
+    "feedback_success": "شكراً على تعليقك!",
+    "like": "إعجاب",
+    "liked": "أعجبني",
+    "share": "مشاركة",
+    "copy_link": "نسخ الرابط",
+    "link_copied": "تم نسخ الرابط!"
+  },
+  "services": {
+    "title": "خدماتنا",
+    "label": "ما نقدمه",
+    "cta": "ناقش مشروعك"
+  },
+  "about": {
+    "title": "عن أرقيفا",
+    "label": "الاستوديو",
+    "mission": "رسالتنا",
+    "vision": "رؤيتنا",
+    "values": "قيمنا",
+    "philosophy": "فلسفة التصميم"
+  },
+  "contact": {
+    "title": "ابدأ محادثة",
+    "label": "تواصل معنا",
+    "name": "الاسم الكامل",
+    "email": "البريد الإلكتروني",
+    "phone": "رقم الهاتف",
+    "subject": "الموضوع",
+    "message": "الرسالة",
+    "send": "إرسال الرسالة",
+    "sending": "جارٍ الإرسال…",
+    "success": "تم إرسال رسالتك! سنتواصل معك قريباً.",
+    "error": "فشل الإرسال. يرجى المحاولة مرة أخرى."
+  },
+  "packages": {
+    "title": "باقاتنا",
+    "label": "الأسعار",
+    "featured": "الأكثر شيوعاً",
+    "get_started": "ابدأ الآن",
+    "contact_us": "تواصل معنا"
+  },
+  "awards": {
+    "title": "الجوائز والتكريمات",
+    "label": "الإنجازات"
+  },
+  "testimonials": {
+    "title": "شهادات العملاء",
+    "label": "ماذا يقول عملاؤنا"
+  },
+  "resume": {
+    "title": "السيرة الذاتية",
+    "label": "الملف المهني",
+    "download": "تحميل السيرة الذاتية",
+    "experience": "الخبرة",
+    "education": "التعليم",
+    "skills": "المهارات",
+    "certifications": "الشهادات"
+  },
+  "footer": {
+    "rights": "جميع الحقوق محفوظة.",
+    "privacy": "سياسة الخصوصية",
+    "terms": "شروط الخدمة"
+  },
+  "common": {
+    "loading": "جارٍ التحميل…",
+    "error": "حدث خطأ ما",
+    "back": "رجوع",
+    "view_all": "عرض الكل",
+    "read_more": "اقرأ المزيد",
+    "close": "إغلاق",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "add": "إضافة",
+    "confirm": "تأكيد"
+  }
+}
