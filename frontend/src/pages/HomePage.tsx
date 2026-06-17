@@ -172,32 +172,42 @@ export default function HomePage() {
         </motion.div>
 
         {/* Main content — flex-1 fills all available space between navbar and bottom bar */}
-        <div className="relative z-10 flex-1 flex items-end md:items-center pt-4 md:pt-20 pb-4 md:pb-6">
-          <div className="container-main">
+        {/* Main content — justify-between distributes top block and bottom block across full height */}
+        <div className="relative z-10 flex-1 flex flex-col justify-between pt-16 md:pt-0 md:justify-center md:items-start pb-3 md:pb-6">
+
+          {/* TOP — label + title (sits just below navbar on mobile) */}
+          <div className="container-main pt-4 md:pt-20">
             <div className="max-w-3xl">
               <motion.p {...fadeUp} transition={{ duration: 0.5, delay: 0.15 }}
-                className="text-arch-beige text-xs tracking-[0.5em] uppercase font-semibold mb-1 md:mb-5 hero-text-shadow">
+                className="text-arch-beige text-xs tracking-[0.5em] uppercase font-semibold mb-2 md:mb-5 hero-text-shadow">
                 {settings?.heroLabel || t('home.hero_label')}
               </motion.p>
-              <h1 className="font-display text-[clamp(1.7rem,5.5vw,6rem)] font-light leading-[1.02] text-white mb-1 md:mb-6 hero-text-shadow">
+              <h1 className="font-display text-[clamp(1.7rem,5.5vw,6rem)] font-light leading-[1.02] text-white hero-text-shadow">
                 <span className="block"><WordReveal text={settings?.heroTitle || t('home.hero_title_1')} delay={0.25} /></span>
                 <em className="not-italic text-arch-beige block"><WordReveal text={settings?.heroAccent || t('home.hero_title_2')} delay={0.5} /></em>
               </h1>
+            </div>
+          </div>
+
+          {/* BOTTOM — subtitle + buttons (sits just above stats strip on mobile) */}
+          <div className="container-main pb-2 md:pb-0 md:mt-6">
+            <div className="max-w-3xl">
               <motion.p {...fadeUp} transition={{ duration: 0.6, delay: 0.45 }}
                 className="text-white/90 text-xs md:text-lg leading-relaxed max-w-xl mb-3 md:mb-8 font-light hero-text-shadow line-clamp-2 md:line-clamp-none">
                 {settings?.heroSubtitle || settings?.description || 'We create architectural experiences that transcend the ordinary — from luxury residences to landmark commercial projects across the globe.'}
               </motion.p>
-              <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.55 }} className="flex flex-wrap items-center gap-4">
-                <Link to={settings?.heroCta1Url || '/projects'} className="px-8 py-3.5 bg-luxury-burgundy text-warm-white text-xs tracking-widest uppercase font-medium hover:bg-warm-white hover:text-primary-black transition-colors duration-200">
+              <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.55 }} className="flex flex-wrap items-center gap-3 md:gap-4">
+                <Link to={settings?.heroCta1Url || '/projects'} className="px-6 md:px-8 py-3 md:py-3.5 bg-luxury-burgundy text-warm-white text-xs tracking-widest uppercase font-medium hover:bg-warm-white hover:text-primary-black transition-colors duration-200">
                   {settings?.heroCta1Text || t('home.hero_cta_primary')}
                 </Link>
-                <Link to={settings?.heroCta2Url || '/services'} className="flex items-center gap-2 text-warm-white/80 hover:text-warm-white text-xs tracking-widest uppercase transition-colors border border-warm-white/30 px-6 py-3.5 hover:border-warm-white/70">
+                <Link to={settings?.heroCta2Url || '/services'} className="flex items-center gap-2 text-warm-white/80 hover:text-warm-white text-xs tracking-widest uppercase transition-colors border border-warm-white/30 px-5 md:px-6 py-3 md:py-3.5 hover:border-warm-white/70">
                   {settings?.heroCta2Text || t('home.hero_cta_secondary')}
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </Link>
               </motion.div>
             </div>
           </div>
+
         </div>
 
         {/* ── Premium Statistics Strip ──────────────────────────────────────── */}
