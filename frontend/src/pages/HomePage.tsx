@@ -10,7 +10,7 @@ import Footer from '@/components/Footer';
 
 const fadeUp = { initial: { opacity: 0, y: 24 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.6 } };
 const EASE = [0.22, 1, 0.36, 1] as const;
-const HERO_FALLBACK = 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=1600&q=80&auto=format&fit=crop';
+const HERO_FALLBACK = '/hero-bg.jpg';
 
 function WordReveal({ text, delay = 0 }: { text: string; delay?: number }) {
   return (
@@ -162,13 +162,13 @@ export default function HomePage() {
           animate={{ scale: 1 }}
           transition={{ duration: 5, ease: 'easeOut' }}
         >
-          <img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover opacity-90 scale-105" />
-          {/* Dark scrim so text is always readable */}
-          <div className="absolute inset-0 bg-primary-black/50" />
-          {/* Directional left gradient for extra contrast behind text */}
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-black/70 via-primary-black/30 to-transparent" />
+          <img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover opacity-70 scale-105" />
+          {/* Strong base scrim so text is always readable */}
+          <div className="absolute inset-0 bg-primary-black/60" />
+          {/* Heavy left gradient — darkens the entire text column */}
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-black/85 via-primary-black/50 to-primary-black/10" />
           {/* Bottom fade — blends into stats bar */}
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary-black/80 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary-black/90 to-transparent" />
         </motion.div>
 
         {/* Main content — flex-1 fills all available space between navbar and bottom bar */}
