@@ -204,8 +204,8 @@ export default function HomePage() {
           <div className="container-main">
             <div className="h-px bg-gradient-to-r from-transparent via-warm-white/20 to-transparent" />
           </div>
-          {/* 5-card grid */}
-          <div className="container-main grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-0 divide-x divide-y md:divide-y-0 divide-warm-white/10 py-2 md:py-3">
+          {/* 4-card grid */}
+          <div className="container-main grid grid-cols-2 md:grid-cols-4 gap-0 divide-x divide-y md:divide-y-0 divide-warm-white/10 py-2 md:py-3">
             <PremiumStatCard
               icon="building"
               value={settings?.statProjects ?? 47}
@@ -233,13 +233,6 @@ export default function HomePage() {
               suffix="+"
               label="Years Experience"
               delay={1.15}
-            />
-            <PremiumStatCard
-              icon="award"
-              value={20}
-              suffix="+"
-              label="Awards Won"
-              delay={1.25}
             />
           </div>
         </div>
