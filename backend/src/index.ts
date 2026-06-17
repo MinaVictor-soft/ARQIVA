@@ -34,30 +34,46 @@ dotenv.config();
 const app = express();
 const PORT = parseInt(process.env.PORT || "3000", 10);
 
-// Health check — must be FIRST, before all middleware, so Replit probes always get 200
+// Health check — MUST be before all middleware so Replit probes always get 200
 app.get("/health", (_req, res) => {
   res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
 });
-app.get("/", (_req, res, next) => {
-  // In production, serve frontend; otherwise let the SPA handler below deal with it
+
+// Root route — MUST be before middleware; serves frontend or falls back to 200 for health probe
+app.get("/", (_req: Request, res: Response, next: NextFunction) => {
   const indexPath = path.join(__dirname, "../../frontend/dist/index.html");
-  if (fs.existsSync(indexPath)) return next(); // let static middleware handle it
-  res.status(200).json({ status: "ok", service: "ARQIVA API" }); // fallback if not built
+  if (fs.existsSync(indexPath)) return next();
+  res.status(200).json({ status: "ok", service: "ARQIVA API" });
 });
 
 // Middleware
-app.use(helmet());
+app.use(
+  helmet({
+    frameguard: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdnjs.cloudflare.com"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
+        imgSrc: ["'self'", "data:", "blob:", "https:", "http:"],
+        connectSrc: ["'self'", "https:", "wss:"],
+        frameSrc: ["'none'"],
+        objectSrc: ["'none'"],
+        mediaSrc: ["'self'", "https:"],
+      },
+    },
+  })
+);
 app.use(
   cors({
     origin: (origin, callback) => {
-      // In production, same-origin requests have no Origin header — always allow
       if (!origin) return callback(null, true);
-      // Allow Replit deployment domains
       if (
         process.env.NODE_ENV === "production" ||
         origin.endsWith(".replit.app") ||
         origin.endsWith(".repl.co") ||
-        origin.endsWith(".janeway.replit.dev")
+        origin.endsWith(".replit.dev")
       ) {
         return callback(null, true);
       }
@@ -77,12 +93,16 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Trust Replit's reverse proxy so rate-limiter reads the real client IP
+app.set("trust proxy", 1);
+
 // Rate limiting
 const limiter = rateLimit({
   windowMs: (parseInt(process.env.RATE_LIMIT_WINDOW || "15") || 15) * 60 * 1000,
   max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || "2000") || 2000,
   message: "Too many requests from this IP, please try again later.",
   skip: () => process.env.NODE_ENV === "development",
+  validate: { xForwardedForHeader: false },
 });
 
 app.use("/api/", limiter);
@@ -116,34 +136,27 @@ app.use("/api/projects/:projectId/gallery", galleryRoutes);
 if (process.env.NODE_ENV === "production") {
   const frontendDist = path.join(__dirname, "../../frontend/dist");
   app.use(express.static(frontendDist));
-  app.get("*", (req: Request, res: Response) => {
-    // Only serve index.html for non-API routes
+  app.get("*", (req: Request, res: Response, next: NextFunction) => {
     if (!req.path.startsWith("/api") && !req.path.startsWith("/api-docs") && req.path !== "/health") {
-      const indexPath = path.join(frontendDist, "index.html");
-      res.sendFile(indexPath, (err) => {
-        if (err) {
-          res.status(200).json({ status: "ok", service: "ARQIVA API", note: "frontend not built" });
-        }
+      res.sendFile(path.join(frontendDist, "index.html"), (err) => {
+        if (err) res.status(200).send("OK");
       });
+    } else {
+      next();
     }
   });
 }
 
 // 404 handler
 app.use((req: Request, res: Response) => {
-  res.status(404).json({
-    success: false,
-    message: "Route not found",
-  });
+  res.status(404).json({ success: false, message: "Route not found" });
 });
 
 // Error handler
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error("Error:", err);
-
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal server error";
-
   res.status(statusCode).json({
     success: false,
     message,
@@ -154,13 +167,11 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 // Start server
 async function start() {
   try {
-    // Test database connection
     const dbConnected = await testConnection();
     if (!dbConnected) {
       console.error("Failed to connect to database. Exiting...");
       process.exit(1);
     }
-
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`✓ Server running on port ${PORT}`);
       console.log(`✓ Environment: ${process.env.NODE_ENV || "development"}`);
