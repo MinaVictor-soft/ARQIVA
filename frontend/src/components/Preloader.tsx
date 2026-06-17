@@ -2,24 +2,28 @@ import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ArqivaLogo from '@/components/ArqivaLogo';
 
-const HERO_FALLBACK = 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=1600&q=80&auto=format';
-const MIN_MS = 1800;   // minimum display time for branding
-const MAX_MS = 5000;   // hard timeout — never block longer than this
+const MIN_MS = 1800;
+const MAX_MS = 6000;
+
+export interface PrefetchedData {
+  settings?: unknown;
+  projects?: unknown;
+}
 
 interface PreloaderProps {
-  onDone: () => void;
+  onDone: (data: PrefetchedData) => void;
 }
 
 export default function Preloader({ onDone }: PreloaderProps) {
   const [visible, setVisible] = useState(true);
   const doneRef = useRef(false);
+  const dataRef = useRef<PrefetchedData>({});
 
   const finish = () => {
     if (doneRef.current) return;
     doneRef.current = true;
     setVisible(false);
-    // give the exit animation time to complete before unmounting
-    setTimeout(onDone, 700);
+    setTimeout(() => onDone(dataRef.current), 700);
   };
 
   useEffect(() => {
@@ -31,37 +35,36 @@ export default function Preloader({ onDone }: PreloaderProps) {
       setTimeout(finish, remaining);
     };
 
-    // hard timeout — always bail out
     const maxTimer = setTimeout(finish, MAX_MS);
 
-    // fetch settings to get the real hero image URL (skip external fallback)
-    fetch('/api/settings')
-      .then((r) => r.json())
-      .then((res) => {
-        const heroUrl: string | undefined = res?.data?.heroImage;
+    // Fetch settings + featured projects in parallel
+    Promise.all([
+      fetch('/api/settings').then(r => r.json()).catch(() => null),
+      fetch('/api/projects?featured=true&limit=6').then(r => r.json()).catch(() => null),
+    ]).then(([settingsRes, projectsRes]) => {
+      // Store for cache seeding
+      if (settingsRes) dataRef.current.settings = settingsRes;
+      if (projectsRes) dataRef.current.projects = projectsRes;
 
-        // If no hero image configured, just use the timer
-        if (!heroUrl) {
-          clearTimeout(maxTimer);
-          proceed();
-          return;
-        }
+      // Preload hero image so it renders instantly
+      const heroUrl: string | undefined =
+        settingsRes?.data?.heroImage ||
+        projectsRes?.data?.[0]?.coverImage;
 
-        const img = new Image();
-        img.onload = () => {
-          clearTimeout(maxTimer);
-          proceed();
-        };
-        img.onerror = () => {
-          clearTimeout(maxTimer);
-          proceed();
-        };
-        img.src = heroUrl;
-      })
-      .catch(() => {
+      if (!heroUrl) {
         clearTimeout(maxTimer);
         proceed();
-      });
+        return;
+      }
+
+      const img = new Image();
+      img.onload = () => { clearTimeout(maxTimer); proceed(); };
+      img.onerror = () => { clearTimeout(maxTimer); proceed(); };
+      img.src = heroUrl;
+    }).catch(() => {
+      clearTimeout(maxTimer);
+      proceed();
+    });
 
     return () => clearTimeout(maxTimer);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -80,7 +83,6 @@ export default function Preloader({ onDone }: PreloaderProps) {
             <span key={pos} className={`absolute ${pos} w-7 h-7 ${border} border-arch-beige/40`} />
           ))}
 
-          {/* Top divider line */}
           <motion.div
             className="w-px h-8 bg-warm-white/15 mb-8"
             initial={{ scaleY: 0 }}
@@ -88,7 +90,6 @@ export default function Preloader({ onDone }: PreloaderProps) {
             transition={{ duration: 0.4, ease: 'easeOut' }}
           />
 
-          {/* Logo mark */}
           <motion.div
             initial={{ opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -101,7 +102,6 @@ export default function Preloader({ onDone }: PreloaderProps) {
             </p>
           </motion.div>
 
-          {/* Bottom divider line */}
           <motion.div
             className="w-px h-8 bg-warm-white/15 mt-8"
             initial={{ scaleY: 0 }}
@@ -109,7 +109,6 @@ export default function Preloader({ onDone }: PreloaderProps) {
             transition={{ duration: 0.4, delay: 0.3, ease: 'easeOut' }}
           />
 
-          {/* Progress bar */}
           <motion.div
             className="absolute bottom-16 left-1/2 -translate-x-1/2 w-32 h-px bg-warm-white/10 overflow-hidden"
             initial={{ opacity: 0 }}

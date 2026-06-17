@@ -4,7 +4,7 @@ import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAuthStore } from '@/store/authStore';
 import ScrollToTop from '@/components/ScrollToTop';
-import Preloader from '@/components/Preloader';
+import Preloader, { PrefetchedData } from '@/components/Preloader';
 
 // ── Lazy-loaded pages (code-split per route) ──────────────────────────────
 const HomePage          = lazy(() => import('@/pages/HomePage'));
@@ -113,7 +113,10 @@ function App() {
     initFromStorage();
   }, [initFromStorage]);
 
-  const handlePreloaderDone = () => {
+  const handlePreloaderDone = (data: PrefetchedData) => {
+    // Seed QueryClient cache with prefetched data so HomePage renders instantly
+    if (data.settings) queryClient.setQueryData(['settings'], data.settings);
+    if (data.projects) queryClient.setQueryData(['projects', 'featured'], data.projects);
     sessionStorage.setItem('arqiva_preloaded', '1');
     setPreloaderDone(true);
   };
