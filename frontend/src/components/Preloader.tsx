@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ArqivaLogo from '@/components/ArqivaLogo';
 
 const HERO_FALLBACK = 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=1600&q=80&auto=format';
 const MIN_MS = 1800;   // minimum display time for branding
@@ -73,23 +74,13 @@ export default function Preloader({ onDone }: PreloaderProps) {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col items-center gap-4"
+            className="flex flex-col items-center gap-3"
           >
-            <svg width="52" height="52" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-              {/* Simple architectural A mark */}
-              <path d="M30 6L54 48H6L30 6Z" stroke="#A9927D" strokeWidth="1.5" fill="none" strokeLinejoin="round" />
-              <path d="M18 36H42" stroke="#A9927D" strokeWidth="1.5" />
-              <path d="M30 6V48" stroke="#49111C" strokeWidth="1" strokeDasharray="2 3" />
-            </svg>
-
-            <div className="text-center">
-              <p className="font-display text-warm-white text-xl tracking-[0.35em] uppercase font-light">
-                ARQIVA
-              </p>
-              <p className="text-[9px] tracking-[0.5em] text-arch-beige/60 uppercase mt-0.5">
-                Studio &amp; Design
-              </p>
-            </div>
+            {/* Website logo — inverted to white on dark background */}
+            <ArqivaLogo
+              size="lg"
+              className="[filter:brightness(0)_invert(1)]"
+            />
           </motion.div>
 
           {/* Progress bar */}
