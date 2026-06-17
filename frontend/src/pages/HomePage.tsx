@@ -76,60 +76,64 @@ export default function HomePage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative min-h-screen overflow-hidden flex items-center">
-        <motion.div className="absolute inset-0" initial={{ scale: 1.06 }} animate={{ scale: 1 }} transition={{ duration: 8, ease: 'easeOut' }}>
+      <section className="relative h-screen min-h-[600px] flex flex-col">
+        {/* Background — overflow-hidden here contains the scale animation */}
+        <motion.div className="absolute inset-0 overflow-hidden" initial={{ scale: 1.06 }} animate={{ scale: 1 }} transition={{ duration: 8, ease: 'easeOut' }}>
           <img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover" />
           {/* Directional overlay — strong on text side, open on photo side */}
           <div className="absolute inset-0 bg-gradient-to-r from-primary-black via-primary-black/60 to-primary-black/10" />
         </motion.div>
 
-        <div className="container-main relative z-10 pt-24 pb-32">
-          <div className="max-w-3xl">
-            <motion.p {...fadeUp} transition={{ duration: 0.5, delay: 0.15 }}
-              className="text-arch-beige text-xs tracking-[0.5em] uppercase font-medium mb-6">
-              {settings?.heroLabel || t('home.hero_label')}
-            </motion.p>
-            <h1 className="font-display text-[clamp(2.8rem,7vw,6.5rem)] font-light leading-[1.02] text-warm-white mb-8 hero-text-shadow">
-              <span className="block"><WordReveal text={settings?.heroTitle || t('home.hero_title_1')} delay={0.25} /></span>
-              <em className="not-italic text-arch-beige block"><WordReveal text={settings?.heroAccent || t('home.hero_title_2')} delay={0.5} /></em>
-            </h1>
-            <motion.p {...fadeUp} transition={{ duration: 0.6, delay: 0.45 }}
-              className="text-warm-white/80 text-lg leading-relaxed max-w-xl mb-12 font-light hero-text-shadow">
-              {settings?.heroSubtitle || settings?.description || 'We create architectural experiences that transcend the ordinary — from luxury residences to landmark commercial projects across the globe.'}
-            </motion.p>
-            <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.55 }} className="flex flex-wrap items-center gap-5">
-              <Link to={settings?.heroCta1Url || '/projects'} className="px-8 py-3.5 bg-luxury-burgundy text-warm-white text-xs tracking-widest uppercase font-medium hover:bg-warm-white hover:text-primary-black transition-colors duration-200">
-                {settings?.heroCta1Text || t('home.hero_cta_primary')}
-              </Link>
-              <Link to={settings?.heroCta2Url || '/services'} className="flex items-center gap-2 text-warm-white/80 hover:text-warm-white text-xs tracking-widest uppercase transition-colors border border-warm-white/30 px-6 py-3.5 hover:border-warm-white/70">
-                {settings?.heroCta2Text || t('home.hero_cta_secondary')}
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </Link>
-            </motion.div>
+        {/* Main content — flex-1 fills all available space between navbar and bottom bar */}
+        <div className="relative z-10 flex-1 flex items-center pt-20 pb-6 overflow-hidden">
+          <div className="container-main">
+            <div className="max-w-3xl">
+              <motion.p {...fadeUp} transition={{ duration: 0.5, delay: 0.15 }}
+                className="text-arch-beige text-xs tracking-[0.5em] uppercase font-medium mb-5">
+                {settings?.heroLabel || t('home.hero_label')}
+              </motion.p>
+              <h1 className="font-display text-[clamp(2.4rem,5.5vw,6rem)] font-light leading-[1.02] text-warm-white mb-6 hero-text-shadow">
+                <span className="block"><WordReveal text={settings?.heroTitle || t('home.hero_title_1')} delay={0.25} /></span>
+                <em className="not-italic text-arch-beige block"><WordReveal text={settings?.heroAccent || t('home.hero_title_2')} delay={0.5} /></em>
+              </h1>
+              <motion.p {...fadeUp} transition={{ duration: 0.6, delay: 0.45 }}
+                className="text-warm-white/80 text-base md:text-lg leading-relaxed max-w-xl mb-8 font-light hero-text-shadow">
+                {settings?.heroSubtitle || settings?.description || 'We create architectural experiences that transcend the ordinary — from luxury residences to landmark commercial projects across the globe.'}
+              </motion.p>
+              <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.55 }} className="flex flex-wrap items-center gap-4">
+                <Link to={settings?.heroCta1Url || '/projects'} className="px-8 py-3.5 bg-luxury-burgundy text-warm-white text-xs tracking-widest uppercase font-medium hover:bg-warm-white hover:text-primary-black transition-colors duration-200">
+                  {settings?.heroCta1Text || t('home.hero_cta_primary')}
+                </Link>
+                <Link to={settings?.heroCta2Url || '/services'} className="flex items-center gap-2 text-warm-white/80 hover:text-warm-white text-xs tracking-widest uppercase transition-colors border border-warm-white/30 px-6 py-3.5 hover:border-warm-white/70">
+                  {settings?.heroCta2Text || t('home.hero_cta_secondary')}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </Link>
+              </motion.div>
+            </div>
           </div>
         </div>
 
-        {/* Scroll indicator */}
+        {/* Scroll indicator — sits above the stats bar, naturally in flow */}
         <motion.div
-          className="absolute bottom-[92px] left-1/2 -translate-x-1/2 pointer-events-none hidden md:flex flex-col items-center gap-2"
+          className="relative z-10 hidden md:flex flex-col items-center gap-1.5 pb-3 pointer-events-none"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2.2, duration: 0.8 }}
         >
           <span className="text-[9px] tracking-[0.35em] uppercase text-warm-white/40">Scroll</span>
           <motion.div
-            animate={{ y: [0, 7, 0] }}
+            animate={{ y: [0, 6, 0] }}
             transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut', repeatDelay: 0.4 }}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" className="text-warm-white/40">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" className="text-warm-white/40">
               <path d="m6 9 6 6 6-6"/>
             </svg>
           </motion.div>
         </motion.div>
 
-        {/* Stats bar */}
-        <div className="absolute bottom-0 left-0 right-0 border-t border-warm-white/15 bg-primary-black/60 backdrop-blur-sm">
-          <div className="container-main py-7">
+        {/* Stats bar — anchored at the very bottom, in normal flow */}
+        <div className="relative z-10 border-t border-warm-white/15 bg-primary-black/60 backdrop-blur-sm">
+          <div className="container-main py-5 md:py-7">
             <div className="flex items-center justify-between w-full divide-x divide-warm-white/15">
               <HeroStatCounter value={settings?.statProjects ?? 60} suffix="+" label={t('home.stat_projects')} />
               <HeroStatCounter value={settings?.statCountries ?? 20} suffix="+" label={t('home.stat_countries')} />
