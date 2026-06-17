@@ -107,7 +107,7 @@ function PremiumStatCard({
       </span>
 
       {/* Icon */}
-      <div className="mb-3 text-arch-beige/50 group-hover:text-arch-beige transition-colors duration-300">
+      <div className="mb-3 text-arch-beige/70 group-hover:text-arch-beige transition-colors duration-300">
         {STAT_ICONS[icon]}
       </div>
 
@@ -117,7 +117,7 @@ function PremiumStatCard({
       </p>
 
       {/* Label */}
-      <p className="mt-2 text-warm-white/40 group-hover:text-warm-white/60 text-[9px] md:text-[10px] tracking-[0.35em] uppercase font-medium transition-colors duration-300">
+      <p className="mt-2 text-warm-white/60 group-hover:text-warm-white/80 text-[9px] md:text-[10px] tracking-[0.35em] uppercase font-medium transition-colors duration-300">
         {label}
       </p>
 
@@ -163,12 +163,12 @@ export default function HomePage() {
           transition={{ duration: 5, ease: 'easeOut' }}
         >
           {heroImage && <img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover" />}
-          {/* Base scrim — guarantees minimum contrast on any image tone */}
-          <div className="absolute inset-0 bg-primary-black/45" />
-          {/* Directional overlay — extra coverage on text side */}
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-black/80 via-primary-black/50 to-transparent" />
-          {/* Bottom fade — masks image edge and blends into stats bar */}
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary-black to-transparent" />
+          {/* Base scrim — balanced: image stays visible, text stays readable */}
+          <div className="absolute inset-0 bg-primary-black/30" />
+          {/* Directional overlay — stronger on text side only */}
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-black/55 via-primary-black/20 to-transparent" />
+          {/* Bottom fade — blends into stats bar */}
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary-black/80 to-transparent" />
         </motion.div>
 
         {/* Main content — flex-1 fills all available space between navbar and bottom bar */}
