@@ -106,7 +106,7 @@ export default function Navbar() {
           {/* Desktop right controls */}
           <div className="hidden lg:flex items-center gap-5">
             <LanguageSwitcher variant={isTransparent ? 'transparent' : 'solid'} />
-            <ThemeSwitcher />
+            <ThemeSwitcher transparent={isTransparent} />
             <Link
               to="/contact"
               className={`text-xs tracking-widest uppercase font-medium px-6 py-2.5 transition-all duration-300 ${
@@ -125,7 +125,7 @@ export default function Navbar() {
 
           {/* Mobile controls */}
           <div className="flex lg:hidden items-center gap-3">
-            <ThemeSwitcher />
+            <ThemeSwitcher compact />
             <LanguageSwitcher variant={isTransparent ? 'transparent' : 'solid'} />
             <button
               onClick={() => setMobileOpen(o => !o)}

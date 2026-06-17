@@ -7,7 +7,7 @@ const themes: { id: Theme; label: string; dot: string }[] = [
   { id: 'elegant-dark', label: 'Elegant Dark', dot: 'bg-[#0A0908] border border-[#A9927D]/40' },
 ];
 
-export default function ThemeSwitcher({ compact = false }: { compact?: boolean }) {
+export default function ThemeSwitcher({ compact = false, transparent = false }: { compact?: boolean; transparent?: boolean }) {
   const { theme, setTheme } = useThemeStore();
   const [open, setOpen] = useState(false);
   const current = themes.find(t => t.id === theme) || themes[0];
@@ -18,10 +18,18 @@ export default function ThemeSwitcher({ compact = false }: { compact?: boolean }
         onClick={() => setOpen(o => !o)}
         aria-label="Switch theme"
         title={`Theme: ${current.label}`}
-        className={`flex items-center gap-1.5 transition-colors ${compact ? 'p-1' : 'border border-stone-brown/30 px-3 py-1.5 hover:border-luxury-burgundy'}`}
+        className={`flex items-center gap-1.5 transition-colors ${
+          compact
+            ? 'p-1'
+            : transparent
+              ? 'border border-warm-white/40 px-3 py-1.5 hover:border-arch-beige'
+              : 'border border-stone-brown/30 px-3 py-1.5 hover:border-luxury-burgundy'
+        }`}
       >
         <span className={`w-3 h-3 rounded-full inline-block ${current.dot}`} />
-        {!compact && <span className="text-xs tracking-widest uppercase text-stone-brown hover:text-luxury-burgundy">Theme</span>}
+        {!compact && <span className={`text-xs tracking-widest uppercase ${
+          transparent ? 'text-warm-white/80 hover:text-arch-beige' : 'text-stone-brown hover:text-luxury-burgundy'
+        }`}>Theme</span>}
       </button>
 
       {open && (
