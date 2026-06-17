@@ -106,7 +106,7 @@ function App() {
   // Show preloader only once per session (not on admin pages or back-navigation)
   const isAdmin = typeof window !== 'undefined' && window.location.pathname.startsWith('/admin');
   const [preloaderDone, setPreloaderDone] = useState(
-    isAdmin || localStorage.getItem('arqiva_preloaded') === '1'
+    isAdmin || sessionStorage.getItem('arqiva_preloaded') === '1'
   );
 
   useEffect(() => {
@@ -114,7 +114,7 @@ function App() {
   }, [initFromStorage]);
 
   const handlePreloaderDone = () => {
-    localStorage.setItem('arqiva_preloaded', '1');
+    sessionStorage.setItem('arqiva_preloaded', '1');
     setPreloaderDone(true);
   };
 
