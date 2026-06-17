@@ -143,7 +143,8 @@ export default function Navbar() {
           </div>
 
           {/* Mobile controls */}
-          <div className="flex lg:hidden items-center gap-4">
+          <div className="flex lg:hidden items-center gap-3">
+            <ThemeSwitcher />
             <button
               onClick={toggleLang}
               aria-label="Switch language"
