@@ -90,7 +90,7 @@ function PremiumStatCard({
   return (
     <motion.div
       ref={ref}
-      className="group relative flex flex-col justify-between p-3 md:p-5 cursor-default select-none overflow-hidden"
+      className="group relative flex flex-col justify-between p-2 md:p-5 cursor-default select-none overflow-hidden"
       initial={{ opacity: 0, y: 22 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.6, ease: EASE }}
@@ -106,18 +106,18 @@ function PremiumStatCard({
         <span className="absolute bottom-0 right-0 w-px h-6 bg-arch-beige/50 group-hover:bg-arch-beige/80 group-hover:h-9 transition-all duration-300" />
       </span>
 
-      {/* Icon */}
-      <div className="mb-3 text-arch-beige transition-colors duration-300">
+      {/* Icon — hidden on mobile to save space */}
+      <div className="hidden md:block mb-3 text-arch-beige transition-colors duration-300">
         {STAT_ICONS[icon]}
       </div>
 
       {/* Animated number */}
-      <p className="font-display text-[clamp(2rem,2.8vw,2.4rem)] font-light leading-none text-arch-beige transition-colors duration-300 tabular-nums">
+      <p className="font-display text-[clamp(1.35rem,4vw,2.4rem)] md:text-[clamp(2rem,2.8vw,2.4rem)] font-light leading-none text-arch-beige transition-colors duration-300 tabular-nums">
         {customDisplay ?? `${prefix}${count}${suffix}`}
       </p>
 
       {/* Label */}
-      <p className="mt-2 text-warm-white/80 group-hover:text-warm-white text-[11px] md:text-[11px] tracking-[0.35em] uppercase font-medium transition-colors duration-300">
+      <p className="mt-1 md:mt-2 text-warm-white/80 group-hover:text-warm-white text-[8px] md:text-[11px] tracking-[0.2em] md:tracking-[0.35em] uppercase font-medium transition-colors duration-300 leading-tight">
         {label}
       </p>
 
@@ -154,7 +154,7 @@ export default function HomePage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative min-h-screen md:h-screen flex flex-col bg-primary-black">
+      <section className="relative h-[100svh] md:h-screen flex flex-col bg-primary-black overflow-hidden">
         {/* Background — overflow-hidden here contains the scale animation */}
         <motion.div
           className="absolute inset-0 overflow-hidden will-change-transform"
@@ -172,19 +172,19 @@ export default function HomePage() {
         </motion.div>
 
         {/* Main content — flex-1 fills all available space between navbar and bottom bar */}
-        <div className="relative z-10 flex-1 flex items-center pt-20 pb-3 md:pb-6">
+        <div className="relative z-10 flex-1 flex items-center pt-16 md:pt-20 pb-2 md:pb-6">
           <div className="container-main">
             <div className="max-w-3xl">
               <motion.p {...fadeUp} transition={{ duration: 0.5, delay: 0.15 }}
-                className="text-arch-beige text-xs tracking-[0.5em] uppercase font-semibold mb-3 md:mb-5 hero-text-shadow">
+                className="text-arch-beige text-xs tracking-[0.5em] uppercase font-semibold mb-1 md:mb-5 hero-text-shadow">
                 {settings?.heroLabel || t('home.hero_label')}
               </motion.p>
-              <h1 className="font-display text-[clamp(1.9rem,5.5vw,6rem)] font-light leading-[1.02] text-white mb-3 md:mb-6 hero-text-shadow">
+              <h1 className="font-display text-[clamp(1.7rem,5.5vw,6rem)] font-light leading-[1.02] text-white mb-1 md:mb-6 hero-text-shadow">
                 <span className="block"><WordReveal text={settings?.heroTitle || t('home.hero_title_1')} delay={0.25} /></span>
                 <em className="not-italic text-arch-beige block"><WordReveal text={settings?.heroAccent || t('home.hero_title_2')} delay={0.5} /></em>
               </h1>
               <motion.p {...fadeUp} transition={{ duration: 0.6, delay: 0.45 }}
-                className="text-white/90 text-sm md:text-lg leading-relaxed max-w-xl mb-5 md:mb-8 font-light hero-text-shadow">
+                className="text-white/90 text-xs md:text-lg leading-relaxed max-w-xl mb-3 md:mb-8 font-light hero-text-shadow line-clamp-2 md:line-clamp-none">
                 {settings?.heroSubtitle || settings?.description || 'We create architectural experiences that transcend the ordinary — from luxury residences to landmark commercial projects across the globe.'}
               </motion.p>
               <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.55 }} className="flex flex-wrap items-center gap-4">
@@ -207,7 +207,7 @@ export default function HomePage() {
             <div className="h-px bg-gradient-to-r from-transparent via-warm-white/20 to-transparent" />
           </div>
           {/* 4-card grid */}
-          <div className="container-main grid grid-cols-2 md:grid-cols-4 gap-0 divide-x divide-y md:divide-y-0 divide-warm-white/10 py-2 md:py-3">
+          <div className="container-main grid grid-cols-4 gap-0 divide-x divide-warm-white/10 py-1.5 md:py-3">
             <PremiumStatCard
               icon="building"
               value={settings?.statProjects ?? 47}
