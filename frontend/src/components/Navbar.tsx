@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { applyDirection } from '@/i18n';
 import ArqivaLogo from './ArqivaLogo';
 import ThemeSwitcher from './ThemeSwitcher';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const NAV_LINKS = [
   { key: 'projects', to: '/projects' },
@@ -12,6 +13,7 @@ const NAV_LINKS = [
   { key: 'packages', to: '/packages' },
   { key: 'about', to: '/about' },
   { key: 'awards', to: '/awards' },
+  { key: 'testimonials', to: '/testimonials' },
   { key: 'resume', to: '/resume' },
 ];
 
@@ -21,43 +23,169 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Transparent only over home-page hero
   const isHeroPage = location.pathname === '/';
 
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 60);
-    fn(); // initialise
+    fn();
     window.addEventListener('scroll', fn, { passive: true });
     return () => window.removeEventListener('scroll', fn);
   }, []);
 
-  const toggleLang = () => {
-    const next = i18n.language === 'ar' ? 'en' : 'ar';
-    i18n.changeLanguage(next);
-    applyDirection(next);
-  };
-
   const isTransparent = isHeroPage && !scrolled && !mobileOpen;
 
-  const linkCls = ({ isActive }: { isActive: boolean }) =>
-    `text-xs tracking-[0.2em] uppercase font-medium transition-colors duration-300 ${
-      isActive
-        ? isTransparent ? 'text-arch-beige' : 'text-luxury-burgundy'
-        : isTransparent
-          ? 'text-warm-white/85 hover:text-arch-beige'
-          : 'text-primary-black hover:text-luxury-burgundy'
-    }`;
+  const isActive = (to: string) =>
+    location.pathname === to || (to !== '/' && location.pathname.startsWith(to));
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
       isTransparent
         ? 'bg-transparent border-b border-transparent'
         : scrolled
-          ? 'bg-white/95 backdrop-blur-md border-b border-stone-brown/12 shadow-[0_4px_32px_rgba(10,9,8,0.10)]'
+          ? 'navbar-scrolled bg-white/95 backdrop-blur-md border-b border-stone-brown/12 shadow-[0_4px_32px_rgba(10,9,8,0.10)]'
           : 'bg-white border-b border-stone-brown/12 shadow-[0_1px_8px_rgba(10,9,8,0.04)]'
     }`}>
+      <div className="w-full max-w-[1600px] mx-auto px-1 sm:px-2 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link
+            to="/"
+            aria-label="ARQIVA Home"
+            className="flex-shrink-0"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          >
+            <ArqivaLogo
+              variant="color"
+              size="sm"
+              className={`transition-all duration-500 ${isTransparent ? '[filter:brightness(0)_invert(1)]' : ''}`}
+            />
+          </Link>
+
+          {/* Desktop nav */}
+          <nav className="hidden lg:flex items-center gap-8">
+            {NAV_LINKS.map(({ key, to }) => (
+              <Link
+                key={key}
+                to={to}
+                className={`relative text-xs tracking-[0.2em] uppercase font-medium transition-colors duration-300 group ${
+                  isActive(to)
+                    ? isTransparent ? 'text-arch-beige' : 'text-luxury-burgundy'
+                    : isTransparent
+                      ? 'text-warm-white/85 hover:text-arch-beige'
+                      : 'text-primary-black hover:text-luxury-burgundy'
+                }`}
+              >
+                {t(`nav.${key}`)}
+                {isActive(to) ? (
+                  <motion.span
+                    layoutId="nav-underline"
+                    className={`absolute -bottom-0.5 left-0 right-0 h-px ${isTransparent ? 'bg-arch-beige' : 'bg-luxury-burgundy'}`}
+                    transition={{ type: 'spring', stiffness: 500, damping: 40 }}
+                  />
+                ) : (
+                  <span className={`absolute -bottom-0.5 left-0 right-0 h-px scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left ${isTransparent ? 'bg-arch-beige/60' : 'bg-luxury-burgundy/60'}`} />
+                )}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Desktop right */}
+          <div className="hidden lg:flex items-center gap-4">
+            <LanguageSwitcher variant={isTransparent ? 'transparent' : 'solid'} />
+            <ThemeSwitcher />
+            <Link
+              to="/contact"
+              className={`text-xs tracking-widest uppercase font-medium px-6 py-2.5 transition-all duration-300 ${
+                isTransparent
+                  ? 'border border-warm-white/60 text-warm-white hover:bg-warm-white hover:text-primary-black'
+                  : 'bg-luxury-burgundy text-warm-white hover:bg-primary-black'
+              }`}
+            >
+              {t('nav.contact')}
+            </Link>
+          </div>
+
+          {/* Mobile controls */}
+          <div className="flex lg:hidden items-center gap-3">
+            <ThemeSwitcher />
+            <LanguageSwitcher variant={isTransparent ? 'transparent' : 'solid'} />
+            <button
+              onClick={() => setMobileOpen(o => !o)}
+              className="flex flex-col gap-1.5 p-1"
+              aria-label="Toggle menu"
+              aria-expanded={mobileOpen}
+            >
+              <span className={`block h-px w-6 transition-all duration-300 origin-center ${
+                isTransparent && !mobileOpen ? 'bg-warm-white' : 'bg-primary-black'
+              } ${mobileOpen ? 'rotate-45 translate-y-[7px]' : ''}`} />
+              <span className={`block h-px w-6 transition-all duration-300 ${
+                isTransparent && !mobileOpen ? 'bg-warm-white' : 'bg-primary-black'
+              } ${mobileOpen ? 'opacity-0 scale-x-0' : ''}`} />
+              <span className={`block h-px w-6 transition-all duration-300 origin-center ${
+                isTransparent && !mobileOpen ? 'bg-warm-white' : 'bg-primary-black'
+              } ${mobileOpen ? '-rotate-45 -translate-y-[7px]' : ''}`} />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile accordion */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            key="mobile-menu"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.28, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="lg:hidden overflow-hidden mobile-nav-bg bg-[#FAF8F5] border-t border-stone-brown/15"
+          >
+            <nav className="container-main py-6 flex flex-col">
+              {NAV_LINKS.map(({ key, to }, i) => (
+                <motion.div
+                  key={key}
+                  initial={{ x: i18n.dir() === 'rtl' ? 10 : -10, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: i * 0.04 }}
+                  className="relative"
+                >
+                  <Link
+                    to={to}
+                    className={`block py-4 text-sm tracking-widest uppercase font-medium border-b border-stone-brown/10 transition-colors ${
+                      isActive(to)
+                        ? 'text-luxury-burgundy font-semibold'
+                        : 'text-primary-black hover:text-luxury-burgundy'
+                    }`}
+                  >
+                    {t(`nav.${key}`)}
+                    {isActive(to) && (
+                      <motion.span
+                        layoutId="mobile-nav-indicator"
+                        className="absolute left-0 top-0 bottom-0 w-0.5 bg-luxury-burgundy"
+                      />
+                    )}
+                  </Link>
+                </motion.div>
+              ))}
+              <motion.div
+                initial={{ x: -10, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: NAV_LINKS.length * 0.04 }}
+                className="pt-5"
+              >
+                <Link to="/contact" className="btn-primary w-full justify-center text-xs py-3.5">
+                  {t('nav.contact')}
+                </Link>
+              </motion.div>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
+  );
+}
       <div className="w-full max-w-[1600px] mx-auto px-1 sm:px-2 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
