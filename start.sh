@@ -122,13 +122,19 @@ db.package.count().then(async n => {
 " 2>/dev/null || true
 
 echo "-> Building frontend..."
-if [ -d "$WORKSPACE/frontend/node_modules" ]; then
-  cd "$WORKSPACE/frontend" && node_modules/.bin/vite build 2>&1 | tail -3 && cd "$WORKSPACE"
-elif [ -d "/tmp/arqiva-frontend/node_modules" ]; then
-  cd "$WORKSPACE/frontend" && /tmp/arqiva-frontend/node_modules/.bin/vite build 2>&1 | tail -3 && cd "$WORKSPACE"
-else
-  echo "-> Frontend node_modules not found — skipping build"
+FRONTEND_TMP="/tmp/arqiva-frontend"
+if [ ! -f "$WORKSPACE/frontend/node_modules/vite/package.json" ]; then
+  echo "-> Frontend node_modules missing — installing to /tmp..."
+  mkdir -p "$FRONTEND_TMP"
+  cp "$WORKSPACE/frontend/package.json" "$FRONTEND_TMP/package.json"
+  cd "$FRONTEND_TMP"
+  NODE_ENV=development npm install --no-audit --no-fund --ignore-scripts 2>&1 \
+    | grep -v "^npm warn" | tail -3
+  cd "$WORKSPACE"
+  rm -rf "$WORKSPACE/frontend/node_modules"
+  ln -sfn "$FRONTEND_TMP/node_modules" "$WORKSPACE/frontend/node_modules"
 fi
+cd "$WORKSPACE/frontend" && node_modules/.bin/vite build 2>&1 | tail -3 && cd "$WORKSPACE"
 
 echo "-> Starting server..."
 node backend/dist/index.js
