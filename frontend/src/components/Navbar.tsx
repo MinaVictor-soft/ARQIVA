@@ -12,6 +12,7 @@ const NAV_LINKS = [
   { key: 'packages', to: '/packages' },
   { key: 'about', to: '/about' },
   { key: 'awards', to: '/awards' },
+  { key: 'testimonials', to: '/testimonials' },
   { key: 'resume', to: '/resume' },
 ];
 
