@@ -1,9 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+Arabic:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@300;400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+Arabic:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@300;400;500;600&display=swap');
 
 /* ── Theme Variables ──────────────────────────────────────────────────────── */
 :root,
@@ -18,25 +17,109 @@
 }
 
 [data-theme="warm-arch"] {
-  --bg-primary: #F5EFE6;
-  --bg-secondary: #FDF9F4;
-  --text-primary: #2C1F14;
+  --bg-primary: #EDE8DF;
+  --bg-secondary: #F5F0E8;
+  --text-primary: #1E1510;
   --text-secondary: #6B5344;
-  --accent: #7B3F2B;
-  --accent-soft: #C4956A;
-  --border: rgba(107, 83, 68, 0.15);
+  --accent: #5C1B28;
+  --accent-soft: #B09880;
+  --border: rgba(107, 83, 68, 0.18);
 }
 [data-theme="warm-arch"] body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
 }
-[data-theme="warm-arch"] .bg-warm-white { background-color: var(--bg-primary) !important; }
-[data-theme="warm-arch"] .bg-white { background-color: var(--bg-secondary) !important; }
-[data-theme="warm-arch"] .text-primary-black { color: var(--text-primary) !important; }
-[data-theme="warm-arch"] .text-stone-brown { color: var(--text-secondary) !important; }
-[data-theme="warm-arch"] .text-luxury-burgundy { color: var(--accent) !important; }
-[data-theme="warm-arch"] .text-arch-beige { color: var(--accent-soft) !important; }
-[data-theme="warm-arch"] .border-stone-brown\/15 { border-color: var(--border) !important; }
+
+/* Backgrounds */
+[data-theme="warm-arch"] .bg-warm-white       { background-color: var(--bg-primary)   !important; }
+[data-theme="warm-arch"] .bg-light-cream      { background-color: #E6DFCF             !important; }
+[data-theme="warm-arch"] .bg-white            { background-color: var(--bg-secondary)  !important; }
+[data-theme="warm-arch"] .bg-stone-brown\/5   { background-color: rgba(107,83,68,0.07) !important; }
+[data-theme="warm-arch"] .bg-arch-beige\/10   { background-color: rgba(176,152,128,0.12) !important; }
+[data-theme="warm-arch"] .bg-primary-black    { background-color: #1E1510             !important; }
+
+/* Text */
+[data-theme="warm-arch"] .text-primary-black   { color: var(--text-primary)   !important; }
+[data-theme="warm-arch"] .text-stone-brown     { color: var(--text-secondary)  !important; }
+[data-theme="warm-arch"] .text-stone-brown\/70 { color: rgba(107,83,68,0.82)  !important; }
+[data-theme="warm-arch"] .text-stone-brown\/60 { color: rgba(107,83,68,0.72)  !important; }
+[data-theme="warm-arch"] .text-stone-brown\/50 { color: rgba(107,83,68,0.62)  !important; }
+[data-theme="warm-arch"] .text-stone-brown\/40 { color: rgba(107,83,68,0.52)  !important; }
+[data-theme="warm-arch"] .text-luxury-burgundy { color: var(--accent)         !important; }
+[data-theme="warm-arch"] .text-arch-beige      { color: var(--accent-soft)    !important; }
+[data-theme="warm-arch"] .section-label        { color: var(--accent)         !important; }
+
+/* Borders */
+[data-theme="warm-arch"] .border-stone-brown\/15 { border-color: rgba(107,83,68,0.20) !important; }
+[data-theme="warm-arch"] .border-stone-brown\/12 { border-color: rgba(107,83,68,0.17) !important; }
+[data-theme="warm-arch"] .border-stone-brown\/10 { border-color: rgba(107,83,68,0.14) !important; }
+[data-theme="warm-arch"] .border-stone-brown\/30 { border-color: rgba(107,83,68,0.35) !important; }
+[data-theme="warm-arch"] .border-stone-brown\/20 { border-color: rgba(107,83,68,0.25) !important; }
+[data-theme="warm-arch"] .border-luxury-burgundy { border-color: var(--accent)  !important; }
+[data-theme="warm-arch"] .divide-stone-brown\/10 > * + * { border-color: rgba(107,83,68,0.14) !important; }
+
+/* Navbar */
+[data-theme="warm-arch"] .navbar-scrolled {
+  background-color: rgba(245,240,232,0.97) !important;
+  border-bottom-color: rgba(107,83,68,0.16) !important;
+}
+/* Mobile nav */
+[data-theme="warm-arch"] .mobile-nav-bg {
+  background-color: var(--bg-secondary) !important;
+}
+[data-theme="warm-arch"] [class*="bg-\[#FAF8F5\]"] {
+  background-color: var(--bg-secondary) !important;
+}
+
+/* ThemeSwitcher dropdown */
+[data-theme="warm-arch"] .dark-dropdown {
+  background-color: var(--bg-secondary) !important;
+  border-color: rgba(107,83,68,0.18) !important;
+}
+
+/* Inputs */
+[data-theme="warm-arch"] input,
+[data-theme="warm-arch"] textarea,
+[data-theme="warm-arch"] select {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary)            !important;
+  border-color: rgba(107,83,68,0.25)   !important;
+}
+[data-theme="warm-arch"] input::placeholder,
+[data-theme="warm-arch"] textarea::placeholder {
+  color: rgba(107,83,68,0.42) !important;
+}
+[data-theme="warm-arch"] .input-luxury,
+[data-theme="warm-arch"] .textarea-luxury {
+  color: var(--text-primary) !important;
+  border-bottom-color: rgba(107,83,68,0.32) !important;
+}
+
+/* Cards */
+[data-theme="warm-arch"] .card,
+[data-theme="warm-arch"] [class*="bg-white border"] {
+  background-color: var(--bg-secondary) !important;
+  border-color: rgba(107,83,68,0.18)    !important;
+}
+
+/* Filter chips */
+[data-theme="warm-arch"] .filter-chip-inactive {
+  border-color: rgba(107,83,68,0.25) !important;
+  color: var(--text-secondary)       !important;
+}
+[data-theme="warm-arch"] .filter-chip-active {
+  background-color: var(--accent) !important;
+  color: #F5F0E8                  !important;
+  border-color: var(--accent)     !important;
+}
+
+/* Lang switcher */
+[data-theme="warm-arch"] .lang-switcher-pill {
+  background-color: var(--text-primary) !important;
+}
+[data-theme="warm-arch"] .lang-switcher-border {
+  border-color: rgba(107,83,68,0.32) !important;
+}
 
 [data-theme="elegant-dark"] {
   --bg-primary: #0A0908;
