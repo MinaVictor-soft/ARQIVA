@@ -76,7 +76,7 @@ export default function HomePage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative h-screen min-h-[600px] flex flex-col">
+      <section className="relative h-screen min-h-[600px] flex flex-col bg-primary-black">
         {/* Background — overflow-hidden here contains the scale animation */}
         <motion.div className="absolute inset-0 overflow-hidden" initial={{ scale: 1.06 }} animate={{ scale: 1 }} transition={{ duration: 8, ease: 'easeOut' }}>
           <img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover" />
@@ -85,7 +85,7 @@ export default function HomePage() {
         </motion.div>
 
         {/* Main content — flex-1 fills all available space between navbar and bottom bar */}
-        <div className="relative z-10 flex-1 flex items-center pt-20 pb-6 overflow-hidden">
+        <div className="relative z-10 flex-1 flex items-center pt-20 pb-6">
           <div className="container-main">
             <div className="max-w-3xl">
               <motion.p {...fadeUp} transition={{ duration: 0.5, delay: 0.15 }}
