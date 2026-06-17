@@ -97,13 +97,13 @@ function PremiumStatCard({
     >
       {/* Architectural corner bracket — top-left */}
       <span className="absolute top-0 left-0 block pointer-events-none">
-        <span className="absolute top-0 left-0 h-px w-5 bg-arch-beige/30 group-hover:bg-arch-beige/80 group-hover:w-8 transition-all duration-300" />
-        <span className="absolute top-0 left-0 w-px h-5 bg-arch-beige/30 group-hover:bg-arch-beige/80 group-hover:h-8 transition-all duration-300" />
+        <span className="absolute top-0 left-0 h-px w-6 bg-arch-beige/70 group-hover:bg-arch-beige group-hover:w-9 transition-all duration-300" />
+        <span className="absolute top-0 left-0 w-px h-6 bg-arch-beige/70 group-hover:bg-arch-beige group-hover:h-9 transition-all duration-300" />
       </span>
       {/* Architectural corner bracket — bottom-right */}
       <span className="absolute bottom-0 right-0 block pointer-events-none">
-        <span className="absolute bottom-0 right-0 h-px w-5 bg-warm-white/10 group-hover:bg-arch-beige/40 group-hover:w-8 transition-all duration-300" />
-        <span className="absolute bottom-0 right-0 w-px h-5 bg-warm-white/10 group-hover:bg-arch-beige/40 group-hover:h-8 transition-all duration-300" />
+        <span className="absolute bottom-0 right-0 h-px w-6 bg-arch-beige/50 group-hover:bg-arch-beige/80 group-hover:w-9 transition-all duration-300" />
+        <span className="absolute bottom-0 right-0 w-px h-6 bg-arch-beige/50 group-hover:bg-arch-beige/80 group-hover:h-9 transition-all duration-300" />
       </span>
 
       {/* Icon */}
