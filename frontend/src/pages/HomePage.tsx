@@ -163,76 +163,110 @@ export default function HomePage() {
           animate={{ scale: 1 }}
           transition={{ duration: 5, ease: 'easeOut' }}
         >
-          <motion.img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover scale-105" initial={{ opacity: 0 }} animate={{ opacity: 0.7 }} transition={{ duration: 3, ease: 'easeOut' }} />
-          <div className="absolute inset-0 bg-primary-black/60" />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-black/85 via-primary-black/50 to-primary-black/10" />
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary-black/90 to-transparent" />
+          <motion.img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover scale-105" initial={{ opacity: 0 }} animate={{ opacity: 0.85 }} transition={{ duration: 3, ease: 'easeOut' }} />
+
+          {/* ── Mobile overlays: light base + top gradient (text) + bottom gradient (stats) ── */}
+          <div className="absolute inset-0 bg-primary-black/20 md:hidden" />
+          <div className="absolute inset-x-0 top-0 h-[58%] md:hidden bg-gradient-to-b from-primary-black/88 via-primary-black/55 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-[26%] md:hidden bg-gradient-to-t from-primary-black/88 to-transparent" />
+
+          {/* ── Desktop overlays: left gradient + base scrim + bottom fade ── */}
+          <div className="absolute inset-0 hidden md:block bg-primary-black/60" />
+          <div className="absolute inset-0 hidden md:block bg-gradient-to-r from-primary-black/85 via-primary-black/50 to-primary-black/10" />
+          <div className="absolute inset-x-0 bottom-0 h-40 hidden md:block bg-gradient-to-t from-primary-black/90 to-transparent" />
         </motion.div>
 
-        {/* ── Content + Stats column ── */}
-        <div className="relative z-10 flex-1 flex flex-col pt-14 md:pt-20">
+        {/* ── Content + Stats ── */}
+        <div className="relative z-10 flex flex-col h-full pt-14 md:pt-20">
 
-          {/* Text content — vertically centered in the available space */}
-          <div className="flex-1 flex flex-col justify-center container-main py-4 md:py-0">
+          {/* Text — starts right below navbar on mobile, centered on desktop */}
+          <div className="container-main pt-4 pb-0 md:flex-1 md:flex md:flex-col md:justify-center">
             <div className="max-w-3xl w-full">
 
-              {/* Label with decorative accent line */}
+              {/* Label */}
               <motion.div
-                className="flex items-center gap-3 mb-2.5 md:mb-5"
+                className="flex items-center gap-2.5 mb-2 md:mb-5"
                 initial={{ opacity: 0, x: -12 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.15, ease: EASE }}
+                transition={{ duration: 0.5, delay: 0.1, ease: EASE }}
               >
-                <span className="block h-px w-5 bg-arch-beige/70 shrink-0" />
-                <p className="text-arch-beige text-[9px] md:text-xs tracking-[0.45em] uppercase font-semibold hero-text-shadow">
+                <span className="block h-px w-4 bg-arch-beige/70 shrink-0" />
+                <p className="text-arch-beige text-[8.5px] md:text-xs tracking-[0.45em] uppercase font-semibold hero-text-shadow">
                   {settings?.heroLabel || t('home.hero_label')}
                 </p>
               </motion.div>
 
-              {/* Main headline */}
-              <h1 className="font-display text-[clamp(1.75rem,5.5vw,6rem)] font-light leading-[1.04] text-white mb-2 md:mb-6 hero-text-shadow">
-                <span className="block"><WordReveal text={settings?.heroTitle || t('home.hero_title_1')} delay={0.25} /></span>
-                <em className="not-italic text-arch-beige block"><WordReveal text={settings?.heroAccent || t('home.hero_title_2')} delay={0.5} /></em>
+              {/* Headline */}
+              <h1 className="font-display text-[1.85rem] md:text-[clamp(1.75rem,5.5vw,6rem)] font-light leading-[1.04] text-white mb-2 md:mb-6 hero-text-shadow">
+                <span className="block"><WordReveal text={settings?.heroTitle || t('home.hero_title_1')} delay={0.2} /></span>
+                <em className="not-italic text-arch-beige block"><WordReveal text={settings?.heroAccent || t('home.hero_title_2')} delay={0.42} /></em>
               </h1>
 
               {/* Description */}
               <motion.p
                 {...fadeUp}
-                transition={{ duration: 0.6, delay: 0.45 }}
-                className="text-white/85 text-[11px] md:text-lg leading-relaxed max-w-xl mb-4 md:mb-8 font-light hero-text-shadow line-clamp-2 md:line-clamp-none"
+                transition={{ duration: 0.55, delay: 0.38 }}
+                className="text-white/80 text-[10.5px] md:text-lg leading-relaxed max-w-xl mb-3 md:mb-8 font-light hero-text-shadow line-clamp-2 md:line-clamp-none"
               >
                 {settings?.heroSubtitle || settings?.description || 'We create architectural experiences that transcend the ordinary — from luxury residences to landmark commercial projects across the globe.'}
               </motion.p>
 
-              {/* CTA buttons — stacked on mobile, side-by-side on sm+ */}
+              {/* CTA buttons — side-by-side on all sizes */}
               <motion.div
                 {...fadeUp}
-                transition={{ duration: 0.5, delay: 0.55 }}
-                className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:gap-4"
+                transition={{ duration: 0.5, delay: 0.48 }}
+                className="flex flex-row items-center gap-2 md:gap-4"
               >
                 <Link
                   to={settings?.heroCta1Url || '/projects'}
-                  className="flex-1 sm:flex-none text-center px-5 md:px-8 py-2.5 md:py-3.5 bg-luxury-burgundy text-warm-white text-[9px] md:text-xs tracking-widest uppercase font-medium hover:bg-warm-white hover:text-primary-black transition-colors duration-200"
+                  className="flex-1 md:flex-none text-center px-3 md:px-8 py-2.5 md:py-3.5 bg-luxury-burgundy text-warm-white text-[8.5px] md:text-xs tracking-widest uppercase font-medium hover:bg-warm-white hover:text-primary-black transition-colors duration-200"
                 >
                   {settings?.heroCta1Text || t('home.hero_cta_primary')}
                 </Link>
                 <Link
                   to={settings?.heroCta2Url || '/services'}
-                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 text-warm-white/80 hover:text-warm-white text-[9px] md:text-xs tracking-widest uppercase transition-colors border border-warm-white/30 px-4 md:px-6 py-2.5 md:py-3.5 hover:border-warm-white/70"
+                  className="flex-1 md:flex-none flex items-center justify-center gap-1.5 md:gap-2 text-warm-white/85 hover:text-warm-white text-[8.5px] md:text-xs tracking-widest uppercase transition-colors border border-warm-white/35 md:border-warm-white/30 px-3 md:px-6 py-2.5 md:py-3.5 hover:border-warm-white/65"
                 >
                   {settings?.heroCta2Text || t('home.hero_cta_secondary')}
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </Link>
               </motion.div>
             </div>
           </div>
 
-          {/* ── Stats strip — always at bottom, always 4 columns ── */}
+          {/* Mobile spacer — lets architectural image show between content and stats */}
+          <div className="flex-1 md:hidden" />
+
+          {/* ── Stats strip ── */}
           <div className="w-full shrink-0">
             <div className="container-main">
               <div className="h-px bg-gradient-to-r from-transparent via-warm-white/20 to-transparent" />
             </div>
-            <div className="container-main grid grid-cols-4 gap-0 divide-x divide-warm-white/10 py-1 md:py-3">
+
+            {/* Mobile: ultra-compact inline badges */}
+            <div className="md:hidden container-main">
+              <div className="grid grid-cols-4 divide-x divide-warm-white/15">
+                {[
+                  { v: `${settings?.statProjects ?? 47}+`, l: 'Projects' },
+                  { v: `${settings?.statCountries ?? 6}+`, l: 'Countries' },
+                  { v: settings?.statValue || '$2.4B+', l: 'Built Value' },
+                  { v: '15+', l: 'Experience' },
+                ].map((s, i) => (
+                  <motion.div key={i}
+                    className="flex flex-col items-center justify-center py-2.5 px-1"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.58 + i * 0.07, duration: 0.4, ease: EASE }}
+                  >
+                    <span className="font-display text-[1.1rem] text-arch-beige leading-none tabular-nums">{s.v}</span>
+                    <span className="text-[6.5px] text-warm-white/65 tracking-[0.05em] uppercase mt-0.5 text-center leading-tight">{s.l}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* Desktop: animated PremiumStatCard */}
+            <div className="hidden md:grid container-main grid-cols-4 gap-0 divide-x divide-warm-white/10 py-3">
               <PremiumStatCard icon="building" value={settings?.statProjects ?? 47} suffix="+" label={t('home.stat_projects')} delay={0.85} />
               <PremiumStatCard icon="globe" value={settings?.statCountries ?? 6} suffix="+" label={t('home.stat_countries')} delay={0.95} />
               <PremiumStatCard icon="diamond" value={0} customDisplay={settings?.statValue || '$2.4B+'} label={t('home.stat_value')} delay={1.05} />
