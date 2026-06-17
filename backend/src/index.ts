@@ -6,7 +6,7 @@ import path from "path";
 import fs from "fs";
 import rateLimit from "express-rate-limit";
 import swaggerUi from "swagger-ui-express";
-import { testConnection } from "./db";
+import { testConnection, db as prisma } from "./db";
 import { swaggerSpec } from "./utils/swagger";
 
 // Import routes
@@ -172,6 +172,15 @@ async function start() {
       console.error("Failed to connect to database. Exiting...");
       process.exit(1);
     }
+
+    // Patch: ensure heroImage is set so the local hero is used as fallback
+    try {
+      await prisma.settings.updateMany({
+        where: { heroImage: null },
+        data: { heroImage: "/hero-bg.jpg" },
+      });
+    } catch (_) {}
+
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`✓ Server running on port ${PORT}`);
       console.log(`✓ Environment: ${process.env.NODE_ENV || "development"}`);
