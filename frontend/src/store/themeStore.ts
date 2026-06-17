@@ -11,7 +11,7 @@ interface ThemeState {
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set) => ({
-      theme: 'light-luxury',
+      theme: 'warm-arch',
       setTheme: (theme) => {
         set({ theme });
         applyTheme(theme);
@@ -29,6 +29,6 @@ export function applyTheme(theme: Theme) {
 // Apply on load
 if (typeof window !== 'undefined') {
   const stored = localStorage.getItem('arqiva_theme');
-  const theme: Theme = stored ? (JSON.parse(stored)?.state?.theme ?? 'light-luxury') : 'light-luxury';
+  const theme: Theme = stored ? (JSON.parse(stored)?.state?.theme ?? 'warm-arch') : 'warm-arch';
   applyTheme(theme);
 }

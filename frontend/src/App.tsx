@@ -124,7 +124,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       {!preloaderDone && <Preloader onDone={handlePreloaderDone} />}
-      <Router>
+      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <ScrollToTop />
         <AnimatedRoutes />
       </Router>

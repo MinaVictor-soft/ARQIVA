@@ -10,7 +10,7 @@ import Footer from '@/components/Footer';
 
 const fadeUp = { initial: { opacity: 0, y: 24 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.6 } };
 const EASE = [0.22, 1, 0.36, 1] as const;
-const HERO_FALLBACK = 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=1600&q=80&auto=format';
+const HERO_FALLBACK = 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=1600&q=80&auto=format&fit=crop';
 
 function WordReveal({ text, delay = 0 }: { text: string; delay?: number }) {
   return (
@@ -147,7 +147,7 @@ export default function HomePage() {
     return () => clearInterval(timer);
   }, [tCount]);
 
-  const heroImage = settingsLoading ? null : (settings?.heroImage || projects[0]?.coverImage || HERO_FALLBACK);
+  const heroImage = settings?.heroImage || projects[0]?.coverImage || HERO_FALLBACK;
 
   return (
     <div className="min-h-screen bg-primary-black text-primary-black">
@@ -162,11 +162,13 @@ export default function HomePage() {
           animate={{ scale: 1 }}
           transition={{ duration: 5, ease: 'easeOut' }}
         >
-          {heroImage && <img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover opacity-75 blur-[2px] scale-105" />}
-          {/* Directional overlay — left-side gradient only where text sits */}
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-black/65 via-primary-black/25 to-transparent" />
+          <img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover opacity-90 scale-105" />
+          {/* Dark scrim so text is always readable */}
+          <div className="absolute inset-0 bg-primary-black/50" />
+          {/* Directional left gradient for extra contrast behind text */}
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-black/70 via-primary-black/30 to-transparent" />
           {/* Bottom fade — blends into stats bar */}
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary-black/70 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary-black/80 to-transparent" />
         </motion.div>
 
         {/* Main content — flex-1 fills all available space between navbar and bottom bar */}
@@ -174,15 +176,15 @@ export default function HomePage() {
           <div className="container-main">
             <div className="max-w-3xl">
               <motion.p {...fadeUp} transition={{ duration: 0.5, delay: 0.15 }}
-                className="text-arch-beige text-xs tracking-[0.5em] uppercase font-medium mb-3 md:mb-5 hero-text-shadow">
+                className="text-arch-beige text-xs tracking-[0.5em] uppercase font-semibold mb-3 md:mb-5 hero-text-shadow">
                 {settings?.heroLabel || t('home.hero_label')}
               </motion.p>
-              <h1 className="font-display text-[clamp(1.9rem,5.5vw,6rem)] font-light leading-[1.02] text-warm-white mb-3 md:mb-6 hero-text-shadow">
+              <h1 className="font-display text-[clamp(1.9rem,5.5vw,6rem)] font-light leading-[1.02] text-white mb-3 md:mb-6 hero-text-shadow">
                 <span className="block"><WordReveal text={settings?.heroTitle || t('home.hero_title_1')} delay={0.25} /></span>
                 <em className="not-italic text-arch-beige block"><WordReveal text={settings?.heroAccent || t('home.hero_title_2')} delay={0.5} /></em>
               </h1>
               <motion.p {...fadeUp} transition={{ duration: 0.6, delay: 0.45 }}
-                className="text-warm-white/80 text-sm md:text-lg leading-relaxed max-w-xl mb-5 md:mb-8 font-light hero-text-shadow">
+                className="text-white/90 text-sm md:text-lg leading-relaxed max-w-xl mb-5 md:mb-8 font-light hero-text-shadow">
                 {settings?.heroSubtitle || settings?.description || 'We create architectural experiences that transcend the ordinary — from luxury residences to landmark commercial projects across the globe.'}
               </motion.p>
               <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.55 }} className="flex flex-wrap items-center gap-4">
