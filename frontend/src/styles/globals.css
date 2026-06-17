@@ -465,7 +465,7 @@
 
   /* Hero text clarity */
   .hero-text-shadow {
-    text-shadow: 0 2px 24px rgba(0,0,0,0.45), 0 0 60px rgba(0,0,0,0.2);
+    text-shadow: 0 1px 4px rgba(0,0,0,0.90), 0 2px 24px rgba(0,0,0,0.70), 0 0 60px rgba(0,0,0,0.50);
   }
 
   /* Section vertical rhythm — comfortable editorial spacing */

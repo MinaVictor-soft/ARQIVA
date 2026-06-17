@@ -163,8 +163,10 @@ export default function HomePage() {
           transition={{ duration: 5, ease: 'easeOut' }}
         >
           {heroImage && <img src={heroImage} alt="Architecture" loading="eager" className="w-full h-full object-cover" />}
-          {/* Directional overlay — strong on text side, open on photo side */}
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-black via-primary-black/60 to-primary-black/10" />
+          {/* Base scrim — guarantees minimum contrast on any image tone */}
+          <div className="absolute inset-0 bg-primary-black/45" />
+          {/* Directional overlay — extra coverage on text side */}
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-black/80 via-primary-black/50 to-transparent" />
           {/* Bottom fade — masks image edge and blends into stats bar */}
           <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary-black to-transparent" />
         </motion.div>
@@ -174,7 +176,7 @@ export default function HomePage() {
           <div className="container-main">
             <div className="max-w-3xl">
               <motion.p {...fadeUp} transition={{ duration: 0.5, delay: 0.15 }}
-                className="text-arch-beige text-xs tracking-[0.5em] uppercase font-medium mb-5">
+                className="text-arch-beige text-xs tracking-[0.5em] uppercase font-medium mb-5 hero-text-shadow">
                 {settings?.heroLabel || t('home.hero_label')}
               </motion.p>
               <h1 className="font-display text-[clamp(2.4rem,5.5vw,6rem)] font-light leading-[1.02] text-warm-white mb-6 hero-text-shadow">
