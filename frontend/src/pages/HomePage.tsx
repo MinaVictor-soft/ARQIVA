@@ -190,13 +190,13 @@ export default function HomePage() {
             transition={{ duration: 0.45, delay: 0.2, ease: EASE }}
           >
             <span className="block h-px w-3.5 bg-arch-beige/65 shrink-0" />
-            <p className="text-arch-beige text-[8px] tracking-[0.42em] uppercase font-semibold">
+            <p className="text-arch-beige text-[10.5px] tracking-[0.35em] uppercase font-semibold">
               {settings?.heroLabel || t('home.hero_label')}
             </p>
           </motion.div>
 
           {/* Headline */}
-          <h1 className="font-display text-[1.72rem] font-light leading-[1.05] text-white mb-1.5">
+          <h1 className="font-display text-[2rem] font-light leading-[1.05] text-white mb-2">
             <span className="block">
               <WordReveal text={settings?.heroTitle || t('home.hero_title_1')} delay={0.18} />
             </span>
@@ -209,7 +209,7 @@ export default function HomePage() {
           <motion.p
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="text-white/68 text-[10px] leading-[1.55] mb-2.5 line-clamp-2 font-light"
+            className="text-white/75 text-[12px] leading-[1.6] mb-3 line-clamp-2 font-light"
           >
             {settings?.heroSubtitle || settings?.description || 'Award-winning architecture and interior design studio crafting timeless environments across the UAE and GCC.'}
           </motion.p>
@@ -222,13 +222,13 @@ export default function HomePage() {
           >
             <Link
               to={settings?.heroCta1Url || '/projects'}
-              className="flex-1 text-center py-2.5 bg-luxury-burgundy text-warm-white text-[8px] tracking-[0.18em] uppercase font-semibold hover:bg-warm-white hover:text-primary-black transition-colors duration-200"
+              className="flex-1 text-center py-3 bg-luxury-burgundy text-warm-white text-[10px] tracking-[0.14em] uppercase font-semibold hover:bg-warm-white hover:text-primary-black transition-colors duration-200"
             >
               {settings?.heroCta1Text || t('home.hero_cta_primary')}
             </Link>
             <Link
               to={settings?.heroCta2Url || '/services'}
-              className="flex-1 flex items-center justify-center gap-1 border border-warm-white/28 text-warm-white/78 hover:text-warm-white hover:border-warm-white/55 text-[8px] tracking-[0.18em] uppercase transition-colors duration-200 py-2.5"
+              className="flex-1 flex items-center justify-center gap-1.5 border border-warm-white/28 text-warm-white/80 hover:text-warm-white hover:border-warm-white/55 text-[10px] tracking-[0.14em] uppercase transition-colors duration-200 py-3"
             >
               {settings?.heroCta2Text || t('home.hero_cta_secondary')}
               <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -250,8 +250,8 @@ export default function HomePage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.48 + i * 0.06, duration: 0.35, ease: EASE }}
                 >
-                  <span className="font-display text-[1.05rem] text-arch-beige leading-none tabular-nums">{s.v}</span>
-                  <span className="text-[5.5px] text-warm-white/50 tracking-[0.04em] uppercase mt-0.5 leading-tight">{s.l}</span>
+                  <span className="font-display text-[1.2rem] text-arch-beige leading-none tabular-nums">{s.v}</span>
+                  <span className="text-[7.5px] text-warm-white/60 tracking-[0.06em] uppercase mt-0.5 leading-tight">{s.l}</span>
                 </motion.div>
               ))}
             </div>
