@@ -90,7 +90,7 @@ function PremiumStatCard({
   return (
     <motion.div
       ref={ref}
-      className="group relative flex flex-col justify-end md:justify-between p-2 md:p-5 cursor-default select-none overflow-hidden"
+      className="group relative flex flex-col justify-between p-3 md:p-5 cursor-default select-none overflow-hidden"
       initial={{ opacity: 0, y: 22 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.6, ease: EASE }}
@@ -106,18 +106,18 @@ function PremiumStatCard({
         <span className="absolute bottom-0 right-0 w-px h-6 bg-arch-beige/50 group-hover:bg-arch-beige/80 group-hover:h-9 transition-all duration-300" />
       </span>
 
-      {/* Icon — hidden on mobile to save space */}
-      <div className="hidden md:block mb-3 text-arch-beige transition-colors duration-300">
+      {/* Icon */}
+      <div className="block mb-2 md:mb-3 text-arch-beige transition-colors duration-300">
         {STAT_ICONS[icon]}
       </div>
 
       {/* Animated number */}
-      <p className="font-display text-[1.1rem] md:text-[clamp(1.4rem,2.8vw,2.4rem)] font-light leading-none text-arch-beige transition-colors duration-300 tabular-nums">
+      <p className="font-display text-[1.4rem] md:text-[clamp(1.4rem,2.8vw,2.4rem)] font-light leading-none text-arch-beige transition-colors duration-300 tabular-nums">
         {customDisplay ?? `${prefix}${count}${suffix}`}
       </p>
 
       {/* Label */}
-      <p className="mt-0.5 md:mt-2 text-warm-white/75 group-hover:text-warm-white text-[6.5px] md:text-[11px] tracking-[0.06em] md:tracking-[0.35em] uppercase font-medium leading-tight transition-colors duration-300">
+      <p className="mt-1 md:mt-2 text-warm-white/75 group-hover:text-warm-white text-[9px] md:text-[11px] tracking-[0.12em] md:tracking-[0.35em] uppercase font-medium leading-tight transition-colors duration-300">
         {label}
       </p>
 
@@ -232,27 +232,13 @@ export default function HomePage() {
             </Link>
           </motion.div>
 
-          {/* Stats — 2 columns, directly under CTAs */}
-          <div className="border-t border-warm-white/10 pt-3">
-            <div className="grid grid-cols-2">
-              {[
-                { v: `${settings?.statProjects ?? 47}+`, l: 'Projects' },
-                { v: `${settings?.statCountries ?? 6}+`, l: 'Countries' },
-                { v: settings?.statValue || '$2.4B+', l: 'Built Value' },
-                { v: '15+', l: 'Exp.' },
-              ].map((s, i) => (
-                <motion.div key={i}
-                  className={`flex flex-col items-center py-3
-                    ${i < 2 ? 'border-b border-warm-white/10' : ''}
-                    ${i % 2 === 0 ? 'border-r border-warm-white/10' : ''}`}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.48 + i * 0.06, duration: 0.35, ease: EASE }}
-                >
-                  <span className="font-display text-[1.75rem] text-arch-beige leading-none tabular-nums">{s.v}</span>
-                  <span className="text-[10px] text-warm-white/60 tracking-[0.08em] uppercase mt-1 leading-tight">{s.l}</span>
-                </motion.div>
-              ))}
+          {/* Stats — 2×2 PremiumStatCard grid */}
+          <div className="border-t border-warm-white/10 mt-1">
+            <div className="grid grid-cols-2 gap-px bg-warm-white/10">
+              <div className="bg-[#0A0908]"><PremiumStatCard icon="building" value={settings?.statProjects ?? 47} suffix="+" label={t('home.stat_projects')} delay={0.85} /></div>
+              <div className="bg-[#0A0908]"><PremiumStatCard icon="globe" value={settings?.statCountries ?? 6} suffix="+" label={t('home.stat_countries')} delay={0.95} /></div>
+              <div className="bg-[#0A0908]"><PremiumStatCard icon="diamond" value={0} customDisplay={settings?.statValue || '$2.4B+'} label={t('home.stat_value')} delay={1.05} /></div>
+              <div className="bg-[#0A0908]"><PremiumStatCard icon="compass" value={15} suffix="+" label="Years Experience" delay={1.15} /></div>
             </div>
           </div>
 
