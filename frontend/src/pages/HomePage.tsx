@@ -174,36 +174,32 @@ export default function HomePage() {
       ══════════════════════════════════════════════════════════════════ */}
       <section className="md:hidden relative flex flex-col h-[100dvh] bg-[#0A0908]">
 
-        {/* ── Image — absolute, top portion only ── */}
-        <div className="absolute inset-x-0 top-0 h-[45dvh] overflow-hidden">
+        {/* ── Image — tall container, gradient fades to solid before clip ── */}
+        <div className="absolute inset-x-0 top-0 h-[70dvh] overflow-hidden">
           <motion.img
             src={heroImage}
             alt="Architecture"
             loading="eager"
-            className="absolute inset-0 w-full h-full object-cover object-center"
+            className="absolute inset-0 w-full h-full object-cover object-[center_25%]"
             initial={{ opacity: 0, scale: 1.08 }}
-            animate={{ opacity: 0.4, scale: 1 }}
+            animate={{ opacity: 0.85, scale: 1 }}
             transition={{ duration: 2.2, ease: 'easeOut' }}
           />
-          <div className="absolute inset-0 bg-primary-black/20" />
+          {/* Gradient fades image to pure #0A0908 well before the container edge */}
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 0%, transparent 35%, rgba(10,9,8,0.45) 52%, rgba(10,9,8,0.82) 68%, #0A0908 82%)' }} />
+          {/* Top gradient — navbar blend */}
+          <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-[#0A0908]/55 to-transparent pointer-events-none" />
           {/* Shimmer sweep */}
           <motion.div
             className="absolute inset-y-0 w-2/5 pointer-events-none"
-            style={{ background: 'linear-gradient(105deg, transparent 0%, rgba(242,244,243,0.07) 50%, transparent 100%)' }}
+            style={{ background: 'linear-gradient(105deg, transparent 0%, rgba(242,244,243,0.06) 50%, transparent 100%)' }}
             initial={{ x: '-150%' }}
             animate={{ x: '350%' }}
             transition={{ duration: 1.1, delay: 2.0, ease: [0.4, 0, 0.2, 1] }}
           />
-          {/* Top gradient — navbar blend */}
-          <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-[#0A0908]/60 to-transparent pointer-events-none" />
         </div>
 
-        {/* ── Full-section gradient — spans image AND content area seamlessly ── */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: 'linear-gradient(to bottom, rgba(10,9,8,0.3) 0%, transparent 20%, transparent 35%, rgba(10,9,8,0.5) 55%, rgba(10,9,8,0.88) 72%, #0A0908 85%)' }}
-        />
-        {/* Warm ambient radial glow in content zone */}
+        {/* ── Warm ambient radial glow ── */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{ background: 'radial-gradient(ellipse 90% 40% at 50% 58%, rgba(169,146,125,0.09) 0%, transparent 70%)' }}
@@ -233,7 +229,7 @@ export default function HomePage() {
               />
               <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-arch-beige/80" />
             </span>
-            <p className="text-arch-beige text-[13px] tracking-[0.35em] uppercase font-bold hero-text-shadow">
+            <p className="text-arch-beige text-[11px] tracking-[0.22em] uppercase font-semibold hero-text-shadow whitespace-nowrap">
               <LetterReveal text={settings?.heroLabel || t('home.hero_label')} delay={0.35} />
             </p>
           </motion.div>
