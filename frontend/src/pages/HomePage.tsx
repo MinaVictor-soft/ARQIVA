@@ -182,7 +182,7 @@ export default function HomePage() {
             loading="eager"
             className="absolute inset-0 w-full h-full object-cover object-center"
             initial={{ opacity: 0, scale: 1.08 }}
-            animate={{ opacity: 0.55, scale: 1 }}
+            animate={{ opacity: 0.4, scale: 1 }}
             transition={{ duration: 2.2, ease: 'easeOut' }}
           />
           <div className="absolute inset-0 bg-primary-black/20" />
@@ -233,13 +233,13 @@ export default function HomePage() {
               />
               <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-arch-beige/80" />
             </span>
-            <p className="text-arch-beige text-[12px] tracking-[0.35em] uppercase font-semibold">
+            <p className="text-arch-beige text-[13px] tracking-[0.35em] uppercase font-bold hero-text-shadow">
               <LetterReveal text={settings?.heroLabel || t('home.hero_label')} delay={0.35} />
             </p>
           </motion.div>
 
           {/* Headline */}
-          <h1 className="font-display text-[2.5rem] font-light leading-[1.05] text-white mb-2">
+          <h1 className="font-display text-[2.5rem] font-light leading-[1.05] text-white mb-2 hero-text-shadow">
             <span className="block">
               <WordReveal text={settings?.heroTitle || t('home.hero_title_1')} delay={0.18} />
             </span>
@@ -261,7 +261,7 @@ export default function HomePage() {
           <motion.p
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="text-white/75 text-[15px] leading-[1.6] mb-3 line-clamp-2 font-light"
+            className="text-white/90 text-[15px] leading-[1.6] mb-3 line-clamp-2 font-light hero-text-shadow"
           >
             {settings?.heroSubtitle || settings?.description || 'Award-winning architecture and interior design studio crafting timeless environments across the UAE and GCC.'}
           </motion.p>
