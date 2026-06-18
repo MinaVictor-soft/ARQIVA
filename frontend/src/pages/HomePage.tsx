@@ -298,7 +298,7 @@ export default function HomePage() {
               <div className="bg-[#0A0908]"><PremiumStatCard icon="building" value={settings?.statProjects ?? 47} suffix="+" label={t('home.stat_projects')} delay={0.85} /></div>
               <div className="bg-[#0A0908]"><PremiumStatCard icon="globe" value={settings?.statCountries ?? 6} suffix="+" label={t('home.stat_countries')} delay={0.95} /></div>
               <div className="bg-[#0A0908]"><PremiumStatCard icon="diamond" value={0} customDisplay={settings?.statValue || '$2.4B+'} label={t('home.stat_value')} delay={1.05} /></div>
-              <div className="bg-[#0A0908]"><PremiumStatCard icon="compass" value={15} suffix="+" label="Years Experience" delay={1.15} /></div>
+              <div className="bg-[#0A0908]"><PremiumStatCard icon="compass" value={settings?.statYears ?? 15} suffix="+" label="Years Experience" delay={1.15} /></div>
             </div>
           </div>
 
@@ -360,7 +360,7 @@ export default function HomePage() {
             <PremiumStatCard icon="building" value={settings?.statProjects ?? 47} suffix="+" label={t('home.stat_projects')} delay={0.85} />
             <PremiumStatCard icon="globe" value={settings?.statCountries ?? 6} suffix="+" label={t('home.stat_countries')} delay={0.95} />
             <PremiumStatCard icon="diamond" value={0} customDisplay={settings?.statValue || '$2.4B+'} label={t('home.stat_value')} delay={1.05} />
-            <PremiumStatCard icon="compass" value={15} suffix="+" label="Years Experience" delay={1.15} />
+            <PremiumStatCard icon="compass" value={settings?.statYears ?? 15} suffix="+" label="Years Experience" delay={1.15} />
           </div>
         </div>
 

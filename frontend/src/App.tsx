@@ -1,10 +1,11 @@
 import React, { useEffect, useState, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import { QueryClientProvider, QueryClient, useQuery } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAuthStore } from '@/store/authStore';
 import ScrollToTop from '@/components/ScrollToTop';
 import Preloader, { PrefetchedData } from '@/components/Preloader';
+import api from '@/lib/api';
 
 // ── Lazy-loaded pages (code-split per route) ──────────────────────────────
 const HomePage          = lazy(() => import('@/pages/HomePage'));
@@ -101,6 +102,27 @@ function AnimatedRoutes() {
   );
 }
 
+// ── SiteHead — applies dynamic favicon/title from settings ───────────────
+function SiteHead() {
+  const { data: settingsRes } = useQuery({
+    queryKey: ['settings'],
+    queryFn: () => api.get('/settings').then(r => r.data),
+    staleTime: 5 * 60 * 1000,
+  });
+  const favicon = settingsRes?.data?.favicon;
+  useEffect(() => {
+    if (!favicon) return;
+    let link = document.querySelector<HTMLLinkElement>('link[rel~="icon"]');
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.head.appendChild(link);
+    }
+    link.href = favicon;
+  }, [favicon]);
+  return null;
+}
+
 function App() {
   const initFromStorage = useAuthStore((state) => state.initFromStorage);
   // Show preloader only once per session (not on admin pages or back-navigation)
@@ -123,6 +145,7 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <SiteHead />
       {!preloaderDone && <Preloader onDone={handlePreloaderDone} />}
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <ScrollToTop />

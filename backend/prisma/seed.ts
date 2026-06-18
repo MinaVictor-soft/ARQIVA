@@ -42,6 +42,7 @@ async function main() {
         statProjects: 47,
         statCountries: 6,
         statValue: '2.4B+',
+        statYears: 15,
         heroImage: '/hero-bg.jpg',
         logo: '/logo.png',
         darkLogo: '/logo.png',

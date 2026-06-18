@@ -35,8 +35,8 @@ function SkeletonRows({ n = 5 }: { n?: number }) {
 }
 function SectionHeader({ title, action }: { title: string; action?: React.ReactNode }) {
   return (
-    <div className="flex items-center justify-between mb-8">
-      <h1 className="font-display text-3xl text-warm-white">{title}</h1>
+    <div className="flex items-center justify-between mb-6 sm:mb-8 gap-4">
+      <h1 className="font-display text-2xl sm:text-3xl text-warm-white">{title}</h1>
       {action}
     </div>
   );
@@ -148,8 +148,8 @@ function DashboardHome() {
   ];
   return (
     <div>
-      <h1 className="font-display text-4xl text-warm-white mb-10">Dashboard</h1>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-12">
+      <h1 className="font-display text-3xl sm:text-4xl text-warm-white mb-8 sm:mb-10">Dashboard</h1>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-10 sm:mb-12">
         {cards.map(c => (
           <div key={c.label} className="border border-warm-white/10 p-6 hover:border-warm-white/20 transition-colors">
             <p className="text-warm-white/30 text-xs tracking-widest uppercase mb-3">{c.label}</p>
@@ -202,7 +202,7 @@ function ProjectForm({ project, categories, onSave, onCancel }: any) {
   const autoSlug = (t: string) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   return (
     <div className="space-y-5 max-w-3xl">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field label="Title *"><input className={inputCls} value={f.title} onChange={e => { set('title', e.target.value); if (!project) set('slug', autoSlug(e.target.value)); }} /></Field>
         <Field label="Slug *"><input className={inputCls} value={f.slug} onChange={e => set('slug', e.target.value)} /></Field>
       </div>
@@ -212,26 +212,26 @@ function ProjectForm({ project, categories, onSave, onCancel }: any) {
       <Field label="Short Description"><textarea className={textareaCls} value={f.description} onChange={e => set('description', e.target.value)} /></Field>
       <Field label="Description (Arabic) — اختياري" hint="ar"><textarea className={textareaCls} dir="rtl" placeholder="الوصف بالعربية" value={f.descriptionAr} onChange={e => set('descriptionAr', e.target.value)} /></Field>
       <Field label="Project Story"><textarea className={`${textareaCls}`} style={{ minHeight: 120 }} value={f.projectStory} onChange={e => set('projectStory', e.target.value)} /></Field>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field label="Design Concept"><textarea className={textareaCls} value={f.designConcept} onChange={e => set('designConcept', e.target.value)} /></Field>
         <Field label="Challenges"><textarea className={textareaCls} value={f.challenges} onChange={e => set('challenges', e.target.value)} /></Field>
       </div>
       <Field label="Solutions"><textarea className={textareaCls} value={f.solutions} onChange={e => set('solutions', e.target.value)} /></Field>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field label="Client Name"><input className={inputCls} value={f.clientName} onChange={e => set('clientName', e.target.value)} /></Field>
         <Field label="Client Company"><input className={inputCls} value={f.clientCompany} onChange={e => set('clientCompany', e.target.value)} /></Field>
       </div>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Field label="Category"><select className={inputCls} value={f.categoryId} onChange={e => set('categoryId', e.target.value)}><option value="">— None —</option>{categories.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}</select></Field>
         <Field label="Year"><input type="number" className={inputCls} value={f.year} onChange={e => set('year', parseInt(e.target.value))} /></Field>
         <Field label="Status"><select className={inputCls} value={f.status} onChange={e => set('status', e.target.value)}>{['completed', 'in-progress', 'concept', 'paused'].map(s => <option key={s} value={s}>{s}</option>)}</select></Field>
       </div>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Field label="Country"><input className={inputCls} value={f.country} onChange={e => set('country', e.target.value)} /></Field>
         <Field label="City"><input className={inputCls} value={f.city} onChange={e => set('city', e.target.value)} /></Field>
         <Field label="Area (m²)"><input className={inputCls} value={f.projectArea} onChange={e => set('projectArea', e.target.value)} /></Field>
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field label="Budget"><input className={inputCls} value={f.budget} onChange={e => set('budget', e.target.value)} /></Field>
         <Field label="Duration"><input className={inputCls} value={f.duration} onChange={e => set('duration', e.target.value)} /></Field>
       </div>
@@ -274,7 +274,7 @@ function ProjectsAdmin() {
           <div className="flex items-center gap-3">
             <span className={`text-xs uppercase tracking-widest ${p.published ? 'text-green-400/60' : 'text-warm-white/20'}`}>{p.published ? 'Live' : 'Draft'}</span>
             {p.featured && <span className="text-arch-beige text-xs uppercase tracking-widest">★</span>}
-            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex gap-2 transition-opacity">
               <Btn variant="secondary" onClick={() => { setEditing(p); setView('form'); }}>Edit</Btn>
               <Btn variant="danger" onClick={() => setConfirm(p.id)}>Del</Btn>
             </div>
@@ -367,7 +367,7 @@ function GalleryAdmin() {
                     <p className="text-warm-white/40 text-[10px] truncate">{img.caption || 'No caption'}</p>
                     <p className="text-warm-white/20 text-[10px]">#{idx + 1}</p>
                   </div>
-                  <div className="absolute inset-0 bg-primary-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                  <div className="absolute inset-0 bg-primary-black/70 transition-opacity flex items-center justify-center gap-2">
                     {idx > 0 && <button onClick={() => moveUp(img, idx)} className="text-warm-white/70 text-xs border border-warm-white/20 px-2 py-1 hover:border-warm-white/50 transition-colors">↑</button>}
                     <button onClick={() => setConfirm(img.id)} className="text-luxury-burgundy text-xs border border-luxury-burgundy/40 px-2 py-1 hover:bg-luxury-burgundy hover:text-warm-white transition-colors">Del</button>
                   </div>
@@ -415,7 +415,7 @@ function CategoriesAdmin() {
           {isLoading ? <SkeletonRows n={3} /> : <div className="space-y-px">{items.map((item: any) => (
             <div key={item.id} className="flex items-center justify-between border border-warm-white/5 px-4 py-3 hover:border-warm-white/15 group">
               <div><p className="text-warm-white text-sm">{item.name}</p><p className="text-warm-white/30 text-xs">{item._count?.projects || 0} projects</p></div>
-              <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="flex gap-2 transition-opacity">
                 <Btn variant="secondary" onClick={() => { setEditing(item); setForm({ name: item.name, nameAr: item.nameAr || '', slug: item.slug, description: item.description || '', icon: item.icon || '' }); }}>Edit</Btn>
                 <Btn variant="danger" onClick={() => setConfirm(item.id)}>Del</Btn>
               </div>
@@ -462,7 +462,7 @@ function ServicesAdmin() {
         <div>{isLoading ? <SkeletonRows /> : <div className="space-y-px">{items.map((item: any) => (
           <div key={item.id} className="flex items-center justify-between border border-warm-white/5 px-4 py-3 hover:border-warm-white/15 group">
             <p className="text-warm-white text-sm">{item.name}</p>
-            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex gap-2 transition-opacity">
               <Btn variant="secondary" onClick={() => { setEditing(item); setForm({ name: item.name, nameAr: item.nameAr || '', slug: item.slug, description: item.description || '', descriptionAr: item.descriptionAr || '', benefits: item.benefits || '', process: item.process || '', icon: item.icon || '' }); }}>Edit</Btn>
               <Btn variant="danger" onClick={() => setConfirm(item.id)}>Del</Btn>
             </div>
@@ -493,7 +493,7 @@ function AwardsAdmin() {
         <div className="space-y-4">
           <Field label="Title *"><input className={inputCls} value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} /></Field>
           <Field label="Issuer"><input className={inputCls} value={form.issuer} onChange={e => setForm(f => ({ ...f, issuer: e.target.value }))} /></Field>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Field label="Category"><input className={inputCls} value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))} /></Field>
             <Field label="Year"><input type="number" className={inputCls} value={form.year} onChange={e => setForm(f => ({ ...f, year: parseInt(e.target.value) }))} /></Field>
           </div>
@@ -507,7 +507,7 @@ function AwardsAdmin() {
         <div>{isLoading ? <SkeletonRows /> : <div className="space-y-px">{items.map((item: any) => (
           <div key={item.id} className="flex items-center justify-between border border-warm-white/5 px-4 py-3 hover:border-warm-white/15 group">
             <div><p className="text-warm-white text-sm">{item.title}</p><p className="text-warm-white/30 text-xs">{item.year} · {item.issuer}</p></div>
-            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex gap-2 transition-opacity">
               <Btn variant="secondary" onClick={() => { setEditing(item); setForm({ title: item.title, description: item.description || '', issuer: item.issuer || '', year: item.year, category: item.category || '', featured: item.featured }); }}>Edit</Btn>
               <Btn variant="danger" onClick={() => setConfirm(item.id)}>Del</Btn>
             </div>
@@ -537,7 +537,7 @@ function TestimonialsAdmin() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="space-y-4">
           <Field label="Client Name *"><input className={inputCls} value={form.clientName} onChange={e => setForm(f => ({ ...f, clientName: e.target.value }))} /></Field>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Field label="Position"><input className={inputCls} value={form.clientPosition} onChange={e => setForm(f => ({ ...f, clientPosition: e.target.value }))} /></Field>
             <Field label="Company"><input className={inputCls} value={form.companyName} onChange={e => setForm(f => ({ ...f, companyName: e.target.value }))} /></Field>
           </div>
@@ -552,7 +552,7 @@ function TestimonialsAdmin() {
         <div>{isLoading ? <SkeletonRows /> : <div className="space-y-px">{items.map((item: any) => (
           <div key={item.id} className="flex items-center justify-between border border-warm-white/5 px-4 py-3 hover:border-warm-white/15 group">
             <div><p className="text-warm-white text-sm">{item.clientName}</p><p className="text-warm-white/30 text-xs">{item.companyName} · {'★'.repeat(item.rating)}</p></div>
-            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex gap-2 transition-opacity">
               <Btn variant="secondary" onClick={() => { setEditing(item); setForm({ clientName: item.clientName, clientPosition: item.clientPosition || '', companyName: item.companyName || '', rating: item.rating, testimonial: item.testimonial, featured: item.featured }); }}>Edit</Btn>
               <Btn variant="danger" onClick={() => setConfirm(item.id)}>Del</Btn>
             </div>
@@ -642,7 +642,7 @@ function SkillsAdmin() {
               <div className="space-y-px">{skills.map((skill: any) => (
                 <div key={skill.id} className="flex items-center justify-between border border-warm-white/5 px-4 py-2 hover:border-warm-white/15 group">
                   <div><span className="text-warm-white text-sm">{skill.name}</span><span className="text-warm-white/30 text-xs ml-3 capitalize">{skill.proficiency}</span></div>
-                  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex gap-2 transition-opacity">
                     <Btn variant="secondary" onClick={() => { setEditing(skill); setForm({ name: skill.name, category: skill.category, proficiency: skill.proficiency }); }}>Edit</Btn>
                     <Btn variant="danger" onClick={() => setConfirm(skill.id)}>Del</Btn>
                   </div>
@@ -690,7 +690,7 @@ function EducationAdmin() {
         <div>{isLoading ? <SkeletonRows n={3} /> : <div className="space-y-px">{items.map((item: any) => (
           <div key={item.id} className="flex items-center justify-between border border-warm-white/5 px-4 py-3 hover:border-warm-white/15 group">
             <div><p className="text-warm-white text-sm">{item.degree} in {item.field}</p><p className="text-warm-white/30 text-xs">{item.institution} · {item.startYear}–{item.endYear || 'Present'}</p></div>
-            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex gap-2 transition-opacity">
               <Btn variant="secondary" onClick={() => { setEditing(item); setForm({ degree: item.degree, field: item.field, institution: item.institution, startYear: String(item.startYear), endYear: item.endYear ? String(item.endYear) : '', description: item.description || '' }); }}>Edit</Btn>
               <Btn variant="danger" onClick={() => setConfirm(item.id)}>Del</Btn>
             </div>
@@ -736,7 +736,7 @@ function ExperienceAdmin() {
         <div>{isLoading ? <SkeletonRows n={3} /> : <div className="space-y-px">{items.map((item: any) => (
           <div key={item.id} className="flex items-center justify-between border border-warm-white/5 px-4 py-3 hover:border-warm-white/15 group">
             <div><p className="text-warm-white text-sm">{item.position}</p><p className="text-warm-white/30 text-xs">{item.company} · {new Date(item.startDate).getFullYear()}–{item.isCurrentRole ? 'Present' : item.endDate ? new Date(item.endDate).getFullYear() : '—'}</p></div>
-            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex gap-2 transition-opacity">
               <Btn variant="secondary" onClick={() => { setEditing(item); setForm({ position: item.position, company: item.company, startDate: item.startDate?.slice(0, 10) || '', endDate: item.endDate?.slice(0, 10) || '', isCurrentRole: item.isCurrentRole, description: item.description || '', achievements: item.achievements || '' }); }}>Edit</Btn>
               <Btn variant="danger" onClick={() => setConfirm(item.id)}>Del</Btn>
             </div>
@@ -841,7 +841,7 @@ function PackagesAdmin() {
               </div>
               <div className="flex items-center gap-3">
                 <span className={`text-xs uppercase tracking-widest ${pkg.published ? 'text-green-400/60' : 'text-warm-white/20'}`}>{pkg.published ? 'Live' : 'Draft'}</span>
-                <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex gap-2 transition-opacity">
                   <Btn variant="secondary" onClick={() => { setEditing(pkg); setForm(toForm(pkg)); setView('form'); }}>Edit</Btn>
                   <Btn variant="danger" onClick={() => setConfirm(pkg.id)}>Del</Btn>
                 </div>
@@ -910,7 +910,7 @@ function FeedbackAdmin() {
                   <p className="text-warm-white/60 text-sm leading-relaxed truncate">{fb.comment}</p>
                   <p className="text-warm-white/20 text-xs mt-1">{fb.email} · {new Date(fb.createdAt).toLocaleDateString()}</p>
                 </div>
-                <div className="flex flex-col gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex flex-col gap-1.5 shrink-0 transition-opacity">
                   {fb.status !== 'approved' && <Btn variant="secondary" onClick={() => statusMut.mutate({ id: fb.id, status: 'approved' })}>Approve</Btn>}
                   {fb.status !== 'rejected' && <Btn variant="secondary" onClick={() => statusMut.mutate({ id: fb.id, status: 'rejected' })}>Reject</Btn>}
                   <Btn variant="danger" onClick={() => setConfirm(fb.id)}>Delete</Btn>
@@ -960,6 +960,7 @@ function SettingsAdmin() {
         { key: 'statProjects', label: 'Stat: Projects Count', type: 'number' },
         { key: 'statCountries', label: 'Stat: Countries Count', type: 'number' },
         { key: 'statValue', label: 'Stat: Portfolio Value (e.g. 2.4B+)' },
+        { key: 'statYears', label: 'Stat: Years Experience', type: 'number' },
       ]
     },
     { title: 'Company', fields: [
@@ -1052,10 +1053,39 @@ const navGroups = [
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const handleLogout = () => { logout(); navigate('/admin/login'); };
+  const closeSidebar = () => setSidebarOpen(false);
+
   return (
     <div className="admin-root admin-light min-h-screen flex" data-force-light>
-      <aside className="w-60 border-r border-warm-white/10 flex flex-col p-6 shrink-0 overflow-y-auto sticky top-0 h-screen">
+
+      {/* Mobile overlay backdrop */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black/40 lg:hidden"
+          onClick={closeSidebar}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside className={`
+        fixed inset-y-0 left-0 z-40 w-60 border-r border-warm-white/10 flex flex-col p-6 overflow-y-auto
+        transition-transform duration-300 ease-in-out
+        lg:static lg:translate-x-0 lg:h-screen lg:sticky lg:top-0 lg:shrink-0
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        {/* Close button — mobile only */}
+        <button
+          onClick={closeSidebar}
+          className="absolute top-4 right-4 lg:hidden text-warm-white/40 hover:text-warm-white"
+          aria-label="Close menu"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M1 1l14 14M15 1L1 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+        </button>
+
         <Link to="/" className="font-display text-lg tracking-widest uppercase text-warm-white mb-1 block hover:text-arch-beige transition-colors">ARQIVA</Link>
         <p className="text-warm-white/20 text-xs tracking-widest uppercase mb-8">Studio Admin</p>
         <nav className="flex-1 space-y-6 overflow-y-auto">
@@ -1063,7 +1093,14 @@ export default function AdminDashboard() {
             <div key={group.label}>
               <p className="text-warm-white/20 text-xs tracking-widest uppercase mb-1">{group.label}</p>
               {group.items.map(({ to, label }) => (
-                <NavLink key={to} to={to} className={({ isActive }) => `flex items-center text-xs tracking-widest uppercase py-2 px-3 mb-0.5 transition-colors ${isActive ? 'bg-warm-white/8 text-warm-white' : 'text-warm-white/40 hover:text-warm-white hover:bg-warm-white/5'}`}>{label}</NavLink>
+                <NavLink
+                  key={to}
+                  to={to}
+                  onClick={closeSidebar}
+                  className={({ isActive }) => `flex items-center text-xs tracking-widest uppercase py-2 px-3 mb-0.5 transition-colors ${isActive ? 'bg-warm-white/8 text-warm-white' : 'text-warm-white/40 hover:text-warm-white hover:bg-warm-white/5'}`}
+                >
+                  {label}
+                </NavLink>
               ))}
             </div>
           ))}
@@ -1073,24 +1110,42 @@ export default function AdminDashboard() {
           <button onClick={handleLogout} className="text-warm-white/30 text-xs tracking-widest uppercase hover:text-warm-white transition-colors">Sign Out</button>
         </div>
       </aside>
-      <main className="flex-1 p-8 md:p-10 overflow-y-auto">
-        <Routes>
-          <Route path="dashboard" element={<DashboardHome />} />
-          <Route path="projects" element={<ProjectsAdmin />} />
-          <Route path="gallery" element={<GalleryAdmin />} />
-          <Route path="categories" element={<CategoriesAdmin />} />
-          <Route path="services" element={<ServicesAdmin />} />
-          <Route path="awards" element={<AwardsAdmin />} />
-          <Route path="testimonials" element={<TestimonialsAdmin />} />
-          <Route path="messages" element={<MessagesAdmin />} />
-          <Route path="packages" element={<PackagesAdmin />} />
-          <Route path="feedback" element={<FeedbackAdmin />} />
-          <Route path="skills" element={<SkillsAdmin />} />
-          <Route path="education" element={<EducationAdmin />} />
-          <Route path="experience" element={<ExperienceAdmin />} />
-          <Route path="settings" element={<SettingsAdmin />} />
-          <Route path="*" element={<DashboardHome />} />
-        </Routes>
+
+      {/* Main content */}
+      <main className="flex-1 min-w-0 overflow-y-auto">
+        {/* Mobile top bar */}
+        <div className="sticky top-0 z-20 flex items-center gap-4 px-4 py-3 border-b border-warm-white/10 bg-inherit lg:hidden">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="text-warm-white/60 hover:text-warm-white transition-colors"
+            aria-label="Open menu"
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+          </button>
+          <span className="font-display text-sm tracking-widest uppercase text-warm-white">Admin</span>
+        </div>
+
+        <div className="p-4 sm:p-6 md:p-8 lg:p-10">
+          <Routes>
+            <Route path="dashboard" element={<DashboardHome />} />
+            <Route path="projects" element={<ProjectsAdmin />} />
+            <Route path="gallery" element={<GalleryAdmin />} />
+            <Route path="categories" element={<CategoriesAdmin />} />
+            <Route path="services" element={<ServicesAdmin />} />
+            <Route path="awards" element={<AwardsAdmin />} />
+            <Route path="testimonials" element={<TestimonialsAdmin />} />
+            <Route path="messages" element={<MessagesAdmin />} />
+            <Route path="packages" element={<PackagesAdmin />} />
+            <Route path="feedback" element={<FeedbackAdmin />} />
+            <Route path="skills" element={<SkillsAdmin />} />
+            <Route path="education" element={<EducationAdmin />} />
+            <Route path="experience" element={<ExperienceAdmin />} />
+            <Route path="settings" element={<SettingsAdmin />} />
+            <Route path="*" element={<DashboardHome />} />
+          </Routes>
+        </div>
       </main>
     </div>
   );

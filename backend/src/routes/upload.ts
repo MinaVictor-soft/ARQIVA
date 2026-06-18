@@ -8,7 +8,8 @@ import { sendResponse, sendError } from '../utils/response';
 const router = Router();
 
 // Ensure uploads directory exists
-const uploadDir = path.join(__dirname, '../public/uploads');
+// __dirname at runtime = dist/routes/, so go ../../ to reach backend/public/uploads/
+const uploadDir = path.join(__dirname, '../../public/uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
 const storage = multer.diskStorage({
@@ -36,8 +37,7 @@ const upload = multer({
 // POST /api/upload — admin only
 router.post('/', authenticateToken, authorizeRole('admin'), upload.single('file'), (req: Request, res: Response) => {
   if (!req.file) return sendError(res, 400, 'No file uploaded');
-  const baseUrl = `${req.protocol}://${req.get('host')}`;
-  const url = `${baseUrl}/uploads/${req.file.filename}`;
+  const url = `/uploads/${req.file.filename}`;
   return sendResponse(res, 201, 'File uploaded', { url, filename: req.file.filename, size: req.file.size });
 });
 

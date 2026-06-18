@@ -68,6 +68,7 @@ model Settings {
   statProjects         Int?
   statCountries        Int?
   statValue            String?
+  statYears            Int?
   // Company
   profileImage         String?
   description          String?

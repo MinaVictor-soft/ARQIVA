@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { useQuery } from '@tanstack/react-query';
 import { applyDirection } from '@/i18n';
 import ArqivaLogo from './ArqivaLogo';
 import ThemeSwitcher from './ThemeSwitcher';
 import LanguageSwitcher from './LanguageSwitcher';
+import api from '@/lib/api';
 
 const NAV_LINKS = [
   { key: 'projects', to: '/projects' },
@@ -22,6 +24,13 @@ export default function Navbar() {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const { data: settingsRes } = useQuery({
+    queryKey: ['settings'],
+    queryFn: () => api.get('/settings').then(r => r.data),
+    staleTime: 5 * 60 * 1000,
+  });
+  const logoSrc: string | undefined = settingsRes?.data?.logo || undefined;
 
   const isHeroPage = location.pathname === '/';
 
@@ -48,7 +57,7 @@ export default function Navbar() {
           ? 'navbar-scrolled bg-white/95 backdrop-blur-md border-b border-stone-brown/12 shadow-[0_4px_32px_rgba(10,9,8,0.10)]'
           : 'bg-white border-b border-stone-brown/12 shadow-[0_1px_8px_rgba(10,9,8,0.04)]'
     }`}>
-      <div className="w-full max-w-[1600px] mx-auto px-1 sm:px-2 lg:px-8">
+      <div className="w-full max-w-[1600px] mx-auto px-0.5 sm:px-4 lg:px-8">
         <div className="flex items-center justify-between h-16">
 
           {/* Logo */}
@@ -61,6 +70,7 @@ export default function Navbar() {
             <ArqivaLogo
               variant="color"
               size="sm"
+              src={logoSrc}
               className={`transition-all duration-500 ${isTransparent ? '[filter:brightness(0)_invert(1)]' : ''}`}
             />
           </Link>

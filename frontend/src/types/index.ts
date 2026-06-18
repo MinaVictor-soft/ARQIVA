@@ -160,6 +160,7 @@ export interface Settings {
   statProjects?: number;
   statCountries?: number;
   statValue?: string;
+  statYears?: number;
   // Company
   profileImage?: string;
   description?: string;
