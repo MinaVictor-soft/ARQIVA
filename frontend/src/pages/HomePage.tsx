@@ -182,7 +182,7 @@ export default function HomePage() {
             loading="eager"
             className="absolute inset-0 w-full h-full object-cover object-center"
             initial={{ opacity: 0, scale: 1.08 }}
-            animate={{ opacity: 1, scale: 1 }}
+            animate={{ opacity: 0.55, scale: 1 }}
             transition={{ duration: 2.2, ease: 'easeOut' }}
           />
           <div className="absolute inset-0 bg-primary-black/20" />
