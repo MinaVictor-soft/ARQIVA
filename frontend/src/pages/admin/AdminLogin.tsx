@@ -31,7 +31,7 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-primary-black flex items-center justify-center px-4">
+    <div className="admin-root min-h-screen bg-primary-black flex items-center justify-center px-4 [color-scheme:dark]" data-force-dark>
       <div className="w-full max-w-sm">
         <div className="text-center mb-12">
           <h1 className="font-display text-3xl text-warm-white tracking-widest uppercase mb-2">ARQIVA</h1>

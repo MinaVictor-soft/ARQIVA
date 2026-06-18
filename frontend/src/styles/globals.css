@@ -4,6 +4,42 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Admin dark select dropdown fix ──────────────────────────────────────── */
+.admin-root select,
+.admin-root select option {
+  background-color: #1A1715;
+  color: #F2F4F3;
+  color-scheme: dark;
+}
+.admin-root select option:hover,
+.admin-root select option:focus,
+.admin-root select option:checked {
+  background-color: #A9927D !important;
+  color: #0A0908 !important;
+}
+/* ── Admin: pin to dark warm theme — never inherit public site theme ─────────── */
+[data-force-dark],
+[data-force-dark] * {
+  /* reset any warm-arch theme overrides */
+}
+[data-theme="warm-arch"] [data-force-dark] .bg-primary-black,
+[data-theme="light-luxury"] [data-force-dark] .bg-primary-black {
+  background-color: #0A0908 !important;
+}
+[data-theme="warm-arch"] [data-force-dark] .text-warm-white,
+[data-theme="light-luxury"] [data-force-dark] .text-warm-white {
+  color: #F2F4F3 !important;
+}
+[data-theme="warm-arch"] [data-force-dark] input,
+[data-theme="warm-arch"] [data-force-dark] textarea,
+[data-theme="warm-arch"] [data-force-dark] select,
+[data-theme="light-luxury"] [data-force-dark] input,
+[data-theme="light-luxury"] [data-force-dark] textarea,
+[data-theme="light-luxury"] [data-force-dark] select {
+  background-color: rgba(242,244,243,0.05) !important;
+  color: #F2F4F3 !important;
+  border-color: rgba(242,244,243,0.10) !important;
+}
 /* ── Theme Variables ──────────────────────────────────────────────────────── */
 :root,
 [data-theme="light-luxury"] {
