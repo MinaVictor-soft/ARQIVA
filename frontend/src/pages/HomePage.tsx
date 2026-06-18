@@ -157,7 +157,7 @@ export default function HomePage() {
           MOBILE HERO — dedicated split layout (hidden on md+)
           Structure: navbar gap → image block → solid content panel
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="md:hidden flex flex-col h-[100dvh] bg-[#0A0908]">
+      <section className="md:hidden flex flex-col h-[100dvh]" style={{ background: 'linear-gradient(to bottom, #0A0908 0%, #13100C 45%, #0A0908 100%)' }}>
 
         {/* ── Image block — top portion, behind navbar ── */}
         <div className="relative overflow-hidden shrink-0 h-[40dvh]">
@@ -186,8 +186,13 @@ export default function HomePage() {
           <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#0A0908] to-transparent" />
         </div>
 
-        {/* ── Content panel — solid dark, fills remaining screen ── */}
-        <div className="flex-1 flex flex-col px-4 pt-3 pb-2 min-h-0">
+        {/* ── Content panel — fills remaining screen with warm ambient bg ── */}
+        <div className="flex-1 flex flex-col px-4 pt-3 pb-2 min-h-0 relative">
+          {/* Warm radial glow at top — softens the dark panel */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse 100% 55% at 50% 0%, rgba(169,146,125,0.11) 0%, transparent 70%)' }}
+          />
 
           {/* Label */}
           <motion.div
