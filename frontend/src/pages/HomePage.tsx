@@ -174,8 +174,8 @@ export default function HomePage() {
       ══════════════════════════════════════════════════════════════════ */}
       <section className="md:hidden relative flex flex-col h-[100dvh] bg-[#0A0908]">
 
-        {/* ── Image — absolute, full section ── */}
-        <div className="absolute inset-0 overflow-hidden">
+        {/* ── Image — absolute, top portion only ── */}
+        <div className="absolute inset-x-0 top-0 h-[45dvh] overflow-hidden">
           <motion.img
             src={heroImage}
             alt="Architecture"
