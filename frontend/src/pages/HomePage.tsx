@@ -159,7 +159,7 @@ export default function HomePage() {
       <section className="md:hidden relative flex flex-col h-[100dvh] bg-[#0A0908]">
 
         {/* ── Image — absolute, covers top portion ── */}
-        <div className="absolute inset-x-0 top-0 h-[48dvh] overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-[40dvh] overflow-hidden">
           <motion.img
             src={heroImage}
             alt="Architecture"
@@ -185,7 +185,7 @@ export default function HomePage() {
         {/* ── Full-section gradient — spans image AND content area seamlessly ── */}
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ background: 'linear-gradient(to bottom, transparent 0%, transparent 22%, rgba(10,9,8,0.18) 32%, rgba(10,9,8,0.55) 40%, rgba(10,9,8,0.88) 48%, #0A0908 56%)' }}
+          style={{ background: 'linear-gradient(to bottom, transparent 0%, transparent 15%, rgba(10,9,8,0.18) 24%, rgba(10,9,8,0.55) 32%, rgba(10,9,8,0.88) 38%, #0A0908 46%)' }}
         />
         {/* Warm ambient radial glow in content zone */}
         <div
@@ -196,7 +196,7 @@ export default function HomePage() {
         {/* ── Content — z-10, flows from image area down ── */}
         <div className="relative z-10 flex flex-col h-full px-4 pb-3">
           {/* Push content below visible image */}
-          <div className="shrink-0 h-[38dvh]" />
+          <div className="shrink-0 h-[28dvh]" />
 
           {/* Label */}
           <motion.div
