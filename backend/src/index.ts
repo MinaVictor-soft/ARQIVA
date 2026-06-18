@@ -135,9 +135,12 @@ app.use("/api/projects/:projectId/gallery", galleryRoutes);
 // In production, serve React frontend and handle SPA routing
 if (process.env.NODE_ENV === "production") {
   const frontendDist = path.join(__dirname, "../../frontend/dist");
-  app.use(express.static(frontendDist));
+  app.use(express.static(frontendDist, { maxAge: "1y", index: false }));
   app.get("*", (req: Request, res: Response, next: NextFunction) => {
     if (!req.path.startsWith("/api") && !req.path.startsWith("/api-docs") && req.path !== "/health") {
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+      res.setHeader("Pragma", "no-cache");
+      res.setHeader("Expires", "0");
       res.sendFile(path.join(frontendDist, "index.html"), (err) => {
         if (err) res.status(200).send("OK");
       });

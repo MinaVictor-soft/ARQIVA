@@ -174,8 +174,8 @@ export default function HomePage() {
       ══════════════════════════════════════════════════════════════════ */}
       <section className="md:hidden relative flex flex-col h-[100dvh] bg-[#0A0908]">
 
-        {/* ── Image — absolute, covers top portion ── */}
-        <div className="absolute inset-x-0 top-0 h-[40dvh] overflow-hidden">
+        {/* ── Image — absolute, full section ── */}
+        <div className="absolute inset-0 overflow-hidden">
           <motion.img
             src={heroImage}
             alt="Architecture"
@@ -201,7 +201,7 @@ export default function HomePage() {
         {/* ── Full-section gradient — spans image AND content area seamlessly ── */}
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ background: 'linear-gradient(to bottom, transparent 0%, transparent 15%, rgba(10,9,8,0.18) 24%, rgba(10,9,8,0.55) 32%, rgba(10,9,8,0.88) 38%, #0A0908 46%)' }}
+          style={{ background: 'linear-gradient(to bottom, rgba(10,9,8,0.3) 0%, transparent 20%, transparent 35%, rgba(10,9,8,0.5) 55%, rgba(10,9,8,0.88) 72%, #0A0908 85%)' }}
         />
         {/* Warm ambient radial glow in content zone */}
         <div
@@ -209,10 +209,8 @@ export default function HomePage() {
           style={{ background: 'radial-gradient(ellipse 90% 40% at 50% 58%, rgba(169,146,125,0.09) 0%, transparent 70%)' }}
         />
 
-        {/* ── Content — z-10, flows from image area down ── */}
-        <div className="relative z-10 flex flex-col h-full px-4 pb-3">
-          {/* Push content below visible image */}
-          <div className="shrink-0 h-[28dvh]" />
+        {/* ── Content — z-10, pinned to bottom ── */}
+        <div className="relative z-10 flex flex-col h-full px-5 pb-4 justify-end">
 
           {/* Label */}
           <motion.div
@@ -235,13 +233,13 @@ export default function HomePage() {
               />
               <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-arch-beige/80" />
             </span>
-            <p className="text-arch-beige text-[10.5px] tracking-[0.35em] uppercase font-semibold">
+            <p className="text-arch-beige text-[12px] tracking-[0.35em] uppercase font-semibold">
               <LetterReveal text={settings?.heroLabel || t('home.hero_label')} delay={0.35} />
             </p>
           </motion.div>
 
           {/* Headline */}
-          <h1 className="font-display text-[2rem] font-light leading-[1.05] text-white mb-1.5">
+          <h1 className="font-display text-[2.5rem] font-light leading-[1.05] text-white mb-2">
             <span className="block">
               <WordReveal text={settings?.heroTitle || t('home.hero_title_1')} delay={0.18} />
             </span>
@@ -263,7 +261,7 @@ export default function HomePage() {
           <motion.p
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="text-white/75 text-[14px] leading-[1.6] mb-3 line-clamp-2 font-light"
+            className="text-white/75 text-[15px] leading-[1.6] mb-3 line-clamp-2 font-light"
           >
             {settings?.heroSubtitle || settings?.description || 'Award-winning architecture and interior design studio crafting timeless environments across the UAE and GCC.'}
           </motion.p>
@@ -284,14 +282,14 @@ export default function HomePage() {
               />
               <Link
                 to={settings?.heroCta1Url || '/projects'}
-                className="block text-center py-3 bg-luxury-burgundy text-warm-white text-[10px] tracking-[0.14em] uppercase font-semibold hover:bg-warm-white hover:text-primary-black transition-colors duration-200"
+                className="block text-center py-3.5 bg-luxury-burgundy text-warm-white text-[12px] tracking-[0.14em] uppercase font-semibold hover:bg-warm-white hover:text-primary-black transition-colors duration-200"
               >
                 {settings?.heroCta1Text || t('home.hero_cta_primary')}
               </Link>
             </div>
             <Link
               to={settings?.heroCta2Url || '/services'}
-              className="flex-1 flex items-center justify-center gap-1.5 border border-warm-white/28 text-warm-white/80 hover:text-warm-white hover:border-warm-white/55 text-[10px] tracking-[0.14em] uppercase transition-colors duration-200 py-3"
+              className="flex-1 flex items-center justify-center gap-1.5 border border-warm-white/28 text-warm-white/80 hover:text-warm-white hover:border-warm-white/55 text-[12px] tracking-[0.14em] uppercase transition-colors duration-200 py-3.5"
             >
               {settings?.heroCta2Text || t('home.hero_cta_secondary')}
               <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
