@@ -154,13 +154,12 @@ export default function HomePage() {
       <Navbar />
 
       {/* ══════════════════════════════════════════════════════════════════
-          MOBILE HERO — dedicated split layout (hidden on md+)
-          Structure: navbar gap → image block → solid content panel
+          MOBILE HERO — absolute image bg, continuous gradient, no edge
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="md:hidden flex flex-col h-[100dvh]" style={{ background: 'linear-gradient(to bottom, #0A0908 0%, #13100C 45%, #0A0908 100%)' }}>
+      <section className="md:hidden relative flex flex-col h-[100dvh] bg-[#0A0908]">
 
-        {/* ── Image block — top portion, behind navbar ── */}
-        <div className="relative overflow-hidden shrink-0 h-[40dvh]">
+        {/* ── Image — absolute, covers top portion ── */}
+        <div className="absolute inset-x-0 top-0 h-[48dvh] overflow-hidden">
           <motion.img
             src={heroImage}
             alt="Architecture"
@@ -170,9 +169,8 @@ export default function HomePage() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 2.2, ease: 'easeOut' }}
           />
-          {/* Subtle dark tint */}
-          <div className="absolute inset-0 bg-primary-black/25" />
-          {/* Shimmer sweep — diagonal light flare, runs once */}
+          <div className="absolute inset-0 bg-primary-black/20" />
+          {/* Shimmer sweep */}
           <motion.div
             className="absolute inset-y-0 w-2/5 pointer-events-none"
             style={{ background: 'linear-gradient(105deg, transparent 0%, rgba(242,244,243,0.07) 50%, transparent 100%)' }}
@@ -180,19 +178,25 @@ export default function HomePage() {
             animate={{ x: '350%' }}
             transition={{ duration: 1.1, delay: 2.0, ease: [0.4, 0, 0.2, 1] }}
           />
-          {/* Top gradient — blends image into navbar */}
-          <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-[#0A0908]/55 to-transparent pointer-events-none" />
-          {/* Bottom gradient — blends image into content panel */}
-          <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#0A0908] to-transparent" />
+          {/* Top gradient — navbar blend */}
+          <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-[#0A0908]/60 to-transparent pointer-events-none" />
         </div>
 
-        {/* ── Content panel — fills remaining screen with warm ambient bg ── */}
-        <div className="flex-1 flex flex-col px-4 pt-3 pb-2 min-h-0 relative">
-          {/* Warm radial glow at top — softens the dark panel */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse 100% 55% at 50% 0%, rgba(169,146,125,0.11) 0%, transparent 70%)' }}
-          />
+        {/* ── Full-section gradient — spans image AND content area seamlessly ── */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: 'linear-gradient(to bottom, transparent 0%, transparent 22%, rgba(10,9,8,0.18) 32%, rgba(10,9,8,0.55) 40%, rgba(10,9,8,0.88) 48%, #0A0908 56%)' }}
+        />
+        {/* Warm ambient radial glow in content zone */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: 'radial-gradient(ellipse 90% 40% at 50% 58%, rgba(169,146,125,0.09) 0%, transparent 70%)' }}
+        />
+
+        {/* ── Content — z-10, flows from image area down ── */}
+        <div className="relative z-10 flex flex-col h-full px-4 pb-3">
+          {/* Push content below visible image */}
+          <div className="shrink-0 h-[38dvh]" />
 
           {/* Label */}
           <motion.div
@@ -201,14 +205,12 @@ export default function HomePage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.45, delay: 0.2, ease: EASE }}
           >
-            {/* Animated dash */}
             <motion.span
               className="block h-px bg-arch-beige/65 shrink-0"
               initial={{ width: 0 }}
               animate={{ width: '14px' }}
               transition={{ duration: 0.4, delay: 0.3, ease: EASE }}
             />
-            {/* Live ping dot */}
             <span className="relative flex h-1.5 w-1.5 shrink-0">
               <motion.span
                 className="absolute inline-flex h-full w-full rounded-full bg-arch-beige/50"
