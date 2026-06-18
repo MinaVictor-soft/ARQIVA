@@ -160,24 +160,34 @@ export default function HomePage() {
       <section className="md:hidden flex flex-col h-[100dvh] bg-[#0A0908]">
 
         {/* ── Image block — top portion, behind navbar ── */}
-        <div className="relative overflow-hidden shrink-0 h-[44dvh]">
+        <div className="relative overflow-hidden shrink-0 h-[32dvh]">
           <motion.img
             src={heroImage}
             alt="Architecture"
             loading="eager"
             className="absolute inset-0 w-full h-full object-cover object-center"
-            initial={{ opacity: 0, scale: 1.05 }}
+            initial={{ opacity: 0, scale: 1.08 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.5, ease: 'easeOut' }}
+            transition={{ duration: 2.2, ease: 'easeOut' }}
           />
-          {/* Subtle dark tint so image doesn't blow out */}
+          {/* Subtle dark tint */}
           <div className="absolute inset-0 bg-primary-black/25" />
-          {/* Gradient blending image into content panel below */}
+          {/* Shimmer sweep — diagonal light flare, runs once */}
+          <motion.div
+            className="absolute inset-y-0 w-2/5 pointer-events-none"
+            style={{ background: 'linear-gradient(105deg, transparent 0%, rgba(242,244,243,0.07) 50%, transparent 100%)' }}
+            initial={{ x: '-150%' }}
+            animate={{ x: '350%' }}
+            transition={{ duration: 1.1, delay: 2.0, ease: [0.4, 0, 0.2, 1] }}
+          />
+          {/* Top gradient — blends image into navbar */}
+          <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-[#0A0908]/55 to-transparent pointer-events-none" />
+          {/* Bottom gradient — blends image into content panel */}
           <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#0A0908] to-transparent" />
         </div>
 
         {/* ── Content panel — solid dark, fills remaining screen ── */}
-        <div className="flex-1 flex flex-col px-4 pt-3 pb-2 min-h-0 overflow-hidden">
+        <div className="flex-1 flex flex-col px-4 pt-3 pb-2 min-h-0">
 
           {/* Label */}
           <motion.div
@@ -186,14 +196,29 @@ export default function HomePage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.45, delay: 0.2, ease: EASE }}
           >
-            <span className="block h-px w-3.5 bg-arch-beige/65 shrink-0" />
+            {/* Animated dash */}
+            <motion.span
+              className="block h-px bg-arch-beige/65 shrink-0"
+              initial={{ width: 0 }}
+              animate={{ width: '14px' }}
+              transition={{ duration: 0.4, delay: 0.3, ease: EASE }}
+            />
+            {/* Live ping dot */}
+            <span className="relative flex h-1.5 w-1.5 shrink-0">
+              <motion.span
+                className="absolute inline-flex h-full w-full rounded-full bg-arch-beige/50"
+                animate={{ scale: [1, 2.4, 1], opacity: [0.5, 0, 0.5] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 1.0 }}
+              />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-arch-beige/80" />
+            </span>
             <p className="text-arch-beige text-[10.5px] tracking-[0.35em] uppercase font-semibold">
               {settings?.heroLabel || t('home.hero_label')}
             </p>
           </motion.div>
 
           {/* Headline */}
-          <h1 className="font-display text-[2rem] font-light leading-[1.05] text-white mb-2">
+          <h1 className="font-display text-[2rem] font-light leading-[1.05] text-white mb-1.5">
             <span className="block">
               <WordReveal text={settings?.heroTitle || t('home.hero_title_1')} delay={0.18} />
             </span>
@@ -201,6 +226,15 @@ export default function HomePage() {
               <WordReveal text={settings?.heroAccent || t('home.hero_title_2')} delay={0.35} />
             </em>
           </h1>
+
+          {/* Animated architectural accent line */}
+          <motion.div
+            className="h-px bg-gradient-to-r from-arch-beige/55 via-arch-beige/20 to-transparent mb-2"
+            style={{ width: '65%', originX: 0 }}
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 0.85, delay: 0.58, ease: EASE }}
+          />
 
           {/* Description */}
           <motion.p
@@ -217,12 +251,21 @@ export default function HomePage() {
             transition={{ duration: 0.45, delay: 0.4 }}
             className="flex gap-2 mb-3"
           >
-            <Link
-              to={settings?.heroCta1Url || '/projects'}
-              className="flex-1 text-center py-3 bg-luxury-burgundy text-warm-white text-[10px] tracking-[0.14em] uppercase font-semibold hover:bg-warm-white hover:text-primary-black transition-colors duration-200"
-            >
-              {settings?.heroCta1Text || t('home.hero_cta_primary')}
-            </Link>
+            {/* Primary CTA with pulse ring */}
+            <div className="relative flex-1">
+              <motion.span
+                className="absolute inset-0 border border-luxury-burgundy/55 pointer-events-none"
+                initial={{ opacity: 0.7, scale: 1 }}
+                animate={{ opacity: 0, scale: 1.09 }}
+                transition={{ duration: 1.6, delay: 1.3, repeat: Infinity, repeatDelay: 2.8, ease: 'easeOut' }}
+              />
+              <Link
+                to={settings?.heroCta1Url || '/projects'}
+                className="block text-center py-3 bg-luxury-burgundy text-warm-white text-[10px] tracking-[0.14em] uppercase font-semibold hover:bg-warm-white hover:text-primary-black transition-colors duration-200"
+              >
+                {settings?.heroCta1Text || t('home.hero_cta_primary')}
+              </Link>
+            </div>
             <Link
               to={settings?.heroCta2Url || '/services'}
               className="flex-1 flex items-center justify-center gap-1.5 border border-warm-white/28 text-warm-white/80 hover:text-warm-white hover:border-warm-white/55 text-[10px] tracking-[0.14em] uppercase transition-colors duration-200 py-3"
