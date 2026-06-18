@@ -160,7 +160,7 @@ export default function HomePage() {
       <section className="md:hidden flex flex-col h-[100dvh] bg-[#0A0908]">
 
         {/* ── Image block — top portion, behind navbar ── */}
-        <div className="relative overflow-hidden shrink-0 h-[32dvh]">
+        <div className="relative overflow-hidden shrink-0 h-[40dvh]">
           <motion.img
             src={heroImage}
             alt="Architecture"
