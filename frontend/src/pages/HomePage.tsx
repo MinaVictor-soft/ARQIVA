@@ -247,7 +247,7 @@ export default function HomePage() {
           <motion.p
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="text-white/75 text-[12px] leading-[1.6] mb-3 line-clamp-2 font-light"
+            className="text-white/75 text-[14px] leading-[1.6] mb-3 line-clamp-2 font-light"
           >
             {settings?.heroSubtitle || settings?.description || 'Award-winning architecture and interior design studio crafting timeless environments across the UAE and GCC.'}
           </motion.p>
