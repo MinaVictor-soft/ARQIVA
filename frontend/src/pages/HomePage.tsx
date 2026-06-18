@@ -159,11 +159,8 @@ export default function HomePage() {
       ══════════════════════════════════════════════════════════════════ */}
       <section className="md:hidden flex flex-col h-[100dvh] bg-[#0A0908]">
 
-        {/* Fixed navbar gap */}
-        <div className="h-14 shrink-0" />
-
-        {/* ── Image block — top portion, clean crop ── */}
-        <div className="relative overflow-hidden shrink-0 h-[40dvh]">
+        {/* ── Image block — top portion, behind navbar ── */}
+        <div className="relative overflow-hidden shrink-0 h-[44dvh]">
           <motion.img
             src={heroImage}
             alt="Architecture"
@@ -235,9 +232,9 @@ export default function HomePage() {
             </Link>
           </motion.div>
 
-          {/* Stats — directly under CTAs */}
-          <div className="border-t border-warm-white/10 pt-2">
-            <div className="grid grid-cols-4 divide-x divide-warm-white/10">
+          {/* Stats — 2 columns, directly under CTAs */}
+          <div className="border-t border-warm-white/10 pt-3">
+            <div className="grid grid-cols-2">
               {[
                 { v: `${settings?.statProjects ?? 47}+`, l: 'Projects' },
                 { v: `${settings?.statCountries ?? 6}+`, l: 'Countries' },
@@ -245,13 +242,15 @@ export default function HomePage() {
                 { v: '15+', l: 'Exp.' },
               ].map((s, i) => (
                 <motion.div key={i}
-                  className="flex flex-col items-center py-1.5"
+                  className={`flex flex-col items-center py-3
+                    ${i < 2 ? 'border-b border-warm-white/10' : ''}
+                    ${i % 2 === 0 ? 'border-r border-warm-white/10' : ''}`}
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.48 + i * 0.06, duration: 0.35, ease: EASE }}
                 >
-                  <span className="font-display text-[1.2rem] text-arch-beige leading-none tabular-nums">{s.v}</span>
-                  <span className="text-[7.5px] text-warm-white/60 tracking-[0.06em] uppercase mt-0.5 leading-tight">{s.l}</span>
+                  <span className="font-display text-[1.75rem] text-arch-beige leading-none tabular-nums">{s.v}</span>
+                  <span className="text-[10px] text-warm-white/60 tracking-[0.08em] uppercase mt-1 leading-tight">{s.l}</span>
                 </motion.div>
               ))}
             </div>
