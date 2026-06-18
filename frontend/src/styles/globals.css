@@ -4,19 +4,75 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Admin dark select dropdown fix ──────────────────────────────────────── */
-.admin-root select,
-.admin-root select option {
-  background-color: #1A1715;
-  color: #F2F4F3;
-  color-scheme: dark;
+/* ── Admin light warm theme ──────────────────────────────────────────────── */
+.admin-light {
+  background-color: #F5F0E8 !important;
+  color: #2A1A12 !important;
+  color-scheme: light;
 }
-.admin-root select option:hover,
-.admin-root select option:focus,
-.admin-root select option:checked {
-  background-color: #A9927D !important;
-  color: #0A0908 !important;
+/* Main background */
+.admin-light .bg-primary-black { background-color: #F5F0E8 !important; }
+/* Sidebar */
+.admin-light aside { background-color: #EDE8DF !important; border-color: rgba(94,80,63,0.22) !important; }
+/* Text colors */
+.admin-light .text-warm-white   { color: #2A1A12 !important; }
+.admin-light .text-warm-white\/80 { color: rgba(42,26,18,0.82) !important; }
+.admin-light .text-warm-white\/60 { color: rgba(42,26,18,0.65) !important; }
+.admin-light .text-warm-white\/50 { color: rgba(42,26,18,0.58) !important; }
+.admin-light .text-warm-white\/40 { color: rgba(42,26,18,0.48) !important; }
+.admin-light .text-warm-white\/30 { color: rgba(42,26,18,0.38) !important; }
+.admin-light .text-warm-white\/20 { color: rgba(42,26,18,0.28) !important; }
+/* Input / form backgrounds */
+.admin-light .bg-warm-white\/5  { background-color: rgba(255,255,255,0.85) !important; }
+.admin-light .bg-warm-white\/8  { background-color: rgba(94,80,63,0.10) !important; }
+/* Borders */
+.admin-light .border-warm-white\/5  { border-color: rgba(94,80,63,0.14) !important; }
+.admin-light .border-warm-white\/10 { border-color: rgba(94,80,63,0.20) !important; }
+.admin-light .border-warm-white\/15 { border-color: rgba(94,80,63,0.26) !important; }
+.admin-light .border-warm-white\/20 { border-color: rgba(94,80,63,0.30) !important; }
+.admin-light .border-warm-white\/25 { border-color: rgba(94,80,63,0.36) !important; }
+.admin-light .border-warm-white\/30 { border-color: rgba(94,80,63,0.42) !important; }
+.admin-light .border-warm-white\/40 { border-color: rgba(94,80,63,0.52) !important; }
+.admin-light .border-warm-white\/50 { border-color: rgba(94,80,63,0.62) !important; }
+.admin-light .border-warm-white\/55 { border-color: rgba(94,80,63,0.68) !important; }
+/* Inputs, textareas, selects */
+.admin-light input,
+.admin-light textarea,
+.admin-light select {
+  background-color: #fff !important;
+  color: #2A1A12 !important;
+  border-color: rgba(94,80,63,0.28) !important;
 }
+.admin-light input::placeholder,
+.admin-light textarea::placeholder { color: rgba(94,80,63,0.48) !important; }
+.admin-light select,
+.admin-light select option {
+  background-color: #fff;
+  color: #2A1A12;
+  color-scheme: light;
+}
+/* Primary button: dark bg on light admin */
+.admin-light .bg-warm-white.text-primary-black { background-color: #2A1A12 !important; color: #F5F0E8 !important; }
+.admin-light .hover\:bg-arch-beige:hover { background-color: #A9927D !important; color: #2A1A12 !important; }
+/* Modal / overlay backdrop */
+.admin-light .bg-primary-black\/80 { background-color: rgba(42,26,18,0.72) !important; }
+/* Image caption overlay and gallery hover — keep dark for contrast */
+.admin-light .bg-primary-black\/70,
+.admin-light .bg-primary-black\/60 { background-color: rgba(42,26,18,0.65) !important; }
+/* Active nav item */
+.admin-light .bg-warm-white\/8 { background-color: rgba(94,80,63,0.12) !important; }
+/* Skeleton pulse */
+.admin-light .animate-pulse { background-color: rgba(94,80,63,0.10) !important; }
+/* Toast */
+.admin-light .bg-stone-brown { background-color: #5E503F !important; color: #F5F0E8 !important; }
+/* Danger button hover */
+.admin-light .hover\:bg-luxury-burgundy:hover { background-color: #49111C !important; color: #F5F0E8 !important; }
+/* Confirm dialog */
+.admin-light .bg-primary-black.border { background-color: #F5F0E8 !important; }
+/* Drop shadow on modal */
+.admin-light .backdrop-blur-sm { background-color: rgba(42,26,18,0.55) !important; }
+
+/* ── Admin dark select dropdown fix — superseded by admin-light, kept for reference ── */
 /* ── Admin: pin to dark warm theme — never inherit public site theme ─────────── */
 [data-force-dark],
 [data-force-dark] * {

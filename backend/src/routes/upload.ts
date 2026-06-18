@@ -8,7 +8,7 @@ import { sendResponse, sendError } from '../utils/response';
 const router = Router();
 
 // Ensure uploads directory exists
-const uploadDir = path.join(__dirname, '../../public/uploads');
+const uploadDir = path.join(__dirname, '../public/uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
 const storage = multer.diskStorage({

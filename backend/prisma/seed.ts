@@ -23,10 +23,7 @@ async function main() {
   console.log('✓ Admin user');
 
   // ─── Settings ──────────────────────────────────────────────────────────────
-  const existingSettings = await prisma.settings.findFirst();
-  if (!existingSettings) {
-    await prisma.settings.create({
-      data: {
+  const settingsData = {
         companyName: 'ARQIVA Studio',
         tagline: 'Architecture & Interior Design',
         heroTitle: 'We Create Spaces',
@@ -45,8 +42,10 @@ async function main() {
         statProjects: 47,
         statCountries: 6,
         statValue: '2.4B+',
-        heroImage:
-          'https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=1920&q=85',
+        heroImage: '/hero-bg.jpg',
+        logo: '/logo.png',
+        darkLogo: '/logo.png',
+        favicon: '/favicon.png',
         profileImage:
           'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80',
         description:
@@ -92,11 +91,14 @@ async function main() {
           'Crafting architectural experiences that stand the test of time.',
         footerTextAr: 'نصنع تجارب معمارية تصمد أمام اختبار الزمن.',
         copyrightText: '© 2025 ARQIVA Studio. All rights reserved.',
-      },
-    });
-    console.log('✓ Settings');
+  };
+  const existingSettings = await prisma.settings.findFirst();
+  if (existingSettings) {
+    await prisma.settings.update({ where: { id: existingSettings.id }, data: settingsData });
+    console.log('✓ Settings updated');
   } else {
-    console.log('⏩ Settings already exist, skipping');
+    await prisma.settings.create({ data: settingsData });
+    console.log('✓ Settings created');
   }
 
   // ─── Categories ────────────────────────────────────────────────────────────

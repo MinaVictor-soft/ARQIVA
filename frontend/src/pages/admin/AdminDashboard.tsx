@@ -1054,7 +1054,7 @@ export default function AdminDashboard() {
   const { user, logout } = useAuthStore();
   const handleLogout = () => { logout(); navigate('/admin/login'); };
   return (
-    <div className="admin-root min-h-screen bg-primary-black text-warm-white flex [color-scheme:dark]" data-force-dark>
+    <div className="admin-root admin-light min-h-screen flex" data-force-light>
       <aside className="w-60 border-r border-warm-white/10 flex flex-col p-6 shrink-0 overflow-y-auto sticky top-0 h-screen">
         <Link to="/" className="font-display text-lg tracking-widest uppercase text-warm-white mb-1 block hover:text-arch-beige transition-colors">ARQIVA</Link>
         <p className="text-warm-white/20 text-xs tracking-widest uppercase mb-8">Studio Admin</p>
