@@ -26,7 +26,23 @@ function WordReveal({ text, delay = 0 }: { text: string; delay?: number }) {
     </>
   );
 }
-
+function LetterReveal({ text, delay = 0 }: { text: string; delay?: number }) {
+  return (
+    <>
+      {text.split('').map((char, i) => (
+        <motion.span
+          key={i}
+          className="inline-block"
+          initial={{ opacity: 0, y: 5, filter: 'blur(4px)' }}
+          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          transition={{ duration: 0.28, delay: delay + i * 0.022, ease: EASE }}
+        >
+          {char === ' ' ? ' ' : char}
+        </motion.span>
+      ))}
+    </>
+  );
+}
 // ── Premium Stat Card ────────────────────────────────────────────────────────
 const STAT_ICONS = {
   building: (
@@ -220,7 +236,7 @@ export default function HomePage() {
               <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-arch-beige/80" />
             </span>
             <p className="text-arch-beige text-[10.5px] tracking-[0.35em] uppercase font-semibold">
-              {settings?.heroLabel || t('home.hero_label')}
+              <LetterReveal text={settings?.heroLabel || t('home.hero_label')} delay={0.35} />
             </p>
           </motion.div>
 
@@ -319,7 +335,7 @@ export default function HomePage() {
             <motion.div className="flex items-center gap-3 mb-5" initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.15, ease: EASE }}>
               <span className="block h-px w-5 bg-arch-beige/70 shrink-0" />
               <p className="text-arch-beige text-xs tracking-[0.45em] uppercase font-semibold hero-text-shadow">
-                {settings?.heroLabel || t('home.hero_label')}
+                <LetterReveal text={settings?.heroLabel || t('home.hero_label')} delay={0.2} />
               </p>
             </motion.div>
             <h1 className="font-display text-[clamp(2.5rem,5.5vw,6rem)] font-light leading-[1.04] text-white mb-6 hero-text-shadow">
