@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, Routes, Route, NavLink, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
@@ -58,6 +58,81 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
 }
 const inputCls = "w-full bg-warm-white/5 border border-warm-white/10 text-warm-white px-4 py-2.5 text-sm focus:outline-none focus:border-warm-white/30 placeholder-warm-white/20";
 const textareaCls = `${inputCls} resize-y min-h-[100px]`;
+
+// ─── ImageField — URL input + file upload ────────────────────────────────────
+function ImageField({ label, value, onChange }: { label: string; value: string; onChange: (url: string) => void }) {
+  const [uploading, setUploading] = useState(false);
+  const [uploadErr, setUploadErr] = useState('');
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadErr('');
+    setUploading(true);
+    try {
+      const token = localStorage.getItem('accessToken');
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: fd,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Upload failed');
+      onChange(data.data.url);
+    } catch (err: any) {
+      setUploadErr(err.message || 'Upload failed');
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = '';
+    }
+  };
+
+  return (
+    <Field label={label}>
+      <div className="space-y-2">
+        {/* URL input row */}
+        <div className="flex gap-2">
+          <input
+            className={`${inputCls} flex-1`}
+            placeholder="https://... or upload below"
+            value={value}
+            onChange={e => onChange(e.target.value)}
+          />
+          {value && (
+            <button type="button" onClick={() => onChange('')}
+              className="text-warm-white/30 hover:text-warm-white/70 text-xs px-3 border border-warm-white/10 hover:border-warm-white/30 transition-colors shrink-0">
+              Clear
+            </button>
+          )}
+        </div>
+        {/* Upload button */}
+        <div className="flex items-center gap-3">
+          <button type="button" onClick={() => fileRef.current?.click()}
+            disabled={uploading}
+            className="flex items-center gap-2 px-4 py-2 text-xs tracking-widest uppercase border border-warm-white/20 text-warm-white/60 hover:border-warm-white/40 hover:text-warm-white transition-colors disabled:opacity-40">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            {uploading ? 'Uploading…' : 'Upload Image'}
+          </button>
+          {uploadErr && <span className="text-red-400 text-xs">{uploadErr}</span>}
+          <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
+        </div>
+        {/* Preview */}
+        {value && (
+          <div className="relative h-28 overflow-hidden border border-warm-white/10 mt-1">
+            <img src={value} alt="Preview" className="w-full h-full object-cover"
+              onError={e => { (e.currentTarget.parentElement as HTMLElement).style.display = 'none'; }} />
+            <div className="absolute inset-0 flex items-end p-2 pointer-events-none">
+              <span className="text-[10px] text-warm-white/40 tracking-widest uppercase bg-primary-black/60 px-1.5 py-0.5">Preview</span>
+            </div>
+          </div>
+        )}
+      </div>
+    </Field>
+  );
+}
 
 // ─── Dashboard Home ──────────────────────────────────────────────────────────
 function DashboardHome() {
@@ -133,20 +208,7 @@ function ProjectForm({ project, categories, onSave, onCancel }: any) {
       </div>
       <Field label="Title (Arabic) — اختياري" hint="ar"><input className={inputCls} dir="rtl" placeholder="العنوان بالعربية" value={f.titleAr} onChange={e => set('titleAr', e.target.value)} /></Field>
       {/* Cover Image */}
-      <Field label="Cover Image URL">
-        <div className="flex gap-3">
-          <input className={`${inputCls} flex-1`} placeholder="https://..." value={f.coverImage} onChange={e => set('coverImage', e.target.value)} />
-          {f.coverImage && (
-            <button type="button" onClick={() => set('coverImage', '')} className="text-warm-white/30 hover:text-warm-white/70 text-xs px-2 border border-warm-white/10 hover:border-warm-white/30 transition-colors">Clear</button>
-          )}
-        </div>
-        {f.coverImage && (
-          <div className="mt-2 relative h-36 overflow-hidden border border-warm-white/10">
-            <img src={f.coverImage} alt="Cover preview" className="w-full h-full object-cover" onError={e => (e.currentTarget.style.display = 'none')} />
-            <div className="absolute inset-0 flex items-end p-2"><span className="text-[10px] text-warm-white/40 tracking-widest uppercase bg-primary-black/60 px-1.5 py-0.5">Preview</span></div>
-          </div>
-        )}
-      </Field>
+      <ImageField label="Cover Image" value={f.coverImage} onChange={v => set('coverImage', v)} />
       <Field label="Short Description"><textarea className={textareaCls} value={f.description} onChange={e => set('description', e.target.value)} /></Field>
       <Field label="Description (Arabic) — اختياري" hint="ar"><textarea className={textareaCls} dir="rtl" placeholder="الوصف بالعربية" value={f.descriptionAr} onChange={e => set('descriptionAr', e.target.value)} /></Field>
       <Field label="Project Story"><textarea className={`${textareaCls}`} style={{ minHeight: 120 }} value={f.projectStory} onChange={e => set('projectStory', e.target.value)} /></Field>
@@ -284,10 +346,7 @@ function GalleryAdmin() {
           {/* Add new image */}
           <div className="mb-8 p-5 border border-warm-white/10 space-y-3 max-w-2xl">
             <p className="text-warm-white/30 text-xs tracking-widest uppercase">Add Image</p>
-            <Field label="Image URL">
-              <input className={inputCls} placeholder="https://images.unsplash.com/..." value={newUrl} onChange={e => setNewUrl(e.target.value)} />
-            </Field>
-            {newUrl && <div className="h-32 overflow-hidden border border-warm-white/10"><img src={newUrl} alt="preview" className="w-full h-full object-cover" onError={e => (e.currentTarget.style.display = 'none')} /></div>}
+            <ImageField label="Image URL" value={newUrl} onChange={setNewUrl} />
             <Field label="Caption (optional)">
               <input className={inputCls} placeholder="Optional caption..." value={newCaption} onChange={e => setNewCaption(e.target.value)} />
             </Field>
@@ -888,7 +947,7 @@ function SettingsAdmin() {
         { key: 'heroAccentAr', label: 'Hero Title Line 2 — Accent (AR)', hint: 'ar' },
         { key: 'heroSubtitle', label: 'Hero Subtitle Paragraph (EN)', multi: true },
         { key: 'heroSubtitleAr', label: 'Hero Subtitle Paragraph (AR)', multi: true, hint: 'ar' },
-        { key: 'heroImage', label: 'Hero Background Image URL' },
+        { key: 'heroImage', label: 'Hero Background Image', image: true },
         { key: 'heroCta1Text', label: 'CTA Button 1 Text' },
         { key: 'heroCta1Url', label: 'CTA Button 1 URL' },
         { key: 'heroCta2Text', label: 'CTA Button 2 Text' },
@@ -941,7 +1000,7 @@ function SettingsAdmin() {
         { key: 'seoTitle', label: 'SEO Title' },
         { key: 'seoDescription', label: 'SEO Description', multi: true },
         { key: 'seoKeywords', label: 'SEO Keywords (comma-separated)' },
-        { key: 'ogImage', label: 'OG Image URL (for social sharing)' },
+        { key: 'ogImage', label: 'OG Image (for social sharing)', image: true },
     ]},
     { title: 'Footer', fields: [
         { key: 'footerText', label: 'Footer Tagline (EN)' },
@@ -949,10 +1008,10 @@ function SettingsAdmin() {
         { key: 'copyrightText', label: 'Copyright Text' },
     ]},
     { title: 'Assets', fields: [
-        { key: 'logo', label: 'Logo URL (light bg)' },
-        { key: 'darkLogo', label: 'Logo URL (dark bg)' },
-        { key: 'favicon', label: 'Favicon URL' },
-        { key: 'profileImage', label: 'Profile / About Image URL' },
+        { key: 'logo', label: 'Logo (light background)', image: true },
+        { key: 'darkLogo', label: 'Logo (dark background)', image: true },
+        { key: 'favicon', label: 'Favicon', image: true },
+        { key: 'profileImage', label: 'Profile / About Image', image: true },
         { key: 'resumePdf', label: 'Resume PDF URL' },
     ]},
   ];
@@ -964,12 +1023,14 @@ function SettingsAdmin() {
           <div key={section.title}>
             <p className="text-warm-white/30 text-xs tracking-widest uppercase mb-4 pb-2 border-b border-warm-white/10">{section.title}</p>
             <div className="space-y-4">
-              {section.fields.map(({ key, label, multi, hint, type }: any) => (
-                <Field key={key} label={label} hint={hint}>
-                  {multi
-                    ? <textarea className={`${textareaCls} ${hint === 'ar' ? 'text-right' : ''}`} dir={hint === 'ar' ? 'rtl' : undefined} value={form[key] || ''} onChange={e => set(key, e.target.value)} />
-                    : <input type={type || 'text'} className={`${inputCls} ${hint === 'ar' ? 'text-right' : ''}`} dir={hint === 'ar' ? 'rtl' : undefined} value={form[key] || ''} onChange={e => set(key, e.target.value)} />}
-                </Field>
+              {section.fields.map(({ key, label, multi, hint, type, image }: any) => (
+                image
+                  ? <ImageField key={key} label={label} value={form[key] || ''} onChange={v => set(key, v)} />
+                  : <Field key={key} label={label} hint={hint}>
+                      {multi
+                        ? <textarea className={`${textareaCls} ${hint === 'ar' ? 'text-right' : ''}`} dir={hint === 'ar' ? 'rtl' : undefined} value={form[key] || ''} onChange={e => set(key, e.target.value)} />
+                        : <input type={type || 'text'} className={`${inputCls} ${hint === 'ar' ? 'text-right' : ''}`} dir={hint === 'ar' ? 'rtl' : undefined} value={form[key] || ''} onChange={e => set(key, e.target.value)} />}
+                    </Field>
               ))}
             </div>
           </div>
