@@ -72,26 +72,16 @@ function ImageField({ label, value, onChange }: { label: string; value: string; 
     setUploading(true);
     try {
       const token = localStorage.getItem('accessToken');
-      // Step 1: request a presigned upload URL from the backend
-      const urlRes = await fetch('/api/upload/request-url', {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/upload', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({ name: file.name, size: file.size, contentType: file.type }),
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: fd,
       });
-      const urlData = await urlRes.json();
-      if (!urlRes.ok) throw new Error(urlData.message || 'Failed to get upload URL');
-      const { uploadURL, objectPath } = urlData.data;
-      // Step 2: upload the file directly to object storage
-      const putRes = await fetch(uploadURL, {
-        method: 'PUT',
-        body: file,
-        headers: { 'Content-Type': file.type || 'application/octet-stream' },
-      });
-      if (!putRes.ok) throw new Error('Failed to upload to storage');
-      onChange(objectPath);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Upload failed');
+      onChange(data.data.url);
     } catch (err: any) {
       setUploadErr(err.message || 'Upload failed');
     } finally {
@@ -263,7 +253,7 @@ function ProjectsAdmin() {
   const [editing, setEditing] = useState<any>(null);
   const [confirm, setConfirm] = useState<number | null>(null);
   const { data: pr, isLoading } = useQuery({ queryKey: ['admin-projects'], queryFn: () => api.get('/projects?limit=100').then(r => r.data) });
-  const { data: cr } = useQuery({ queryKey: ['categories'], queryFn: () => api.get('/categories').then(r => r.data) });
+  const { data: cr } = useQuery({ queryKey: ['categories'], queryFn: () => api.get('/categories').then(r => r.data), staleTime: 0, refetchOnMount: true });
   const projects = pr?.data || []; const categories = cr?.data || [];
   const createMut = useMutation({ mutationFn: (d: any) => api.post('/projects', d), onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-projects'] }); show('Created'); setView('list'); setEditing(null); }, onError: () => show('Failed', 'error') });
   const updateMut = useMutation({ mutationFn: ({ id, data }: any) => api.put(`/projects/${id}`, data), onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-projects'] }); show('Updated'); setView('list'); setEditing(null); }, onError: () => show('Failed', 'error') });
