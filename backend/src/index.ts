@@ -28,6 +28,7 @@ import packagesRoutes from "./routes/packages";
 import feedbackRoutes from "./routes/feedback";
 import galleryRoutes from "./routes/gallery";
 import uploadRoutes from "./routes/upload";
+import { registerObjectStorageRoutes } from "./replit_integrations/object_storage";
 
 // Load environment variables
 dotenv.config();
@@ -133,7 +134,7 @@ app.use("/api/packages", packagesRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/projects/:projectId/gallery", galleryRoutes);
 app.use("/api/upload", uploadRoutes);
-
+registerObjectStorageRoutes(app);
 
 // In production, serve React frontend and handle SPA routing
 if (process.env.NODE_ENV === "production") {

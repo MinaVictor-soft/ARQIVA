@@ -72,16 +72,26 @@ function ImageField({ label, value, onChange }: { label: string; value: string; 
     setUploading(true);
     try {
       const token = localStorage.getItem('accessToken');
-      const fd = new FormData();
-      fd.append('file', file);
-      const res = await fetch('/api/upload', {
+      // Step 1: request a presigned upload URL from the backend
+      const urlRes = await fetch('/api/upload/request-url', {
         method: 'POST',
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-        body: fd,
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ name: file.name, size: file.size, contentType: file.type }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Upload failed');
-      onChange(data.data.url);
+      const urlData = await urlRes.json();
+      if (!urlRes.ok) throw new Error(urlData.message || 'Failed to get upload URL');
+      const { uploadURL, objectPath } = urlData.data;
+      // Step 2: upload the file directly to object storage
+      const putRes = await fetch(uploadURL, {
+        method: 'PUT',
+        body: file,
+        headers: { 'Content-Type': file.type || 'application/octet-stream' },
+      });
+      if (!putRes.ok) throw new Error('Failed to upload to storage');
+      onChange(objectPath);
     } catch (err: any) {
       setUploadErr(err.message || 'Upload failed');
     } finally {
