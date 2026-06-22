@@ -1,27 +1,14 @@
 import { Router, Request, Response } from 'express';
-import multer from 'multer';
+import multer, { FileFilterCallback } from 'multer';
 import path from 'path';
-import fs from 'fs';
 import { authenticateToken, authorizeRole } from '../utils/auth';
 import { sendResponse, sendError } from '../utils/response';
 
 const router = Router();
 
-// Ensure uploads directory exists
-// __dirname at runtime = dist/routes/, so go ../../ to reach backend/public/uploads/
-const uploadDir = path.join(__dirname, '../../public/uploads');
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+const storage = multer.memoryStorage();
 
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, uploadDir),
-  filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    const name = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}${ext}`;
-    cb(null, name);
-  },
-});
-
-const fileFilter = (_req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+const fileFilter = (_req: Request, file: any, cb: FileFilterCallback) => {
   const allowed = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'];
   const ext = path.extname(file.originalname).toLowerCase();
   if (allowed.includes(ext)) cb(null, true);
@@ -31,23 +18,22 @@ const fileFilter = (_req: Request, file: Express.Multer.File, cb: multer.FileFil
 const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
+  limits: { fileSize: 10 * 1024 * 1024 },
 });
 
-// POST /api/upload — admin only
+// POST /api/upload — stores image as base64 data URL (permanent, database-backed)
 router.post('/', authenticateToken, authorizeRole('admin'), upload.single('file'), (req: Request, res: Response) => {
-  if (!req.file) return sendError(res, 400, 'No file uploaded');
-  const url = `/uploads/${req.file.filename}`;
-  return sendResponse(res, 201, 'File uploaded', { url, filename: req.file.filename, size: req.file.size });
+  const file = (req as any).file as Express.Multer.File | undefined;
+  if (!file) return sendError(res, 400, 'No file uploaded');
+  const base64 = file.buffer.toString('base64');
+  const mime = file.mimetype || 'image/jpeg';
+  const url = `data:${mime};base64,${base64}`;
+  return sendResponse(res, 201, 'File uploaded', { url, filename: file.originalname, size: file.size });
 });
 
-// DELETE /api/upload/:filename — admin only
-router.delete('/:filename', authenticateToken, authorizeRole('admin'), (req: Request, res: Response) => {
-  const filename = path.basename(req.params.filename); // prevent path traversal
-  const filePath = path.join(uploadDir, filename);
-  if (!fs.existsSync(filePath)) return sendError(res, 404, 'File not found');
-  fs.unlinkSync(filePath);
-  return sendResponse(res, 200, 'File deleted');
+// DELETE /api/upload/:filename — no-op for data URLs (data is removed when DB record is deleted)
+router.delete('/:filename', authenticateToken, authorizeRole('admin'), (_req: Request, res: Response) => {
+  return sendResponse(res, 200, 'File removed');
 });
 
 export default router;

@@ -134,8 +134,6 @@ app.use("/api/feedback", feedbackRoutes);
 app.use("/api/projects/:projectId/gallery", galleryRoutes);
 app.use("/api/upload", uploadRoutes);
 
-// Serve uploaded files as static assets
-app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
 
 // In production, serve React frontend and handle SPA routing
 if (process.env.NODE_ENV === "production") {
