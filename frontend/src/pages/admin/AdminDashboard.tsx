@@ -45,7 +45,7 @@ function Btn({ children, onClick, variant = 'primary', type = 'button', disabled
   const s: any = { primary: 'bg-warm-white text-primary-black hover:bg-arch-beige', secondary: 'border border-warm-white/20 text-warm-white/60 hover:border-warm-white/50 hover:text-warm-white', danger: 'bg-luxury-burgundy/20 border border-luxury-burgundy/40 text-luxury-burgundy hover:bg-luxury-burgundy hover:text-warm-white' };
   return <button type={type} disabled={disabled} onClick={onClick} className={`px-5 py-2 text-xs tracking-widest uppercase transition-colors font-medium disabled:opacity-40 ${s[variant]}`}>{children}</button>;
 }
-function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
+function Field({ label, hint, error, children }: { label: string; hint?: string; error?: string; children: React.ReactNode }) {
   return (
     <div>
       <label className="flex items-center gap-2 text-warm-white/50 text-xs tracking-widest uppercase mb-2">
@@ -53,6 +53,7 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
         {hint === 'ar' && <span className="text-arch-beige/70 text-[10px] tracking-normal normal-case font-sans border border-arch-beige/30 px-1.5 py-0.5 rounded">AR</span>}
       </label>
       {children}
+      {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
     </div>
   );
 }
@@ -198,13 +199,30 @@ function ProjectForm({ project, categories, onSave, onCancel }: any) {
     year: project?.year || new Date().getFullYear(), featured: project?.featured || false, published: project?.published ?? true,
     coverImage: project?.coverImage || '',
   });
-  const set = (k: string, v: any) => setF(prev => ({ ...prev, [k]: v }));
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const set = (k: string, v: any) => { setF(prev => ({ ...prev, [k]: v })); setErrors(prev => ({ ...prev, [k]: '' })); };
   const autoSlug = (t: string) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+  const handleSave = () => {
+    const errs: Record<string, string> = {};
+    if (!f.title.trim()) errs.title = 'Title is required';
+    if (!f.slug.trim()) errs.slug = 'Slug is required';
+    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+    // Clean payload: convert empty strings to undefined, categoryId to number
+    const clean: any = {};
+    for (const [k, v] of Object.entries(f)) {
+      if (k === 'categoryId') { clean[k] = v === '' || v === null ? undefined : Number(v); }
+      else if (typeof v === 'string' && v.trim() === '') { clean[k] = undefined; }
+      else { clean[k] = v; }
+    }
+    onSave(clean);
+  };
+
   return (
     <div className="space-y-5 max-w-3xl">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Field label="Title *"><input className={inputCls} value={f.title} onChange={e => { set('title', e.target.value); if (!project) set('slug', autoSlug(e.target.value)); }} /></Field>
-        <Field label="Slug *"><input className={inputCls} value={f.slug} onChange={e => set('slug', e.target.value)} /></Field>
+        <Field label="Title *" error={errors.title}><input className={`${inputCls}${errors.title ? ' border-red-500' : ''}`} value={f.title} onChange={e => { set('title', e.target.value); if (!project) set('slug', autoSlug(e.target.value)); }} /></Field>
+        <Field label="Slug *" error={errors.slug}><input className={`${inputCls}${errors.slug ? ' border-red-500' : ''}`} value={f.slug} onChange={e => set('slug', e.target.value)} /></Field>
       </div>
       <Field label="Title (Arabic) — اختياري" hint="ar"><input className={inputCls} dir="rtl" placeholder="العنوان بالعربية" value={f.titleAr} onChange={e => set('titleAr', e.target.value)} /></Field>
       {/* Cover Image */}
@@ -240,7 +258,7 @@ function ProjectForm({ project, categories, onSave, onCancel }: any) {
         <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={f.published} onChange={e => set('published', e.target.checked)} className="accent-arch-beige" /><span className="text-warm-white/60 text-sm">Published</span></label>
       </div>
       <div className="flex gap-3 pt-4 border-t border-warm-white/10">
-        <Btn onClick={() => onSave(f)}>Save Project</Btn>
+        <Btn onClick={handleSave}>Save Project</Btn>
         <Btn variant="secondary" onClick={onCancel}>Cancel</Btn>
       </div>
     </div>
@@ -255,9 +273,10 @@ function ProjectsAdmin() {
   const { data: pr, isLoading } = useQuery({ queryKey: ['admin-projects'], queryFn: () => api.get('/projects?limit=100').then(r => r.data) });
   const { data: cr } = useQuery({ queryKey: ['categories'], queryFn: () => api.get('/categories').then(r => r.data), staleTime: 0, refetchOnMount: true });
   const projects = pr?.data || []; const categories = cr?.data || [];
-  const createMut = useMutation({ mutationFn: (d: any) => api.post('/projects', d), onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-projects'] }); show('Created'); setView('list'); setEditing(null); }, onError: () => show('Failed', 'error') });
-  const updateMut = useMutation({ mutationFn: ({ id, data }: any) => api.put(`/projects/${id}`, data), onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-projects'] }); show('Updated'); setView('list'); setEditing(null); }, onError: () => show('Failed', 'error') });
-  const deleteMut = useMutation({ mutationFn: (id: number) => api.delete(`/projects/${id}`), onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-projects'] }); show('Deleted'); }, onError: () => show('Failed', 'error') });
+  const errMsg = (e: any) => e?.response?.data?.message || e?.message || 'Save failed';
+  const createMut = useMutation({ mutationFn: (d: any) => api.post('/projects', d), onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-projects'] }); show('Project created'); setView('list'); setEditing(null); }, onError: (e: any) => show(errMsg(e), 'error') });
+  const updateMut = useMutation({ mutationFn: ({ id, data }: any) => api.put(`/projects/${id}`, data), onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-projects'] }); show('Project updated'); setView('list'); setEditing(null); }, onError: (e: any) => show(errMsg(e), 'error') });
+  const deleteMut = useMutation({ mutationFn: (id: number) => api.delete(`/projects/${id}`), onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-projects'] }); show('Deleted'); }, onError: (e: any) => show(errMsg(e), 'error') });
   if (view === 'form') return (
     <div>
       <SectionHeader title={editing ? 'Edit Project' : 'New Project'} />
