@@ -53,6 +53,25 @@ router.get('/:filename', async (req, res) => {
         return (0, response_1.sendError)(res, 404, 'Backup not found: ' + err.message);
     }
 });
+// GET /api/admin/backups/:filename/download-full — download tar.gz with DB JSON + all images
+router.get('/:filename/download-full', async (req, res) => {
+    try {
+        const { filename } = req.params;
+        if (!filename.match(/^backup-[\w\-]+\.json$/)) {
+            return (0, response_1.sendError)(res, 400, 'Invalid filename');
+        }
+        console.log(`[Backup] Building full archive for ${filename}...`);
+        const { buffer, archiveName } = await (0, backup_1.createFullBackupArchive)(filename);
+        res.setHeader('Content-Type', 'application/gzip');
+        res.setHeader('Content-Disposition', `attachment; filename="${archiveName}"`);
+        res.setHeader('Content-Length', buffer.length);
+        return res.send(buffer);
+    }
+    catch (err) {
+        console.error('Full backup download error:', err.message);
+        return (0, response_1.sendError)(res, 500, 'Full backup failed: ' + err.message);
+    }
+});
 // POST /api/admin/backups/:filename/restore — restore DB from a backup file
 router.post('/:filename/restore', async (req, res) => {
     try {

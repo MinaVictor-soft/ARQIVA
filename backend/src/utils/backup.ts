@@ -1,7 +1,11 @@
 import { db } from '../db';
 import { objectStorageClient } from '../replit_integrations/object_storage';
+import * as fs from 'fs';
+import * as path from 'path';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const nodemailer = require('nodemailer');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const tar = require('tar');
 
 function getBucketName(): string {
   const dir = process.env.PRIVATE_OBJECT_DIR || '';
@@ -208,5 +212,67 @@ export async function runScheduledBackup(sendEmail = true): Promise<void> {
     console.log(`[Backup] Done — ${meta.rowCounts.projects} projects, ${meta.rowCounts.projectImages} images`);
   } catch (err: any) {
     console.error('[Backup] Scheduled backup failed:', err.message);
+  }
+}
+
+export async function createFullBackupArchive(filename: string): Promise<{ buffer: Buffer; archiveName: string }> {
+  const tmpDir = `/tmp/arqiva-full-backup-${Date.now()}`;
+  const imagesDir = path.join(tmpDir, 'images');
+  const archivePath = `${tmpDir}.tar.gz`;
+
+  try {
+    fs.mkdirSync(tmpDir, { recursive: true });
+    fs.mkdirSync(imagesDir, { recursive: true });
+
+    // Write DB JSON
+    const dbBuf = await downloadBackup(filename);
+    fs.writeFileSync(path.join(tmpDir, 'database.json'), dbBuf);
+
+    // Download all uploaded images from Object Storage
+    const bucketName = getBucketName();
+    const privateBucketPrefix = (process.env.PRIVATE_OBJECT_DIR || '').replace(/^\//, '').split('/').slice(1).join('/');
+    const uploadsPrefix = privateBucketPrefix ? `${privateBucketPrefix}/uploads/` : 'uploads/';
+    const [files] = await objectStorageClient.bucket(bucketName).getFiles({ prefix: uploadsPrefix });
+
+    console.log(`[Backup] Downloading ${files.length} images for full archive...`);
+    let downloaded = 0;
+    for (const f of files) {
+      try {
+        const [content] = await f.download();
+        const name = path.basename(f.name);
+        fs.writeFileSync(path.join(imagesDir, name), content);
+        downloaded++;
+      } catch {
+        // Skip files that fail to download
+      }
+    }
+    console.log(`[Backup] Downloaded ${downloaded}/${files.length} images`);
+
+    // Write a README
+    const db = JSON.parse(dbBuf.toString());
+    const readme = [
+      'ARQIVA Studio - Full Backup',
+      `Created: ${new Date().toISOString()}`,
+      `DB Backup file: ${filename}`,
+      `Images: ${downloaded} files`,
+      '',
+      'Contents:',
+      '  database.json  — all database records',
+      '  images/        — all uploaded image files',
+      '',
+      'To restore: use Admin → Backups → Restore in the admin panel.',
+    ].join('\n');
+    fs.writeFileSync(path.join(tmpDir, 'README.txt'), readme);
+
+    // Create tar.gz archive
+    await tar.create({ gzip: true, file: archivePath, cwd: tmpDir }, ['.']);
+
+    const buffer = fs.readFileSync(archivePath);
+    const baseName = filename.replace(/\.json$/, '');
+    return { buffer, archiveName: `${baseName}-full.tar.gz` };
+  } finally {
+    // Cleanup temp dir
+    try { fs.rmSync(tmpDir, { recursive: true, force: true }); } catch { /* ignore */ }
+    try { fs.unlinkSync(archivePath); } catch { /* ignore */ }
   }
 }

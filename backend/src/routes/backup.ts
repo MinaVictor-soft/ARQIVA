@@ -1,7 +1,7 @@
 import { Router, Response } from 'express';
 import { authenticateToken, authorizeRole } from '../utils/auth';
 import { sendResponse, sendError } from '../utils/response';
-import { saveBackupToStorage, listBackups, downloadBackup, restoreFromBackup, sendBackupEmail } from '../utils/backup';
+import { saveBackupToStorage, listBackups, downloadBackup, restoreFromBackup, sendBackupEmail, createFullBackupArchive } from '../utils/backup';
 import { CustomRequest } from '../utils/types';
 
 const router = Router();
@@ -51,6 +51,25 @@ router.get('/:filename', async (req: CustomRequest, res: Response) => {
   } catch (err: any) {
     console.error('Download backup error:', err.message);
     return sendError(res, 404, 'Backup not found: ' + err.message);
+  }
+});
+
+// GET /api/admin/backups/:filename/download-full — download tar.gz with DB JSON + all images
+router.get('/:filename/download-full', async (req: CustomRequest, res: Response) => {
+  try {
+    const { filename } = req.params;
+    if (!filename.match(/^backup-[\w\-]+\.json$/)) {
+      return sendError(res, 400, 'Invalid filename');
+    }
+    console.log(`[Backup] Building full archive for ${filename}...`);
+    const { buffer, archiveName } = await createFullBackupArchive(filename);
+    res.setHeader('Content-Type', 'application/gzip');
+    res.setHeader('Content-Disposition', `attachment; filename="${archiveName}"`);
+    res.setHeader('Content-Length', buffer.length);
+    return res.send(buffer);
+  } catch (err: any) {
+    console.error('Full backup download error:', err.message);
+    return sendError(res, 500, 'Full backup failed: ' + err.message);
   }
 });
 

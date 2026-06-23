@@ -1,4 +1,37 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.exportDatabase = exportDatabase;
 exports.saveBackupToStorage = saveBackupToStorage;
@@ -7,10 +40,15 @@ exports.downloadBackup = downloadBackup;
 exports.restoreFromBackup = restoreFromBackup;
 exports.sendBackupEmail = sendBackupEmail;
 exports.runScheduledBackup = runScheduledBackup;
+exports.createFullBackupArchive = createFullBackupArchive;
 const db_1 = require("../db");
 const object_storage_1 = require("../replit_integrations/object_storage");
+const fs = __importStar(require("fs"));
+const path = __importStar(require("path"));
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const nodemailer = require('nodemailer');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const tar = require('tar');
 function getBucketName() {
     const dir = process.env.PRIVATE_OBJECT_DIR || '';
     if (!dir)
@@ -212,5 +250,67 @@ async function runScheduledBackup(sendEmail = true) {
     }
     catch (err) {
         console.error('[Backup] Scheduled backup failed:', err.message);
+    }
+}
+async function createFullBackupArchive(filename) {
+    const tmpDir = `/tmp/arqiva-full-backup-${Date.now()}`;
+    const imagesDir = path.join(tmpDir, 'images');
+    const archivePath = `${tmpDir}.tar.gz`;
+    try {
+        fs.mkdirSync(tmpDir, { recursive: true });
+        fs.mkdirSync(imagesDir, { recursive: true });
+        // Write DB JSON
+        const dbBuf = await downloadBackup(filename);
+        fs.writeFileSync(path.join(tmpDir, 'database.json'), dbBuf);
+        // Download all uploaded images from Object Storage
+        const bucketName = getBucketName();
+        const privateBucketPrefix = (process.env.PRIVATE_OBJECT_DIR || '').replace(/^\//, '').split('/').slice(1).join('/');
+        const uploadsPrefix = privateBucketPrefix ? `${privateBucketPrefix}/uploads/` : 'uploads/';
+        const [files] = await object_storage_1.objectStorageClient.bucket(bucketName).getFiles({ prefix: uploadsPrefix });
+        console.log(`[Backup] Downloading ${files.length} images for full archive...`);
+        let downloaded = 0;
+        for (const f of files) {
+            try {
+                const [content] = await f.download();
+                const name = path.basename(f.name);
+                fs.writeFileSync(path.join(imagesDir, name), content);
+                downloaded++;
+            }
+            catch {
+                // Skip files that fail to download
+            }
+        }
+        console.log(`[Backup] Downloaded ${downloaded}/${files.length} images`);
+        // Write a README
+        const db = JSON.parse(dbBuf.toString());
+        const readme = [
+            'ARQIVA Studio - Full Backup',
+            `Created: ${new Date().toISOString()}`,
+            `DB Backup file: ${filename}`,
+            `Images: ${downloaded} files`,
+            '',
+            'Contents:',
+            '  database.json  — all database records',
+            '  images/        — all uploaded image files',
+            '',
+            'To restore: use Admin → Backups → Restore in the admin panel.',
+        ].join('\n');
+        fs.writeFileSync(path.join(tmpDir, 'README.txt'), readme);
+        // Create tar.gz archive
+        await tar.create({ gzip: true, file: archivePath, cwd: tmpDir }, ['.']);
+        const buffer = fs.readFileSync(archivePath);
+        const baseName = filename.replace(/\.json$/, '');
+        return { buffer, archiveName: `${baseName}-full.tar.gz` };
+    }
+    finally {
+        // Cleanup temp dir
+        try {
+            fs.rmSync(tmpDir, { recursive: true, force: true });
+        }
+        catch { /* ignore */ }
+        try {
+            fs.unlinkSync(archivePath);
+        }
+        catch { /* ignore */ }
     }
 }

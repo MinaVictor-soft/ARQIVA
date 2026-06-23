@@ -949,10 +949,17 @@ function FeedbackAdmin() {
 function SettingsAdmin() {
   const qc = useQueryClient();
   const { toast, show, clear } = useToast();
-  const { data } = useQuery({ queryKey: ['settings'], queryFn: () => api.get('/settings').then(r => r.data) });
+  const { data, isSuccess, isError } = useQuery({ queryKey: ['settings'], queryFn: () => api.get('/settings').then(r => r.data), staleTime: 0, refetchOnMount: true });
   const [form, setForm] = useState<any>(null);
-  React.useEffect(() => { if (data?.data && !form) setForm(data.data); }, [data]);
-  const saveMut = useMutation({ mutationFn: (d: any) => api.put('/settings', d), onSuccess: () => { qc.invalidateQueries({ queryKey: ['settings'] }); show('Settings saved'); }, onError: () => show('Failed', 'error') });
+  const initialized = React.useRef(false);
+  React.useEffect(() => {
+    if (isSuccess && data?.data && !initialized.current) {
+      initialized.current = true;
+      setForm(data.data);
+    }
+  }, [isSuccess, data]);
+  const saveMut = useMutation({ mutationFn: (d: any) => api.put('/settings', d), onSuccess: () => { qc.invalidateQueries({ queryKey: ['settings'] }); initialized.current = false; show('Settings saved'); }, onError: () => show('Failed', 'error') });
+  if (isError) return <p className="text-red-400 text-sm">Failed to load settings. Please refresh.</p>;
   if (!form) return <SkeletonRows n={8} />;
   const set = (k: string, v: string) => setForm((f: any) => ({ ...f, [k]: v }));
   const sections = [
@@ -1079,17 +1086,20 @@ function BackupsAdmin() {
     onError: (e: any) => show(e?.response?.data?.message || 'Backup failed', 'error'),
   });
 
-  const handleDownload = (filename: string) => {
+  const handleDownload = (filename: string, full = false) => {
     const token = localStorage.getItem('accessToken');
-    const a = document.createElement('a');
-    a.href = `/api/admin/backups/${filename}`;
-    a.download = filename;
-    // Add auth header via fetch then create object URL
-    fetch(`/api/admin/backups/${filename}`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(r => r.blob())
+    const endpoint = full
+      ? `/api/admin/backups/${filename}/download-full`
+      : `/api/admin/backups/${filename}`;
+    const dlName = full ? filename.replace(/\.json$/, '-full.tar.gz') : filename;
+    if (full) show('Building full archive — this may take 30–60 seconds…');
+    fetch(endpoint, { headers: { Authorization: `Bearer ${token}` } })
+      .then(r => { if (!r.ok) throw new Error('Download failed'); return r.blob(); })
       .then(blob => {
         const url = URL.createObjectURL(blob);
-        a.href = url; a.click(); URL.revokeObjectURL(url);
+        const a = document.createElement('a');
+        a.href = url; a.download = dlName; a.click(); URL.revokeObjectURL(url);
+        if (full) show('Full archive downloaded');
       })
       .catch(() => show('Download failed', 'error'));
   };
@@ -1142,7 +1152,8 @@ function BackupsAdmin() {
                 </p>
               </div>
               <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Btn variant="secondary" onClick={() => handleDownload(b.filename)}>Download</Btn>
+                <Btn variant="secondary" onClick={() => handleDownload(b.filename)}>DB Only</Btn>
+                <Btn variant="secondary" onClick={() => handleDownload(b.filename, true)}>Full + Images</Btn>
                 <Btn variant="danger" onClick={() => setConfirm(b.filename)}>Restore</Btn>
               </div>
             </div>
