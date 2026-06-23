@@ -28,7 +28,10 @@ import packagesRoutes from "./routes/packages";
 import feedbackRoutes from "./routes/feedback";
 import galleryRoutes from "./routes/gallery";
 import uploadRoutes from "./routes/upload";
+import backupRoutes from "./routes/backup";
 import { registerObjectStorageRoutes } from "./replit_integrations/object_storage";
+import { startDbKeepalive } from "./utils/keepalive";
+import { runScheduledBackup } from "./utils/backup";
 
 // Load environment variables
 dotenv.config();
@@ -134,6 +137,7 @@ app.use("/api/packages", packagesRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/projects/:projectId/gallery", galleryRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/admin/backups", backupRoutes);
 registerObjectStorageRoutes(app);
 
 // In production, serve React frontend and handle SPA routing
@@ -171,6 +175,19 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
+// Schedule daily backup at midnight
+function scheduleDailyBackup() {
+  const now = new Date();
+  const midnight = new Date(now);
+  midnight.setHours(24, 0, 0, 0); // next midnight
+  const msUntilMidnight = midnight.getTime() - now.getTime();
+  setTimeout(() => {
+    runScheduledBackup(true);
+    setInterval(() => runScheduledBackup(true), 24 * 60 * 60 * 1000);
+  }, msUntilMidnight);
+  console.log(`✓ Daily backup scheduled (next run in ${Math.round(msUntilMidnight / 3600000)}h)`);
+}
+
 // Start server
 async function start() {
   try {
@@ -184,6 +201,17 @@ async function start() {
       console.log(`✓ Server running on port ${PORT}`);
       console.log(`✓ Environment: ${process.env.NODE_ENV || "development"}`);
     });
+
+    // Keep DB connection alive (prevents Neon idle-disconnect at ~5 min)
+    startDbKeepalive();
+
+    // Schedule daily automatic backup
+    scheduleDailyBackup();
+
+    // Run an immediate startup backup in production (5s after start, non-blocking)
+    if (process.env.NODE_ENV === "production") {
+      setTimeout(() => runScheduledBackup(false), 5000);
+    }
   } catch (error) {
     console.error("Failed to start server:", error);
     process.exit(1);

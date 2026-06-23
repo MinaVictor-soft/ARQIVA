@@ -1061,12 +1061,112 @@ function SettingsAdmin() {
   );
 }
 
+// ─── Backups ──────────────────────────────────────────────────────────────────
+function BackupsAdmin() {
+  const { toast, show, clear } = useToast();
+  const [confirm, setConfirm] = useState<string | null>(null);
+  const [restoring, setRestoring] = useState('');
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ['backups'],
+    queryFn: () => api.get('/admin/backups').then(r => r.data),
+    staleTime: 0,
+  });
+  const backups: any[] = data?.data || [];
+
+  const createMut = useMutation({
+    mutationFn: () => api.post('/admin/backups'),
+    onSuccess: (r) => { show(`Backup created: ${r.data?.data?.filename || ''}`); refetch(); },
+    onError: (e: any) => show(e?.response?.data?.message || 'Backup failed', 'error'),
+  });
+
+  const handleDownload = (filename: string) => {
+    const token = localStorage.getItem('accessToken');
+    const a = document.createElement('a');
+    a.href = `/api/admin/backups/${filename}`;
+    a.download = filename;
+    // Add auth header via fetch then create object URL
+    fetch(`/api/admin/backups/${filename}`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(r => r.blob())
+      .then(blob => {
+        const url = URL.createObjectURL(blob);
+        a.href = url; a.click(); URL.revokeObjectURL(url);
+      })
+      .catch(() => show('Download failed', 'error'));
+  };
+
+  const handleRestore = async (filename: string) => {
+    setRestoring(filename);
+    try {
+      const r = await api.post(`/admin/backups/${filename}/restore`);
+      show(`Restored from ${filename}`);
+      refetch();
+    } catch (e: any) {
+      show(e?.response?.data?.message || 'Restore failed', 'error');
+    } finally {
+      setRestoring(''); setConfirm(null);
+    }
+  };
+
+  const fmtSize = (b: number) => b > 1024 * 1024 ? `${(b / 1024 / 1024).toFixed(1)} MB` : `${(b / 1024).toFixed(1)} KB`;
+  const fmtDate = (s: string) => { try { return new Date(s).toLocaleString(); } catch { return s; } };
+
+  return (
+    <div>
+      <SectionHeader title="Backups" action={
+        <div className="flex gap-3 items-center">
+          <span className="text-warm-white/30 text-xs">Auto-backup runs daily at midnight</span>
+          <Btn onClick={() => createMut.mutate()} disabled={createMut.isPending}>
+            {createMut.isPending ? 'Creating…' : '+ Backup Now'}
+          </Btn>
+        </div>
+      } />
+
+      {/* Info banner */}
+      <div className="border border-arch-beige/20 bg-arch-beige/5 px-5 py-4 mb-8 text-warm-white/60 text-sm space-y-1">
+        <p><span className="text-arch-beige">✓ Daily automatic backup</span> — runs every midnight, stored in Replit Object Storage permanently</p>
+        <p><span className="text-arch-beige">✓ Startup backup</span> — saved every time the production server starts</p>
+        <p><span className="text-arch-beige">✓ DB keepalive</span> — pings database every 4 min to prevent Neon idle-disconnect</p>
+        <p className="text-warm-white/30 text-xs pt-1">To receive backups by email, set SMTP_HOST, SMTP_USER, SMTP_PASS, SMTP_PORT, BACKUP_EMAIL as environment secrets</p>
+      </div>
+
+      {isLoading ? <SkeletonRows /> : backups.length === 0 ? (
+        <p className="text-warm-white/30 text-sm">No backups yet. Click "Backup Now" to create the first one.</p>
+      ) : (
+        <div className="space-y-px">
+          {backups.map((b: any) => (
+            <div key={b.filename} className="flex items-center justify-between border border-warm-white/5 px-4 py-3 hover:border-warm-white/15 group">
+              <div>
+                <p className="text-warm-white text-sm font-mono">{b.filename}</p>
+                <p className="text-warm-white/30 text-xs mt-0.5">
+                  {fmtDate(b.created)} · {b.sizeBytes ? fmtSize(b.sizeBytes) : '—'}
+                </p>
+              </div>
+              <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Btn variant="secondary" onClick={() => handleDownload(b.filename)}>Download</Btn>
+                <Btn variant="danger" onClick={() => setConfirm(b.filename)}>Restore</Btn>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      {confirm && (
+        <Confirm
+          msg={`Restore database from "${confirm}"? This will overwrite ALL current data. A backup of the current state will be saved first.`}
+          onConfirm={() => handleRestore(confirm)}
+          onCancel={() => setConfirm(null)}
+        />
+      )}
+      {toast && <Toast msg={toast.msg} type={toast.type} onClose={clear} />}
+    </div>
+  );
+}
+
 // ─── Layout ──────────────────────────────────────────────────────────────────
 const navGroups = [
   { label: 'Overview', items: [{ to: '/admin/dashboard', label: 'Dashboard' }, { to: '/admin/messages', label: 'Messages' }, { to: '/admin/feedback', label: 'Feedback' }] },
   { label: 'Content', items: [{ to: '/admin/projects', label: 'Projects' }, { to: '/admin/gallery', label: 'Gallery' }, { to: '/admin/categories', label: 'Categories' }, { to: '/admin/services', label: 'Services' }, { to: '/admin/packages', label: 'Packages' }, { to: '/admin/awards', label: 'Awards' }, { to: '/admin/testimonials', label: 'Testimonials' }] },
   { label: 'Resume', items: [{ to: '/admin/skills', label: 'Skills' }, { to: '/admin/education', label: 'Education' }, { to: '/admin/experience', label: 'Experience' }] },
-  { label: 'System', items: [{ to: '/admin/settings', label: 'Settings' }] },
+  { label: 'System', items: [{ to: '/admin/backups', label: '🛡 Backups' }, { to: '/admin/settings', label: 'Settings' }] },
 ];
 
 export default function AdminDashboard() {
@@ -1162,6 +1262,7 @@ export default function AdminDashboard() {
             <Route path="education" element={<EducationAdmin />} />
             <Route path="experience" element={<ExperienceAdmin />} />
             <Route path="settings" element={<SettingsAdmin />} />
+            <Route path="backups" element={<BackupsAdmin />} />
             <Route path="*" element={<DashboardHome />} />
           </Routes>
         </div>
