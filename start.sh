@@ -32,10 +32,11 @@ echo "-> Checking database seed..."
 USER_COUNT=$(node -e "
 const { PrismaClient } = require('./backend/node_modules/@prisma/client');
 const db = new PrismaClient({ log: [] });
-db.user.count().then(n => { console.log(n); db.\$disconnect(); }).catch(() => { console.log(0); });
-" 2>/dev/null) || USER_COUNT=0
+db.user.count().then(n => { console.log(n); db.\$disconnect(); }).catch(e => { console.error('DB_ERROR:' + e.message); console.log(-1); db.\$disconnect(); });
+" 2>/dev/null) || USER_COUNT=-1
 
-if [ "$USER_COUNT" = "0" ] || [ -z "$USER_COUNT" ]; then
+# -1 means DB connection error — never seed on error, only on confirmed empty (0)
+if [ "$USER_COUNT" = "0" ]; then
   echo "-> Database empty — running seed..."
   node backend/dist/db/seed.js 2>&1 | grep -E "✓|✗|Creating|Clearing" || true
   echo "-> Adding project images and gallery..."

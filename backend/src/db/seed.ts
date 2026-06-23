@@ -5,7 +5,15 @@ async function seed() {
   try {
     console.log("🌱 Starting database seed...");
 
-    // Clear existing data
+    // Safety guard: never wipe an existing database — only seed if truly empty
+    const existingUsers = await db.user.count();
+    if (existingUsers > 0) {
+      console.log(`✓ Database already has ${existingUsers} user(s) — skipping seed to protect existing data`);
+      await db.$disconnect();
+      return;
+    }
+
+    // Clear existing data (only reached when DB is confirmed empty)
     console.log("Clearing existing data...");
     await db.testimonial.deleteMany();
     await db.comment.deleteMany();
